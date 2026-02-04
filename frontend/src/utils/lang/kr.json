@@ -1,0 +1,102 @@
+{
+    "nav": {
+        "home": "Home",
+        "about": "Abawt Wi",
+        "agencies": "Ajensis",
+        "jobs": "Job Portal",
+        "directorates": "Dairekturets",
+        "programs": "Prugrams",
+        "media": "Media",
+        "contact": "Kontakt Wi"
+    },
+    "header": {
+        "address": "4th & 5th Flor, Youyi Building, Freetown",
+        "email": "info@mohs.gov.sl",
+        "phone": "+232 76 460 440"
+    },
+    "hero": {
+        "badge": "Wok Chans",
+        "title": "Find Yu",
+        "titleHighlight": "Drim Job",
+        "titleEnd": "na Elt Sekta",
+        "subtitle": "Jɔyn wi mishɔn fɔ chenj eltia na Salone. Luk fɔ gud wok chans na ɔl di elt sekta dɛm.",
+        "searchLabel": "Job Nem ɔ Wɔd dɛm",
+        "searchPlaceholder": "laik Nɔs, Dɔkta, Admin...",
+        "locationLabel": "Lɔkeshɔn",
+        "allLocations": "Ɔl Ples dɛm",
+        "searchBtn": "Luk fɔ Job",
+        "openPositions": "Job dɛn We De",
+        "districts": "Distrik dɛm",
+        "sectors": "Sekta dɛm"
+    },
+    "filters": {
+        "title": "Filta dɛm",
+        "clearAll": "Klia Ɔl",
+        "jobType": "Job Kain",
+        "fullTime": "Ful Taim",
+        "partTime": "Pat Taim",
+        "contract": "Kɔntrakt",
+        "sector": "Sekta",
+        "doctors": "Dɔkta dɛm",
+        "nurses": "Nɔs dɛm",
+        "administration": "Admin",
+        "digitalHealth": "Dijital Elt",
+        "finance": "Fainans",
+        "humanResources": "HR",
+        "experienceLevel": "Ekspiriens Levul",
+        "entryLevel": "Bigin Levul",
+        "midLevel": "Middul Levul",
+        "seniorLevel": "Sinia Levul"
+    },
+    "jobs": {
+        "showing": "Wi de sho",
+        "availablePositions": "job dɛn we de",
+        "sortBy": "Araynj am:",
+        "latestAdded": "Niu Wan dɛm",
+        "deadline": "Las De",
+        "applyNow": "Aplai Naw",
+        "save": "Sev Am",
+        "featured": "Speshul"
+    },
+    "whyWork": {
+        "badge": "Wetin Mek Yu Go Chuz Wi",
+        "title": "Wetin Mek Yu Fɔ Wok na Minstri ɔf Elt?",
+        "subtitle": "Jɔyn wi tim we de wok ad fɔ chenj eltia na Salone",
+        "card1Title": "Prɔfeshɔnal Groth",
+        "card1Text": "Yu go get trening, wɔkshɔp, en chans fɔ gro na yu wok na di elt sekta.",
+        "card2Title": "Gud Benefit dɛm",
+        "card2Text": "Gud salary, elt inshurens, en penshan plan fɔ yu en yu famili.",
+        "card3Title": "Mek Difrans",
+        "card3Text": "Ɛp fɔ mek elt beta fɔ milyɔn Salonians na ɔl di 16 distrik dɛm.",
+        "card4Title": "Wok Tugɛda Kulcha",
+        "card4Text": "Wok wit gud pipul dɛm, intanashɔnal patna dɛm, en elt ɔganizeshɔn dɛm laik WHO en UNICEF."
+    },
+    "jobAlerts": {
+        "title": "Get Job Alat",
+        "subtitle": "Bi di fɔs wan fɔ no bɔt niu job chans dɛm. Sayn ɔp fɔ get job nyus strɛt na yu imel.",
+        "placeholder": "Put yu imel adres",
+        "subscribe": "Sayn Ɔp",
+        "privacy": "Wi rispɛkt yu praivasi. Yu kin stɔp ɛni taim.",
+        "subscribed": "Yu Dɔn Sayn Ɔp!"
+    },
+    "footer": {
+        "about": "Di Minstri ɔf Elt de wok ad fɔ mek shɔ se ɔl Salonians kin get gud eltia we nɔ kɔs tu mɔch, tru gud savis en strɔng elt sistɛm.",
+        "quickLinks": "Kwik Link dɛm",
+        "aboutUs": "Abawt Wi",
+        "ourServices": "Wi Savis dɛm",
+        "newsroom": "Nyus",
+        "publications": "Publikeshɔn dɛm",
+        "careers": "Job dɛm",
+        "healthServices": "Elt Savis dɛm",
+        "hospitalServices": "Hɔspitul Savis",
+        "emergencyServices": "Imajɛnsi Savis",
+        "maternalHealth": "Mama Elt",
+        "childHealth": "Pikin Elt",
+        "diseasePrevention": "Sik Privɛnshɔn",
+        "contactUs": "Kontakt Wi",
+        "copyright": "© 2026 Minstri ɔf Elt, Salone. Ɔl Raits Rizavd.",
+        "privacyPolicy": "Praivasi Pɔlisi",
+        "termsOfUse": "Tɔms ɔf Yuz",
+        "accessibility": "Aksɛsibiliti"
+    }
+}

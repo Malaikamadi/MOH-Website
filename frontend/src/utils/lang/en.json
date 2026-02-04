@@ -1,0 +1,102 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "agencies": "Agencies",
+    "jobs": "Jobs Portal",
+    "directorates": "Directorates",
+    "programs": "Programs",
+    "media": "Media",
+    "contact": "Contact Us"
+  },
+  "header": {
+    "address": "4th & 5th Floor, Youyi Building, Freetown",
+    "email": "info@mohs.gov.sl",
+    "phone": "+232 76 460 440"
+  },
+  "hero": {
+    "badge": "Career Opportunities",
+    "title": "Find Your",
+    "titleHighlight": "Dream Job",
+    "titleEnd": "in Healthcare",
+    "subtitle": "Join our mission to transform healthcare in Sierra Leone. Discover exciting career opportunities across all health sectors.",
+    "searchLabel": "Job Title or Keywords",
+    "searchPlaceholder": "e.g. Nurse, Doctor, Administrator...",
+    "locationLabel": "Location",
+    "allLocations": "All Locations",
+    "searchBtn": "Search Jobs",
+    "openPositions": "Open Positions",
+    "districts": "Districts",
+    "sectors": "Sectors"
+  },
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Clear All",
+    "jobType": "Job Type",
+    "fullTime": "Full Time",
+    "partTime": "Part Time",
+    "contract": "Contract",
+    "sector": "Sector",
+    "doctors": "Doctors",
+    "nurses": "Nurses",
+    "administration": "Administration",
+    "digitalHealth": "Digital Health",
+    "finance": "Finance",
+    "humanResources": "Human Resources",
+    "experienceLevel": "Experience Level",
+    "entryLevel": "Entry Level",
+    "midLevel": "Mid Level",
+    "seniorLevel": "Senior Level"
+  },
+  "jobs": {
+    "showing": "Showing",
+    "availablePositions": "available positions",
+    "sortBy": "Sort by:",
+    "latestAdded": "Latest Added",
+    "deadline": "Deadline",
+    "applyNow": "Apply Now",
+    "save": "Save",
+    "featured": "Featured"
+  },
+  "whyWork": {
+    "badge": "Why Choose Us",
+    "title": "Why Work at the Ministry of Health?",
+    "subtitle": "Join a team dedicated to transforming healthcare across Sierra Leone",
+    "card1Title": "Professional Development",
+    "card1Text": "Access to continuous training programs, workshops, and opportunities for career advancement within the health sector.",
+    "card2Title": "Comprehensive Benefits",
+    "card2Text": "Competitive salary packages, health insurance coverage, and retirement plans for you and your family.",
+    "card3Title": "Make an Impact",
+    "card3Text": "Directly contribute to improving healthcare outcomes for millions of Sierra Leoneans across all 16 districts.",
+    "card4Title": "Collaborative Culture",
+    "card4Text": "Work alongside dedicated professionals, international partners, and leading health organizations like WHO and UNICEF."
+  },
+  "jobAlerts": {
+    "title": "Get Job Alerts",
+    "subtitle": "Be the first to know about new opportunities. Subscribe to receive job notifications directly in your inbox.",
+    "placeholder": "Enter your email address",
+    "subscribe": "Subscribe",
+    "privacy": "We respect your privacy. Unsubscribe anytime.",
+    "subscribed": "Subscribed!"
+  },
+  "footer": {
+    "about": "The Ministry of Health is committed to ensuring accessible, equitable, and affordable healthcare for all Sierra Leoneans through efficient service delivery and strong health systems.",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "ourServices": "Our Services",
+    "newsroom": "Newsroom",
+    "publications": "Publications",
+    "careers": "Careers",
+    "healthServices": "Health Services",
+    "hospitalServices": "Hospital Services",
+    "emergencyServices": "Emergency Services",
+    "maternalHealth": "Maternal Health",
+    "childHealth": "Child Health",
+    "diseasePrevention": "Disease Prevention",
+    "contactUs": "Contact Us",
+    "copyright": "© 2026 Ministry of Health, Sierra Leone. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfUse": "Terms of Use",
+    "accessibility": "Accessibility"
+  }
+}

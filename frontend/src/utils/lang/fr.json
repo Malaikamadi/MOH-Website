@@ -1,0 +1,102 @@
+{
+    "nav": {
+        "home": "Accueil",
+        "about": "À Propos",
+        "agencies": "Agences",
+        "jobs": "Portail Emplois",
+        "directorates": "Directions",
+        "programs": "Programmes",
+        "media": "Médias",
+        "contact": "Contactez-nous"
+    },
+    "header": {
+        "address": "4ème & 5ème Étage, Bâtiment Youyi, Freetown",
+        "email": "info@mohs.gov.sl",
+        "phone": "+232 76 460 440"
+    },
+    "hero": {
+        "badge": "Opportunités de Carrière",
+        "title": "Trouvez Votre",
+        "titleHighlight": "Emploi de Rêve",
+        "titleEnd": "dans la Santé",
+        "subtitle": "Rejoignez notre mission de transformer les soins de santé en Sierra Leone. Découvrez des opportunités de carrière passionnantes dans tous les secteurs de la santé.",
+        "searchLabel": "Titre du Poste ou Mots-clés",
+        "searchPlaceholder": "ex: Infirmière, Médecin, Administrateur...",
+        "locationLabel": "Localisation",
+        "allLocations": "Toutes les Localisations",
+        "searchBtn": "Rechercher des Emplois",
+        "openPositions": "Postes Ouverts",
+        "districts": "Districts",
+        "sectors": "Secteurs"
+    },
+    "filters": {
+        "title": "Filtres",
+        "clearAll": "Tout Effacer",
+        "jobType": "Type d'Emploi",
+        "fullTime": "Temps Plein",
+        "partTime": "Temps Partiel",
+        "contract": "Contrat",
+        "sector": "Secteur",
+        "doctors": "Médecins",
+        "nurses": "Infirmières",
+        "administration": "Administration",
+        "digitalHealth": "Santé Numérique",
+        "finance": "Finance",
+        "humanResources": "Ressources Humaines",
+        "experienceLevel": "Niveau d'Expérience",
+        "entryLevel": "Débutant",
+        "midLevel": "Intermédiaire",
+        "seniorLevel": "Senior"
+    },
+    "jobs": {
+        "showing": "Affichage de",
+        "availablePositions": "postes disponibles",
+        "sortBy": "Trier par:",
+        "latestAdded": "Récemment Ajoutés",
+        "deadline": "Date Limite",
+        "applyNow": "Postuler",
+        "save": "Sauvegarder",
+        "featured": "En Vedette"
+    },
+    "whyWork": {
+        "badge": "Pourquoi Nous Choisir",
+        "title": "Pourquoi Travailler au Ministère de la Santé?",
+        "subtitle": "Rejoignez une équipe dédiée à transformer les soins de santé en Sierra Leone",
+        "card1Title": "Développement Professionnel",
+        "card1Text": "Accès à des programmes de formation continue, des ateliers et des opportunités d'avancement de carrière dans le secteur de la santé.",
+        "card2Title": "Avantages Complets",
+        "card2Text": "Packages salariaux compétitifs, couverture d'assurance maladie et plans de retraite pour vous et votre famille.",
+        "card3Title": "Avoir un Impact",
+        "card3Text": "Contribuez directement à améliorer les résultats de santé pour des millions de Sierra Léonais dans les 16 districts.",
+        "card4Title": "Culture Collaborative",
+        "card4Text": "Travaillez aux côtés de professionnels dévoués, de partenaires internationaux et d'organisations de santé de premier plan comme l'OMS et l'UNICEF."
+    },
+    "jobAlerts": {
+        "title": "Recevoir des Alertes Emploi",
+        "subtitle": "Soyez le premier à connaître les nouvelles opportunités. Abonnez-vous pour recevoir des notifications d'emploi directement dans votre boîte mail.",
+        "placeholder": "Entrez votre adresse email",
+        "subscribe": "S'abonner",
+        "privacy": "Nous respectons votre vie privée. Désabonnez-vous à tout moment.",
+        "subscribed": "Abonné!"
+    },
+    "footer": {
+        "about": "Le Ministère de la Santé s'engage à garantir des soins de santé accessibles, équitables et abordables pour tous les Sierra Léonais grâce à une prestation de services efficace et des systèmes de santé solides.",
+        "quickLinks": "Liens Rapides",
+        "aboutUs": "À Propos",
+        "ourServices": "Nos Services",
+        "newsroom": "Actualités",
+        "publications": "Publications",
+        "careers": "Carrières",
+        "healthServices": "Services de Santé",
+        "hospitalServices": "Services Hospitaliers",
+        "emergencyServices": "Services d'Urgence",
+        "maternalHealth": "Santé Maternelle",
+        "childHealth": "Santé Infantile",
+        "diseasePrevention": "Prévention des Maladies",
+        "contactUs": "Contactez-nous",
+        "copyright": "© 2026 Ministère de la Santé, Sierra Leone. Tous droits réservés.",
+        "privacyPolicy": "Politique de Confidentialité",
+        "termsOfUse": "Conditions d'Utilisation",
+        "accessibility": "Accessibilité"
+    }
+}
