@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: moh-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - moh-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U strapi" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Strapi Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: moh-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: database
+      DATABASE_PORT: 5432
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: strapi_password
+      DATABASE_SSL: false
+      APP_KEYS: toBeModified1,toBeModified2,toBeModified3,toBeModified4
+      API_TOKEN_SALT: toBeModified
+      ADMIN_JWT_SECRET: toBeModified
+      TRANSFER_TOKEN_SALT: toBeModified
+      JWT_SECRET: toBeModified
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - backend_uploads:/app/public/uploads
+    ports:
+      - "1337:1337"
+    networks:
+      - moh-network
+    depends_on:
+      database:
+        condition: service_healthy
+    command: sh -c "npm install && npm run develop"
+
+  # Vite React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: moh-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:1337
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - moh-network
+    depends_on:
+      - backend
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+
+networks:
+  moh-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_uploads:
+    driver: local
