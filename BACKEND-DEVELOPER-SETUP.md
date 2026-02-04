@@ -6,7 +6,7 @@ This guide will help you clone the repository, set up your development environme
 
 ---
 
-## 📋 Prerequisites
+##  Prerequisites
 
 Before you begin, make sure you have:
 
@@ -17,7 +17,7 @@ Before you begin, make sure you have:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Step 1: Clone the Repository
 
@@ -100,7 +100,7 @@ MOH-Website/
 
 ---
 
-## 🔄 Daily Git Workflow
+##  Daily Git Workflow
 
 ### Morning - Start Your Day
 
@@ -255,9 +255,9 @@ exit
 
 ---
 
-## ⚠️ Important Rules
+##  Important Rules
 
-### ✅ DO:
+### DO:
 - Work only in the `backend/` directory
 - Pull from `main` every morning
 - Commit often with clear messages
@@ -265,7 +265,7 @@ exit
 - Notify frontend developer when you push
 - Test your changes before pushing
 
-### ❌ DON'T:
+###  DON'T:
 - Edit files in `frontend/` directory
 - Push directly to `main` from other branches (always merge first)
 - Commit to `main` branch directly (work in `backend` branch)
@@ -274,7 +274,7 @@ exit
 
 ---
 
-## 🔐 Security
+## Security
 
 - The `.env` file contains sensitive data and is **gitignored**
 - Use `.env.example` as a template
@@ -283,7 +283,7 @@ exit
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Docker Won't Start
 ```bash
@@ -333,7 +333,7 @@ git merge --abort
 
 ---
 
-## 💬 Communication with Frontend Developer
+##  Communication with Frontend Developer
 
 **When to notify the frontend developer:**
 
@@ -350,7 +350,7 @@ git merge --abort
 
 ---
 
-## 📞 Getting Help
+##  Getting Help
 
 - **Check logs**: `make logs-be`
 - **Read docs**: See `GIT-WORKFLOW.md` and `TROUBLESHOOTING.md`
@@ -359,7 +359,7 @@ git merge --abort
 
 ---
 
-## ✅ Quick Checklist
+##  Quick Checklist
 
 Before you start coding:
 - [ ] Docker Desktop is running
@@ -376,7 +376,7 @@ Before you finish for the day:
 
 ---
 
-## 🎊 You're All Set!
+##  You're All Set!
 
 Your backend development environment is ready. Start building amazing APIs with Strapi!
 
@@ -388,4 +388,4 @@ make up                # Start everything
 # Start coding in backend/ directory
 ```
 
-**Happy Coding! 🚀**
+
