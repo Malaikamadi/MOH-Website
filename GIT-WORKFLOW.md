@@ -210,7 +210,7 @@ git reset --hard HEAD~1
 git push -f origin main
 ```
 
-**⚠️ Warning:** Only use force push if you're absolutely sure!
+** Warning:** Only use force push if you're absolutely sure!
 
 ## Example Workflow Scenario
 
@@ -260,10 +260,4 @@ git checkout main
 git merge backend
 git push origin main
 
-# Notify frontend developer
-# "Auth API is ready in main!"
-```
 
----
-
-**Happy Collaborating! 🚀**
