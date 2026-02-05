@@ -29,14 +29,14 @@ export default function ServicesSection() {
     return (
         <section className="services section">
             <div className="container">
-                <div className="section-header" data-animate>
+                <div className="section-header">
                     <h2>Our Key Services</h2>
                     <p>Comprehensive healthcare services designed to meet the needs of every Sierra Leonean citizen</p>
                 </div>
 
                 <div className="services-grid">
                     {services.map((service, index) => (
-                        <div key={index} className="service-card" data-animate>
+                        <div key={index} className="service-card">
                             <div className="service-icon">
                                 <i className={`fas fa-${service.icon}`}></i>
                             </div>

@@ -81,7 +81,7 @@ export default function UpdatesSection() {
     return (
         <section className="latest-updates-section section">
             <div className="container">
-                <div className="section-header" data-animate>
+                <div className="section-header">
                     <span className="section-badge">
                         <i className="fas fa-bell"></i> Stay Informed
                     </span>
@@ -90,7 +90,7 @@ export default function UpdatesSection() {
                 </div>
 
                 {/* Tab Navigation */}
-                <div className="updates-tabs" data-animate>
+                <div className="updates-tabs">
                     <button
                         className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
                         onClick={() => setActiveTab('all')}
@@ -132,7 +132,7 @@ export default function UpdatesSection() {
                 <div className="updates-content">
                     <div className="updates-grid">
                         {filteredUpdates.map((update, index) => (
-                            <div key={index} className="update-card" data-type={update.type} data-animate>
+                            <div key={index} className="update-card" data-type={update.type}>
                                 <div className={`update-type-badge ${update.type}`}>
                                     <i className={`fas fa-${update.type === 'news' ? 'newspaper' : update.type === 'videos' ? 'video' : update.type === 'events' ? 'calendar-alt' : 'file-alt'}`}></i>
                                     {' '}
