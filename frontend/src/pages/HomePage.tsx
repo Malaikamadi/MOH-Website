@@ -2,8 +2,8 @@ import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import HeroSlider from '../components/home/HeroSlider'
 import ServicesSection from '../components/home/ServicesSection'
-// import UpdatesSection from '../components/home/UpdatesSection' // Will be added when backend is ready
-import NewsSection from '../components/home/NewsSection'
+// import UpdatesSection from '../components/home/UpdatesSection' // 
+// import NewsSection from '../components/home/NewsSection'
 import NewsletterSection from '../components/home/NewsletterSection'
 
 export default function HomePage() {
@@ -14,7 +14,7 @@ export default function HomePage() {
                 <HeroSlider />
                 <ServicesSection />
                 {/* <UpdatesSection /> */}
-                <NewsSection />
+                {/*<NewsSection /> */}
                 <NewsletterSection />
             </main>
             <Footer />
