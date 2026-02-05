@@ -252,8 +252,8 @@ export const directoratesData: Record<string, DirectorateData> = {
             phone: '+232 76 460 440',
             location: '5th Floor, Youyi Building'
         }
-    }
-},
+    },
+
     phc: {
         acronym: 'PHC',
         fullName: 'Primary Health Care',
@@ -361,4 +361,114 @@ export const directoratesData: Record<string, DirectorateData> = {
             phone: '+232 76 460 440',
             location: '5th Floor, Youyi Building'
         }
+    },
+
+    dpc: {
+        acronym: 'DPC',
+        fullName: 'Disease Prevention and Control',
+        icon: 'virus',
+        about: 'The Disease Prevention and Control Directorate coordinates maternal, newborn, and child health services to reduce maternal and child mortality across Sierra Leone.',
+        aboutExtra: 'We implement life-saving interventions including antenatal care, safe delivery, immunization, and nutrition programs.',
+        stats: {
+            units: 5,
+            districts: 16,
+            staff: '1,200+',
+            partners: '40+'
+        },
+        director: {
+            name: 'Dr. Sulaiman Lakoh',
+            credentials: 'MB, ChB, MSc, MPH, FCPS-SL, FWACP',
+            image: '/images/directorates/dir_dp.png',
+            bio: [
+                'Dr. Sulaiman Lakoh is a Consultant Physician and Infectious Disease Specialist with 15+ years of experience in clinical care, research, and public health across sub-Saharan Africa. His expertise includes HIV, tuberculosis, viral hepatitis, antimicrobial resistance, infection prevention, and emerging infectious diseases. He holds an MBBS from the University of Sierra Leone, an MSc in Infection Prevention and Control (UK), and an MPH (Nicaragua), and is a Fellow of the West African College of Physicians.Dr. Lakoh serves on WHO guideline groups, is an ambassador for the Global Action Fund for Fungal Infections in Sierra Leone, and is a lecturer and researcher at the University of Sierra Leone. He has published 102+ articles and ranks among the country’s top infectious disease researchers.'
+            ]
+        },
+        units: [
+            {
+                id: 'epi',
+                name: '',
+                icon: 'syringe',
+                description: 'Providing life-saving vaccines to all children across Sierra Leone.',
+                functions: [
+                    'Routine immunization',
+                    'Supplementary campaigns',
+                    'Cold chain management',
+                    'New vaccine introduction'
+                ]
+            },
+            {
+                id: 'dpc',
+                name: 'DIsease Prevention Control',
+                icon: 'heart',
+                description: 'Supporting women\'s health through family planning and maternal care services.',
+                functions: [
+                    'Family planning services',
+                    'Antenatal care',
+                    'Safe delivery services',
+                    'Postnatal care'
+                ]
+            },
+            {
+                id: 'school',
+                name: 'School Health Program',
+                icon: 'school',
+                description: 'Promoting health and wellness among school-aged children.',
+                functions: [
+                    'Health screening',
+                    'Health education',
+                    'Deworming programs',
+                    'Vision/hearing tests'
+                ]
+            },
+            {
+                id: 'quality',
+                name: 'Quality Management',
+                icon: 'check-circle',
+                description: 'Ensuring high-quality maternal and child health services.',
+                functions: [
+                    'Quality standards',
+                    'Service audits',
+                    'Staff training',
+                    'Performance monitoring'
+                ]
+            },
+            {
+                id: 'child',
+                name: 'Child Health Program',
+                icon: 'baby',
+                description: 'Reducing child morbidity and mortality through integrated interventions.',
+                functions: [
+                    'IMCI implementation',
+                    'Newborn care',
+                    'Nutrition support',
+                    'Growth monitoring'
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'RMNCAH Strategy 2021-2025',
+                type: 'PDF',
+                size: '5.1 MB',
+                link: '#'
+            },
+            {
+                title: 'EPI Multi-Year Plan 2022-2026',
+                type: 'PDF',
+                size: '3.8 MB',
+                link: '#'
+            },
+            {
+                title: 'Family Planning Guidelines',
+                type: 'PDF',
+                size: '2.2 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'dpc@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '5th Floor, Youyi Building'
+        }
     }
+}

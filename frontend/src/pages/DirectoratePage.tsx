@@ -10,6 +10,8 @@ export default function DPPIPage() {
             <main>
                 <DirectorateTemplate data={directoratesData.dppi} />
                 <DirectorateTemplate data={directoratesData.rch} />
+                <DirectorateTemplate data={directoratesData.pch} />
+                <DirectorateTemplate data={directoratesData.dpc} />
             </main>
             <Footer />
         </>
