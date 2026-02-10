@@ -121,27 +121,31 @@ export default function Header() {
                                                 <i className="fas fa-chart-line"></i>
                                                 <span>DPPI</span>
                                             </a>
-                                            <a href="/directorates/dhse" className="dropdown-item">
-                                                <i className="fas fa-shield-virus"></i>
-                                                <span>DHSE</span>
-                                            </a>
-                                            <a href="/directorates/primary-health-care" className="dropdown-item">
+                                            <a href="/directorates/phc" className="dropdown-item">
                                                 <i className="fas fa-heartbeat"></i>
                                                 <span>Primary Health Care</span>
                                             </a>
+                                            <a href="/directorates/rch" className="dropdown-item">
+                                                <i className="fas fa-baby"></i>
+                                                <span>Reproductive & Child Health</span>
+                                            </a>
                                         </div>
                                         <div className="dropdown-column">
-                                            <a href="/directorates/reproductive-child-health" className="dropdown-item">
-                                                <i className="fas fa-baby"></i>
-                                                <span>Reproductive and Child Health</span>
-                                            </a>
-                                            <a href="/directorates/disease-prevention" className="dropdown-item">
+                                            <a href="/directorates/dpc" className="dropdown-item">
                                                 <i className="fas fa-virus-slash"></i>
                                                 <span>Disease Prevention</span>
                                             </a>
-                                            <a href="/directorates/emergency-medical-services" className="dropdown-item">
+                                            <a href="#" className="dropdown-item">
+                                                <i className="fas fa-shield-virus"></i>
+                                                <span>DHSE</span>
+                                            </a>
+                                            <a href="/directorates/nems" className="dropdown-item">
                                                 <i className="fas fa-ambulance"></i>
                                                 <span>Emergency Medical Services</span>
+                                            </a>
+                                            <a href="/directorates/ss" className="dropdown-item">
+                                                <i className="fas fa-cogs"></i>
+                                                <span>Support Services</span>
                                             </a>
                                         </div>
                                     </div>

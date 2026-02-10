@@ -3,12 +3,12 @@ import Footer from '../components/layout/Footer'
 import DirectorateTemplate from '../components/directorate/DirectorateTemplate'
 import { directoratesData } from '../data/directoratesData'
 
-export default function PrimaryHealthCarePage() {
+export default function SupportServicePage() {
     return (
         <>
             <Header />
             <main>
-                <DirectorateTemplate data={directoratesData.phc} />
+                <DirectorateTemplate data={directoratesData.ss} />
             </main>
             <Footer />
         </>
