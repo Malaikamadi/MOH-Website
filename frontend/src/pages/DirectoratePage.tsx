@@ -9,6 +9,12 @@ export default function DirectoratePage() {
         { acronym: 'DPC', name: 'Disease Prevention and Control', icon: 'virus', link: '/directorates/dpc' },
         { acronym: 'NEMS', name: 'National Emergency Medical Services', icon: 'ambulance', link: '/directorates/nems' },
         { acronym: 'SS', name: 'Support Services', icon: 'cogs', link: '/directorates/ss' },
+        { acronym: 'NM', name: 'Nursing and Midwifery', icon: 'nurse', link: '/directorates/nm' },
+        { acronym: 'NCD & MH', name: 'NCD and Mental Health', icon: 'brain', link: '/directorates/ncdandmh' },
+        { acronym: 'PS', name: 'Pharmaceutical Services', icon: 'pharmacy', link: '/directorates/ps' },
+        { acronym: 'HRM', name: 'Human Resource Management', icon: 'user-tie', link: '/directorates/hrm' },
+        { acronym: 'EHC', name: 'Environmental Health and Sanitation', icon: 'sanitation', link: '/directorates/ehc' },
+        { acronym: 'FN', name: 'Food and Nutrition', icon: 'food', link: '/directorates/fn' },
     ];
 
     return (

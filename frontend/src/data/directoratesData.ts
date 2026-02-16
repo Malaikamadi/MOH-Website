@@ -714,5 +714,672 @@ export const directoratesData: Record<string, DirectorateData> = {
             phone: '+232 76 460 440',
             location: '4th Floor, Youyi Building'
         }
+    },
+    nm: {
+        acronym: 'NM',
+        fullName: 'Nursing and Midwifery',
+        icon: 'nurse',
+        about: 'The Directorate of Nursing and Midwifery provides leadership and strategic direction for nursing and midwifery services in Sierra Leone.',
+        aboutExtra: 'We are responsible for nursing workforce development, professional standards, and ensuring quality nursing care across all health facilities',
+        stats: {
+            units: 4,
+            districts: 16,
+            staff: '8,000+',
+            partners: '15+'
+        },
+        director: {
+            name: 'Chief Nursing Officer',
+            image: '/images/directorates/dir_nm.png',
+            bio: [
+                'The Chief Nursing Officer provides strategic leadership for nursing and midwifery services, ensuring high professional standards and quality patient care nationwide'
+            ]
+        },
+        units: [
+            {
+                id: 'nursing',
+                name: 'Nursing Services',
+                icon: 'user-nurse',
+                description: 'Providing quality nursing care across all health facilities.',
+                functions: [
+                    'Nursing care delivery',
+                    'Patient assessment and monitoring',
+                    'Wound care and infection control',
+                    'Medication administration'
+                ]
+            },
+            {
+                id: 'midwifery',
+                name: 'Midwifery Services',
+                icon: 'baby',
+                description: 'Ensuring safe and quality midwifery care for mothers and newborns.',
+                functions: [
+                    'Antenatal care',
+                    'Skilled birth attendance',
+                    'Postnatal care',
+                    'Newborn care'
+                ]
+            },
+            {
+                id: 'education',
+                name: 'Nursing Education',
+                icon: 'graduation-cap',
+                description: 'Training and development of nursing and midwifery professionals.',
+                functions: [
+                    'Curriculum development',
+                    'Student training and supervision',
+                    'Continuing professional development',
+                    'Quality assurance in education'
+                ]
+            },
+            {
+                id: 'standards',
+                name: 'Professional Standards',
+                icon: 'certificate',
+                description: 'Setting and enforcing professional standards for nursing and midwifery practice.',
+                functions: [
+                    'Developing practice standards',
+                    'Licensing and registration',
+                    'Quality assurance',
+                    'Professional conduct oversight'
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'Nursing and Midwifery Policy',
+                type: 'PDF',
+                size: '2.5 MB',
+                link: '#'
+            },
+            {
+                title: 'Continuing Professional Development Guidelines',
+                type: 'PDF',
+                size: '1.8 MB',
+                link: '#'
+            },
+            {
+                title: 'Nursing and Midwifery Standards of Practice',
+                type: 'PDF',
+                size: '2.2 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'nm@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '4th Floor, Youyi Building'
+        }
+    },
+
+    ncdandmh: {
+        acronym: 'NCD & MH',
+        fullName: 'NCD & Mental Health',
+        icon: 'brain',
+        about: 'The Directorate of Non-Communicable Diseases and Mental Health addresses the growing burden of NCDs and mental health conditions in Sierra Leone. ',
+        aboutExtra: 'We develop policies and programs for prevention, treatment, and management of diabetes,hypertension, cancer, mental health disorders, and other NCDs.',
+        stats: {
+            units: 4,
+            districts: 16,
+            staff: '8,000+',
+            partners: '15+'
+        },
+        director: {
+            name: 'Director of NCD & Mental Health',
+            image: '/images/directorates/dir_nm.png',
+            bio: [
+                ' The Director leads national efforts to prevent and control NCDs and improve mental health services across Sierra Leone.'
+            ]
+        },
+        units: [
+            {
+                id: 'diabetes',
+                name: 'Diabetes Program',
+                icon: 'user-nurse',
+                description: 'Screening, treatment, and management of diabetes through facility-based services and community awareness programs.',
+                functions: [
+                    'Nursing care delivery',
+                    'Patient assessment and monitoring',
+                    'Wound care and infection control',
+                    'Medication administration'
+                ]
+            },
+            {
+                id: 'cardiovascular',
+                name: 'Cardiovascular Health',
+                icon: 'baby',
+                description: 'Prevention and management of hypertension, stroke, and other cardiovascular conditions throughintegrated care.',
+                functions: [
+                    'Antenatal care',
+                    'Skilled birth attendance',
+                    'Postnatal care',
+                    'Newborn care'
+                ]
+            },
+            {
+                id: 'cancer',
+                name: 'Cancer Prevention',
+                icon: 'prevention',
+                description: 'Early detection, screening, and treatment of common cancers including cervical and breast cancer.',
+                functions: [
+                    'Curriculum development',
+                    'Student training and supervision',
+                    'Continuing professional development',
+                    'Quality assurance in education'
+                ]
+            },
+            {
+                id: 'mental-health',
+                name: 'Mental Health Services',
+                icon: 'services',
+                description: 'Community-based mental health care, treatment of mental disorders, and reduction of stigma through awareness',
+                functions: [
+                    'Developing practice standards',
+                    'Licensing and registration',
+                    'Quality assurance',
+                    'Professional conduct oversight'
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'Cancer diagnoses Policy',
+                type: 'PDF',
+                size: '2.5 MB',
+                link: '#'
+            },
+            {
+                title: 'Mental Health Prevention Policy',
+                type: 'PDF',
+                size: '1.8 MB',
+                link: '#'
+            },
+            {
+                title: 'Non-communicable disease prevention Standards of Practice',
+                type: 'PDF',
+                size: '2.2 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'ncd@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '4th Floor, Youyi Building'
+        }
+    },
+
+    ps: {
+        acronym: 'PS',
+        fullName: 'Pharmaceutical Services',
+        icon: 'pharmacy',
+        about: 'The Directorate of Pharmaceutical Services ensures access to safe, effective, and quality medicines and pharmaceutical products for all Sierra Leoneans.',
+        aboutExtra: 'We are responsible for drug regulation, supply chain management, and rational use of medicines across the health system. ',
+        stats: {
+            units: 4,
+            districts: 16,
+            staff: '8,000+',
+            partners: '15+'
+        },
+        director: {
+            name: 'Director of Pharmaceutical Services',
+            image: '/images/directorates/dir_ps.png',
+            bio: [
+                'The Director leads national efforts to ensure access to safe, effective, and quality medicines and pharmaceutical products for all Sierra Leoneans.'
+            ]
+        },
+        units: [
+            {
+                id: 'medicines',
+                name: 'Medicines',
+                icon: 'medicines',
+                description: 'Distribution and management of medicines and pharmaceutical products.',
+                functions: [
+                    'Medicine distribution',
+                    'Pharmaceutical product management',
+                    'Quality assurance',
+                    'Inventory management'
+                ]
+            },
+            {
+                id: 'pharmaceuticals',
+                name: 'Pharmaceuticals',
+                icon: 'pharmaceuticals',
+                description: 'Distribution and management of pharmaceutical products.',
+                functions: [
+                    'Pharmaceutical product distribution',
+                    'Quality assurance',
+                    'Inventory management',
+                    'Pharmaceutical product management'
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'Medicines Policy',
+                type: 'PDF',
+                size: '2.5 MB',
+                link: '#'
+            },
+            {
+                title: 'Pharmaceuticals Policy',
+                type: 'PDF',
+                size: '1.8 MB',
+                link: '#'
+            },
+            {
+                title: 'Pharmaceuticals Standards of Practice',
+                type: 'PDF',
+                size: '2.2 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'ps@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '4th Floor, Youyi Building'
+        }
+    },
+
+    hrm: {
+        acronym: 'HRM',
+        fullName: 'Human Resource Management',
+        icon: 'users',
+        about: 'The Directorate of Human Resource Management leads the strategic planning, development, and management of the health workforce in Sierra Leone.',
+        aboutExtra: 'We oversee recruitment, training, deployment, and performance management to ensure a skilled and motivated health workforce across the country.',
+        stats: {
+            units: 5,
+            districts: 16,
+            staff: '10,000+',
+            partners: '20+'
+        },
+        director: {
+            name: 'Director of Human Resources',
+            image: '/images/directorates/dir_hrm.png',
+            bio: [
+                'Leading the transformation of the health workforce to meet the healthcare needs of the population.'
+            ]
+        },
+        units: [
+            {
+                id: 'recruitment',
+                name: 'Recruitment & Deployment',
+                icon: 'user-plus',
+                description: 'Managing the hiring and equitable distribution of health workers.',
+                functions: [
+                    'Staff recruitment',
+                    'Deployment planning',
+                    'Transfer management',
+                    'Staff records'
+                ]
+            },
+            {
+                id: 'training',
+                name: 'Training & Development',
+                icon: 'graduation-cap',
+                description: 'Coordinating pre-service and in-service training programs.',
+                functions: [
+                    'Training needs assessment',
+                    'Scholarship management',
+                    'CPD coordination',
+                    'Training institutions liaison'
+                ]
+            },
+            {
+                id: 'performance',
+                name: 'Performance Management',
+                icon: 'chart-line',
+                description: 'Monitoring and evaluating staff performance.',
+                functions: [
+                    'Performance appraisal',
+                    'Staff supervision',
+                    'Career progression',
+                    'Disciplinary matters'
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'HRH Strategic Plan',
+                type: 'PDF',
+                size: '3.5 MB',
+                link: '#'
+            },
+            {
+                title: 'Scheme of Service',
+                type: 'PDF',
+                size: '2.8 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'hr@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '4th Floor, Youyi Building'
+        }
+    },
+
+    hrm: {
+        acronym: 'hrm',
+        fullName: 'Human Resource Management',
+        icon: '',
+        about: 'The Directorate of Human Resource Management is responsible for the strategic management of human resources within the Ministry of Health.',
+        aboutExtra: 'We oversee recruitment, deployment, training, and retention of health workers to ensure adequate staffing across all health facilities in Sierra Leone.',
+        stats: {
+            units: 4,
+            districts: 16,
+            staff: '8,000+',
+            partners: '15+'
+        },
+        director: {
+            name: 'Director of Human Resource Management',
+            image: '/images/directorates/dir_hrm.png',
+            bio: [
+                'The Director leads all HR functions including workforce planning, recruitment, staff development, and employee relations across the health sector'
+            ]
+        },
+        units: [
+            {
+                id: 'recruitment',
+                name: 'Recruitment',
+                icon: 'recruitment',
+                description: 'Recruitment and deployment of health workers.',
+                functions: [
+                    'Recruitment',
+                    'Deployment',
+                    'Training',
+                    'Retention'
+                ]
+            },
+            {
+                id: 'training',
+                name: 'Training',
+                icon: 'training',
+                description: 'Training of health workers.',
+                functions: [
+                    'Training',
+                    'Deployment',
+                    'Training',
+                    'Training'
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'Recruitment Policy',
+                type: 'PDF',
+                size: '2.5 MB',
+                link: '#'
+            },
+            {
+                title: 'Training Policy',
+                type: 'PDF',
+                size: '1.8 MB',
+                link: '#'
+            },
+            {
+                title: 'Staff Development Policy',
+                type: 'PDF',
+                size: '2.2 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'hrm@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '4th Floor, Youyi Building'
+        }
+    },
+    tr: {
+        acronym: 'tr',
+        fullName: 'Training and Research',
+        icon: 'training',
+        about: 'The Directorate of Training and Research is responsible for the strategic management of human resources within the Ministry of Health.',
+        aboutExtra: 'We oversee recruitment, deployment, training, and retention of health workers to ensure adequate staffing across all health facilities in Sierra Leone.',
+        stats: {
+            units: 4,
+            districts: 16,
+            staff: '8,000+',
+            partners: '15+'
+        },
+        director: {
+            name: 'Director of Training and Research',
+            image: '/images/directorates/dir_tr.png',
+            bio: [
+                'The Director leads all TR functions including workforce planning, recruitment, staff development, and employee relations across the health sector'
+            ]
+        },
+        units: [
+            {
+                id: 'recruitment',
+                name: 'Recruitment',
+                icon: 'recruitment',
+                description: 'Recruitment and deployment of health workers.',
+                functions: [
+                    'Recruitment',
+                    'Deployment',
+                    'Training',
+                    'Retention'
+                ]
+            },
+            {
+                id: 'training',
+                name: 'Training',
+                icon: 'training',
+                description: 'Training of health workers.',
+                functions: [
+                    'Training',
+                    'Deployment',
+                    'Training',
+                    'Training'
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'Recruitment Policy',
+                type: 'PDF',
+                size: '2.5 MB',
+                link: '#'
+            },
+            {
+                title: 'Training Policy',
+                type: 'PDF',
+                size: '1.8 MB',
+                link: '#'
+            },
+            {
+                title: 'Staff Development Policy',
+                type: 'PDF',
+                size: '2.2 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'tr@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '4th Floor, Youyi Building'
+        }
+    },
+    ehc: {
+        acronym: 'ehc',
+        fullName: 'Environmental Health and Sanitation',
+        icon: 'ehc',
+        about: 'The Directorate of Environmental Health and Sanitation works to protect public health through environmental interventions, sanitation improvement, and hygiene promotion.',
+        aboutExtra: 'We coordinate WASH (Water, Sanitation, and Hygiene) activities and ensure healthy environmental conditions across communities.',
+        stats: {
+            units: 4,
+            districts: 16,
+            staff: '8,000+',
+            partners: '15+'
+        },
+        director: {
+            name: 'Director of Environmental Health and Sanitation',
+            image: '/images/directorates/dir_ehc.png',
+            bio: [
+                'The Director leads all EHC functions including workforce planning, recruitment, staff development, and employee relations across the health sector. The Director leads environmental health programs, WASH interventions, and sanitation improvement initiatives across Sierra Leone.'
+            ]
+        },
+        units: [
+            {
+                id: 'WASH',
+                name: 'wash',
+                icon: 'water',
+                description: 'Improving access to safe drinking water, adequate sanitation, and hygiene practices in communities, schools, and health facilities.',
+                functions: [
+                    'Water',
+                    'Sanitation',
+                    'Hygiene',
+                    'Training'
+                ]
+            },
+            {
+                id: 'sanitation',
+                name: 'Sanitation Improvement ',
+                icon: 'sanitation',
+                description: 'Promoting safe sanitation practices and improving access to sanitation facilities in communities, schools, and health facilities.',
+                functions: [
+                    'Sanitation',
+                    'Hygiene',
+                ]
+            },
+            {
+                id: 'hygiene',
+                name: 'Hygiene',
+                icon: 'hygiene',
+                description: 'Promoting safe hygiene practices and improving access to hygiene facilities in communities, schools, and health facilities.',
+                functions: [
+                    'Hygiene',
+                    'Sanitation',
+                ]
+            },
+            {
+                id: 'inspection',
+                name: 'Inspection',
+                icon: 'search',
+                description: 'Promoting open defecation free communities, constructing improved latrines, and managing solid waste disposal systems.',
+                functions: [
+                    'Food Safety',
+                    'Food Quality',
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'Recruitment Policy',
+                type: 'PDF',
+                size: '2.5 MB',
+                link: '#'
+            },
+            {
+                title: 'Training Policy',
+                type: 'PDF',
+                size: '1.8 MB',
+                link: '#'
+            },
+            {
+                title: 'Staff Development Policy',
+                type: 'PDF',
+                size: '2.2 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'ehc@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '4th Floor, Youyi Building'
+        }
+    },
+
+    fn: {
+        acronym: 'fn',
+        fullName: 'Food and Nutrition',
+        icon: 'food',
+        about: 'The Directorate of Food and Nutrition works to prevent and address malnutrition across Sierra Leone through evidence-based nutrition interventions.',
+        aboutExtra: 'We focus on maternal and child nutrition, micronutrient supplementation, and promoting healthy dietary practices for all citizens.',
+        stats: {
+            units: 4,
+            districts: 16,
+            staff: '8,000+',
+            partners: '15+'
+        },
+        director: {
+            name: 'Director of Food and Health',
+            image: '/images/directorates/dir_fh.png',
+            bio: [
+                'The Director leads national nutrition programs to reduce malnutrition and improve dietary practices across Sierra Leone.'
+            ]
+        },
+        units: [
+            {
+                id: 'CMAM',
+                name: 'Community Management of Acute Malnutrition',
+                icon: 'community',
+                description: 'Treatment of severe and moderate acute malnutrition in children under 5 through outpatient and inpatient therapeutic care.',
+                functions: [
+                    'Community Management of Acute Malnutrition',
+                    'Infant and Young Child Feeding',
+                    'Micronutrient Supplementation',
+                    'Nutrition Education and Counseling'
+                ]
+            },
+            {
+                id: 'IYCF',
+                name: 'Infant and Young Child Feeding',
+                icon: 'feeding',
+                description: 'Promoting optimal infant and young child feeding practices to improve child health and nutrition outcomes.',
+                functions: [
+                    'Infant and Young Child Feeding',
+                    'Micronutrient Supplementation',
+                    'Nutrition Education and Counseling'
+                ]
+            },
+            {
+                id: 'Micronutrient_Supplementation',
+                name: 'Micronutrient Supplementation',
+                icon: 'supplementation',
+                description: 'Promoting optimal infant and young child feeding practices to improve child health and nutrition outcomes.',
+                functions: [
+                    'Infant and Young Child Feeding',
+                    'Micronutrient Supplementation',
+                    'Nutrition Education and Counseling'
+                ]
+            },
+            {
+                id: 'Nutrition_Education_and_Counseling',
+                name: 'Nutrition Education and Counseling',
+                icon: 'education',
+                description: 'Promoting optimal infant and young child feeding practices to improve child health and nutrition outcomes.',
+                functions: [
+                    'Infant and Young Child Feeding',
+                    'Micronutrient Supplementation',
+                    'Nutrition Education and Counseling'
+                ]
+            }
+        ],
+        documents: [
+            {
+                title: 'Recruitment Policy',
+                type: 'PDF',
+                size: '2.5 MB',
+                link: '#'
+            },
+            {
+                title: 'Training Policy',
+                type: 'PDF',
+                size: '1.8 MB',
+                link: '#'
+            },
+            {
+                title: 'Staff Development Policy',
+                type: 'PDF',
+                size: '2.2 MB',
+                link: '#'
+            }
+        ],
+        contact: {
+            email: 'fh@mohs.gov.sl',
+            phone: '+232 76 460 440',
+            location: '4th Floor, Youyi Building'
+        }
     }
 }
+
