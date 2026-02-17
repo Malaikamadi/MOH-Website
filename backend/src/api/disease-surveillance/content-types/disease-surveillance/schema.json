@@ -1,0 +1,64 @@
+{
+    "kind": "collectionType",
+    "collectionName": "disease_surveillances",
+    "info": {
+        "singularName": "disease-surveillance",
+        "pluralName": "disease-surveillances",
+        "displayName": "Disease Surveillance",
+        "description": "Data collection for disease monitoring (migrating from DHIS2)"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "diseaseName": {
+            "type": "string",
+            "required": true
+        },
+        "region": {
+            "type": "string",
+            "required": true
+        },
+        "district": {
+            "type": "string"
+        },
+        "reportingPeriodStart": {
+            "type": "date",
+            "required": true
+        },
+        "reportingPeriodEnd": {
+            "type": "date",
+            "required": true
+        },
+        "totalCases": {
+            "type": "integer",
+            "default": 0
+        },
+        "newCases": {
+            "type": "integer",
+            "default": 0
+        },
+        "deaths": {
+            "type": "integer",
+            "default": 0
+        },
+        "recovered": {
+            "type": "integer",
+            "default": 0
+        },
+        "sourceSystem": {
+            "type": "string",
+            "default": "DHIS2"
+        },
+        "status": {
+            "type": "enumeration",
+            "enum": [
+                "Confirmed",
+                "Suspected",
+                "Projected"
+            ],
+            "default": "Confirmed"
+        }
+    }
+}
