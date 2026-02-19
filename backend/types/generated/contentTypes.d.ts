@@ -467,6 +467,130 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiDiseaseSurveillanceDiseaseSurveillance
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'disease_surveillances';
+  info: {
+    description: 'Data collection for disease monitoring (migrating from DHIS2)';
+    displayName: 'Disease Surveillance';
+    pluralName: 'disease-surveillances';
+    singularName: 'disease-surveillance';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deaths: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    diseaseName: Schema.Attribute.String & Schema.Attribute.Required;
+    district: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::disease-surveillance.disease-surveillance'
+    > &
+      Schema.Attribute.Private;
+    newCases: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    recovered: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    region: Schema.Attribute.String & Schema.Attribute.Required;
+    reportingPeriodEnd: Schema.Attribute.Date & Schema.Attribute.Required;
+    reportingPeriodStart: Schema.Attribute.Date & Schema.Attribute.Required;
+    sourceSystem: Schema.Attribute.String & Schema.Attribute.DefaultTo<'DHIS2'>;
+    status: Schema.Attribute.Enumeration<
+      ['Confirmed', 'Suspected', 'Projected']
+    > &
+      Schema.Attribute.DefaultTo<'Confirmed'>;
+    totalCases: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDocumentDocument extends Struct.CollectionTypeSchema {
+  collectionName: 'documents';
+  info: {
+    description: 'official documents, reports, and policies';
+    displayName: 'Document';
+    pluralName: 'documents';
+    singularName: 'document';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    category: Schema.Attribute.Enumeration<
+      ['Policy', 'Report', 'Guideline', 'Form', 'Strategic Plan', 'Other']
+    > &
+      Schema.Attribute.DefaultTo<'Other'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    files: Schema.Attribute.Media<
+      'files' | 'images' | 'videos' | 'audios',
+      true
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::document.document'
+    > &
+      Schema.Attribute.Private;
+    publishDate: Schema.Attribute.Date;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiUpdateUpdate extends Struct.CollectionTypeSchema {
+  collectionName: 'updates';
+  info: {
+    description: 'News, press releases, and announcements';
+    displayName: 'Latest Update';
+    pluralName: 'updates';
+    singularName: 'update';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    author: Schema.Attribute.String;
+    category: Schema.Attribute.Enumeration<
+      ['News', 'Press Release', 'Event', 'Announcement']
+    > &
+      Schema.Attribute.DefaultTo<'News'>;
+    content: Schema.Attribute.RichText;
+    coverImage: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::update.update'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    publishedDate: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    summary: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -978,6 +1102,9 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::disease-surveillance.disease-surveillance': ApiDiseaseSurveillanceDiseaseSurveillance;
+      'api::document.document': ApiDocumentDocument;
+      'api::update.update': ApiUpdateUpdate;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
