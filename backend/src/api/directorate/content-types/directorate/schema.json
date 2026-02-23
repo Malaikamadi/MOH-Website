@@ -1,0 +1,91 @@
+{
+    "kind": "collectionType",
+    "collectionName": "directorates",
+    "info": {
+        "singularName": "directorate",
+        "pluralName": "directorates",
+        "displayName": "Directorate",
+        "description": "Ministry directorates and their details"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true,
+            "unique": true
+        },
+        "fullName": {
+            "type": "string",
+            "required": true
+        },
+        "slug": {
+            "type": "uid",
+            "targetField": "name",
+            "required": true
+        },
+        "icon": {
+            "type": "string",
+            "default": "building"
+        },
+        "about": {
+            "type": "richtext"
+        },
+        "aboutExtra": {
+            "type": "richtext"
+        },
+        "statsUnits": {
+            "type": "integer",
+            "default": 0
+        },
+        "statsDistricts": {
+            "type": "integer",
+            "default": 16
+        },
+        "statsStaff": {
+            "type": "string",
+            "default": "0"
+        },
+        "statsPartners": {
+            "type": "string",
+            "default": "0"
+        },
+        "directorName": {
+            "type": "string"
+        },
+        "directorCredentials": {
+            "type": "string"
+        },
+        "directorImage": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "directorBio": {
+            "type": "json"
+        },
+        "units": {
+            "type": "json"
+        },
+        "contactEmail": {
+            "type": "email"
+        },
+        "contactPhone": {
+            "type": "string"
+        },
+        "contactLocation": {
+            "type": "string"
+        },
+        "publications": {
+            "type": "relation",
+            "relation": "oneToMany",
+            "target": "api::publication.publication",
+            "mappedBy": "directorate"
+        }
+    }
+}

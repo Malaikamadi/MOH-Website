@@ -1,0 +1,67 @@
+{
+    "kind": "collectionType",
+    "collectionName": "publications",
+    "info": {
+        "singularName": "publication",
+        "pluralName": "publications",
+        "displayName": "Publication",
+        "description": "Documents, reports, and publications uploaded by each directorate"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text"
+        },
+        "category": {
+            "type": "enumeration",
+            "enum": [
+                "Policy",
+                "Report",
+                "Guideline",
+                "Strategic Plan",
+                "Annual Report",
+                "Research",
+                "Form",
+                "Standard Operating Procedure",
+                "Other"
+            ],
+            "default": "Report",
+            "required": true
+        },
+        "file": {
+            "type": "media",
+            "multiple": false,
+            "required": true,
+            "allowedTypes": [
+                "files"
+            ]
+        },
+        "coverImage": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "publishDate": {
+            "type": "date"
+        },
+        "year": {
+            "type": "integer"
+        },
+        "directorate": {
+            "type": "relation",
+            "relation": "manyToOne",
+            "target": "api::directorate.directorate",
+            "inversedBy": "publications"
+        }
+    }
+}
