@@ -1,0 +1,88 @@
+{
+    "kind": "collectionType",
+    "collectionName": "news_articles",
+    "info": {
+        "singularName": "news-article",
+        "pluralName": "news-articles",
+        "displayName": "News Article",
+        "description": "News, press releases, and public notices managed by Comms department"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "slug": {
+            "type": "uid",
+            "targetField": "title",
+            "required": true
+        },
+        "summary": {
+            "type": "text",
+            "maxLength": 500
+        },
+        "content": {
+            "type": "richtext"
+        },
+        "coverImage": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "gallery": {
+            "type": "media",
+            "multiple": true,
+            "required": false,
+            "allowedTypes": [
+                "images",
+                "videos"
+            ]
+        },
+        "category": {
+            "type": "enumeration",
+            "enum": [
+                "Breaking News",
+                "Latest News",
+                "Press Release",
+                "Public Notice",
+                "Announcement",
+                "Health Initiative"
+            ],
+            "default": "Latest News",
+            "required": true
+        },
+        "contentType": {
+            "type": "enumeration",
+            "enum": [
+                "news",
+                "video",
+                "event",
+                "publication"
+            ],
+            "default": "news"
+        },
+        "tags": {
+            "type": "json"
+        },
+        "author": {
+            "type": "string"
+        },
+        "publishedDate": {
+            "type": "datetime"
+        },
+        "featured": {
+            "type": "boolean",
+            "default": false
+        },
+        "videoUrl": {
+            "type": "string"
+        }
+    }
+}
