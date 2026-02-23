@@ -107,43 +107,6 @@ export interface AdminApiTokenPermission extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface AdminAuditLog extends Struct.CollectionTypeSchema {
-  collectionName: 'strapi_audit_logs';
-  info: {
-    displayName: 'Audit Log';
-    pluralName: 'audit-logs';
-    singularName: 'audit-log';
-  };
-  options: {
-    draftAndPublish: false;
-    timestamps: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    action: Schema.Attribute.String & Schema.Attribute.Required;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    date: Schema.Attribute.DateTime & Schema.Attribute.Required;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'admin::audit-log'> &
-      Schema.Attribute.Private;
-    payload: Schema.Attribute.JSON;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    user: Schema.Attribute.Relation<'oneToOne', 'admin::user'>;
-  };
-}
-
 export interface AdminPermission extends Struct.CollectionTypeSchema {
   collectionName: 'admin_permissions';
   info: {
@@ -467,6 +430,58 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiDirectorateDirectorate extends Struct.CollectionTypeSchema {
+  collectionName: 'directorates';
+  info: {
+    description: 'Ministry directorates and their details';
+    displayName: 'Directorate';
+    pluralName: 'directorates';
+    singularName: 'directorate';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    about: Schema.Attribute.RichText;
+    aboutExtra: Schema.Attribute.RichText;
+    contactEmail: Schema.Attribute.Email;
+    contactLocation: Schema.Attribute.String;
+    contactPhone: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    directorBio: Schema.Attribute.JSON;
+    directorCredentials: Schema.Attribute.String;
+    directorImage: Schema.Attribute.Media<'images'>;
+    directorName: Schema.Attribute.String;
+    fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    icon: Schema.Attribute.String & Schema.Attribute.DefaultTo<'building'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::directorate.directorate'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    publications: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::publication.publication'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    statsDistricts: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<16>;
+    statsPartners: Schema.Attribute.String & Schema.Attribute.DefaultTo<'0'>;
+    statsStaff: Schema.Attribute.String & Schema.Attribute.DefaultTo<'0'>;
+    statsUnits: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    units: Schema.Attribute.JSON;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiDiseaseSurveillanceDiseaseSurveillance
   extends Struct.CollectionTypeSchema {
   collectionName: 'disease_surveillances';
@@ -510,38 +525,38 @@ export interface ApiDiseaseSurveillanceDiseaseSurveillance
   };
 }
 
-export interface ApiDocumentDocument extends Struct.CollectionTypeSchema {
-  collectionName: 'documents';
+export interface ApiEventEvent extends Struct.CollectionTypeSchema {
+  collectionName: 'events';
   info: {
-    description: 'official documents, reports, and policies';
-    displayName: 'Document';
-    pluralName: 'documents';
-    singularName: 'document';
+    description: 'Ministry events, conferences, and campaigns';
+    displayName: 'Event';
+    pluralName: 'events';
+    singularName: 'event';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    category: Schema.Attribute.Enumeration<
-      ['Policy', 'Report', 'Guideline', 'Form', 'Strategic Plan', 'Other']
-    > &
-      Schema.Attribute.DefaultTo<'Other'>;
+    coverImage: Schema.Attribute.Media<'images'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
-    files: Schema.Attribute.Media<
-      'files' | 'images' | 'videos' | 'audios',
-      true
-    >;
+    description: Schema.Attribute.RichText;
+    eventEndDate: Schema.Attribute.DateTime;
+    eventStartDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::document.document'
-    > &
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;
-    publishDate: Schema.Attribute.Date;
+    location: Schema.Attribute.String;
+    organizer: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    registrationLink: Schema.Attribute.String;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    summary: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -549,13 +564,61 @@ export interface ApiDocumentDocument extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiUpdateUpdate extends Struct.CollectionTypeSchema {
-  collectionName: 'updates';
+export interface ApiHeroSlideHeroSlide extends Struct.CollectionTypeSchema {
+  collectionName: 'hero_slides';
   info: {
-    description: 'News, press releases, and announcements';
-    displayName: 'Latest Update';
-    pluralName: 'updates';
-    singularName: 'update';
+    description: 'Homepage hero slider content';
+    displayName: 'Hero Slide';
+    pluralName: 'hero-slides';
+    singularName: 'hero-slide';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    badge: Schema.Attribute.String;
+    badgeIcon: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'shield-heart'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::hero-slide.hero-slide'
+    > &
+      Schema.Attribute.Private;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    primaryButtonIcon: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'stethoscope'>;
+    primaryButtonLink: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'/'>;
+    primaryButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'View Details'>;
+    publishedAt: Schema.Attribute.DateTime;
+    secondaryButtonIcon: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'phone'>;
+    secondaryButtonLink: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'/contact'>;
+    secondaryButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Contact Us'>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiNewsArticleNewsArticle extends Struct.CollectionTypeSchema {
+  collectionName: 'news_articles';
+  info: {
+    description: 'News, press releases, and public notices managed by Comms department';
+    displayName: 'News Article';
+    pluralName: 'news-articles';
+    singularName: 'news-article';
   };
   options: {
     draftAndPublish: true;
@@ -563,18 +626,32 @@ export interface ApiUpdateUpdate extends Struct.CollectionTypeSchema {
   attributes: {
     author: Schema.Attribute.String;
     category: Schema.Attribute.Enumeration<
-      ['News', 'Press Release', 'Event', 'Announcement']
+      [
+        'Breaking News',
+        'Latest News',
+        'Press Release',
+        'Public Notice',
+        'Announcement',
+        'Health Initiative',
+      ]
     > &
-      Schema.Attribute.DefaultTo<'News'>;
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Latest News'>;
     content: Schema.Attribute.RichText;
+    contentType: Schema.Attribute.Enumeration<
+      ['news', 'video', 'event', 'publication']
+    > &
+      Schema.Attribute.DefaultTo<'news'>;
     coverImage: Schema.Attribute.Media<'images'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    gallery: Schema.Attribute.Media<'images' | 'videos', true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::update.update'
+      'api::news-article.news-article'
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
@@ -584,10 +661,99 @@ export interface ApiUpdateUpdate extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 500;
       }>;
+    tags: Schema.Attribute.JSON;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    videoUrl: Schema.Attribute.String;
+  };
+}
+
+export interface ApiNewsletterSubscriberNewsletterSubscriber
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'newsletter_subscribers';
+  info: {
+    description: 'Email subscribers for ministry newsletter';
+    displayName: 'Newsletter Subscriber';
+    pluralName: 'newsletter-subscribers';
+    singularName: 'newsletter-subscriber';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::newsletter-subscriber.newsletter-subscriber'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subscribedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPublicationPublication extends Struct.CollectionTypeSchema {
+  collectionName: 'publications';
+  info: {
+    description: 'Documents, reports, and publications uploaded by each directorate';
+    displayName: 'Publication';
+    pluralName: 'publications';
+    singularName: 'publication';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    category: Schema.Attribute.Enumeration<
+      [
+        'Policy',
+        'Report',
+        'Guideline',
+        'Strategic Plan',
+        'Annual Report',
+        'Research',
+        'Form',
+        'Standard Operating Procedure',
+        'Other',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Report'>;
+    coverImage: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    directorate: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::directorate.directorate'
+    >;
+    file: Schema.Attribute.Media<'files'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::publication.publication'
+    > &
+      Schema.Attribute.Private;
+    publishDate: Schema.Attribute.Date;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    year: Schema.Attribute.Integer;
   };
 }
 
@@ -1095,16 +1261,19 @@ declare module '@strapi/strapi' {
     export interface ContentTypeSchemas {
       'admin::api-token': AdminApiToken;
       'admin::api-token-permission': AdminApiTokenPermission;
-      'admin::audit-log': AdminAuditLog;
       'admin::permission': AdminPermission;
       'admin::role': AdminRole;
       'admin::session': AdminSession;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::directorate.directorate': ApiDirectorateDirectorate;
       'api::disease-surveillance.disease-surveillance': ApiDiseaseSurveillanceDiseaseSurveillance;
-      'api::document.document': ApiDocumentDocument;
-      'api::update.update': ApiUpdateUpdate;
+      'api::event.event': ApiEventEvent;
+      'api::hero-slide.hero-slide': ApiHeroSlideHeroSlide;
+      'api::news-article.news-article': ApiNewsArticleNewsArticle;
+      'api::newsletter-subscriber.newsletter-subscriber': ApiNewsletterSubscriberNewsletterSubscriber;
+      'api::publication.publication': ApiPublicationPublication;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

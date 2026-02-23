@@ -1,5 +1,5 @@
 {
-  "name": "backend-temp",
+  "name": "backend-fresh",
   "version": "0.1.0",
   "private": true,
   "description": "A Strapi application",
@@ -19,7 +19,6 @@
     "@strapi/plugin-users-permissions": "5.34.0",
     "@strapi/strapi": "5.34.0",
     "better-sqlite3": "12.4.1",
-    "pg": "^8.18.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
@@ -36,7 +35,7 @@
     "npm": ">=6.0.0"
   },
   "strapi": {
-    "uuid": "6ff994ca-14b0-4512-b8c4-b27678bf8e34",
-    "installId": "3df3873b3da2edc3861533b8bb14b4ef1aa51ac7782f68b231614cbbb6f80781"
+    "uuid": "2e7ccc4d-1cb0-4ad0-bc43-4afa3953dbec",
+    "installId": "63503532e5e1f7bb56cfef725a65661c35dd2aa616ac80e1b80b81630bae8ace"
   }
 }
