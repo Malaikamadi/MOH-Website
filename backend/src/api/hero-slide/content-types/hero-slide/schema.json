@@ -1,0 +1,70 @@
+{
+    "kind": "collectionType",
+    "collectionName": "hero_slides",
+    "info": {
+        "singularName": "hero-slide",
+        "pluralName": "hero-slides",
+        "displayName": "Hero Slide",
+        "description": "Homepage hero slider content"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text"
+        },
+        "image": {
+            "type": "media",
+            "multiple": false,
+            "required": true,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "badge": {
+            "type": "string"
+        },
+        "badgeIcon": {
+            "type": "string",
+            "default": "shield-heart"
+        },
+        "primaryButtonText": {
+            "type": "string",
+            "default": "View Details"
+        },
+        "primaryButtonLink": {
+            "type": "string",
+            "default": "/"
+        },
+        "primaryButtonIcon": {
+            "type": "string",
+            "default": "stethoscope"
+        },
+        "secondaryButtonText": {
+            "type": "string",
+            "default": "Contact Us"
+        },
+        "secondaryButtonLink": {
+            "type": "string",
+            "default": "/contact"
+        },
+        "secondaryButtonIcon": {
+            "type": "string",
+            "default": "phone"
+        },
+        "order": {
+            "type": "integer",
+            "default": 0
+        },
+        "isActive": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}
