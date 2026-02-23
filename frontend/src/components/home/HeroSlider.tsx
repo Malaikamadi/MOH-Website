@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useApi } from '../../hooks/useApi';
+import { getHeroSlides, getMediaUrl } from '../../services/api';
+import type { HeroSlide } from '../../services/api';
 
-const slides = [
+// Static fallback slides (used when API has no data or is unavailable)
+const fallbackSlides = [
     {
         id: 1,
         image: '/images/hub2.png',
@@ -30,15 +34,56 @@ const slides = [
     }
 ];
 
+interface SlideData {
+    id: number;
+    image: string;
+    badge: { icon: string; text: string };
+    title: string;
+    description: string;
+    primaryBtn: { text: string; link: string; icon: string };
+    secondaryBtn: { text: string; link: string; icon: string };
+}
+
 export default function HeroSlider() {
     const [currentSlide, setCurrentSlide] = useState(0);
+    const { data: apiData, loading } = useApi(getHeroSlides);
+
+    // Transform API data to slide format, or use fallback
+    const slides: SlideData[] = (() => {
+        if (apiData?.data && apiData.data.length > 0) {
+            return apiData.data.map((item) => {
+                const attrs = item.attributes || item as unknown as HeroSlide;
+                return {
+                    id: item.id,
+                    image: getMediaUrl((attrs as HeroSlide).image) || '/images/hub2.png',
+                    badge: {
+                        icon: (attrs as HeroSlide).badgeIcon || 'shield-heart',
+                        text: (attrs as HeroSlide).badge || 'Ministry of Health',
+                    },
+                    title: (attrs as HeroSlide).title,
+                    description: (attrs as HeroSlide).description || '',
+                    primaryBtn: {
+                        text: (attrs as HeroSlide).primaryButtonText || 'View Details',
+                        link: (attrs as HeroSlide).primaryButtonLink || '/',
+                        icon: (attrs as HeroSlide).primaryButtonIcon || 'stethoscope',
+                    },
+                    secondaryBtn: {
+                        text: (attrs as HeroSlide).secondaryButtonText || 'Contact Us',
+                        link: (attrs as HeroSlide).secondaryButtonLink || '/contact',
+                        icon: (attrs as HeroSlide).secondaryButtonIcon || 'phone',
+                    },
+                };
+            });
+        }
+        return fallbackSlides;
+    })();
 
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
         }, 6000);
         return () => clearInterval(timer);
-    }, []);
+    }, [slides.length]);
 
     const goToSlide = (index: number) => {
         setCurrentSlide(index);
@@ -51,6 +96,19 @@ export default function HeroSlider() {
     const prevSlide = () => {
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     };
+
+    if (loading) {
+        return (
+            <section className="hero-slider" id="heroSlider">
+                <div className="slides-container">
+                    <div className="slide active">
+                        <img src="/images/hub2.png" alt="Loading" className="slide-bg" />
+                        <div className="slide-overlay"></div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="hero-slider" id="heroSlider">

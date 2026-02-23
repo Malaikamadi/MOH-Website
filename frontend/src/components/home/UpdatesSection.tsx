@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useApi } from '../../hooks/useApi';
+import { getLatestUpdates, getMediaUrl } from '../../services/api';
+import type { NewsArticle } from '../../services/api';
 
 type UpdateType = 'all' | 'news' | 'videos' | 'events' | 'publications';
 
-const updates = [
+// Static fallback data
+const fallbackUpdates = [
     {
         type: 'news',
         image: '/images/news-1.jpg',
@@ -71,8 +75,40 @@ const updates = [
     }
 ];
 
+function transformApiData(item: { id: number; attributes?: NewsArticle } & Partial<NewsArticle>) {
+    const attrs = (item.attributes || item) as NewsArticle;
+    const contentType = attrs.contentType || 'news';
+    const imageUrl = getMediaUrl(attrs.coverImage);
+    const dateStr = attrs.publishedDate
+        ? new Date(attrs.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        : '';
+
+    return {
+        type: contentType === 'video' ? 'videos' : contentType === 'event' ? 'events' : contentType === 'publication' ? 'publications' : 'news',
+        image: imageUrl || '/images/news-1.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop',
+        date: dateStr,
+        title: attrs.title,
+        description: attrs.summary || '',
+        link: `/newsroom/${attrs.slug}`,
+        linkText: contentType === 'video' ? 'Watch Video' : contentType === 'publication' ? 'Download' : 'Read More',
+        hasPlayButton: contentType === 'video',
+        isPDF: contentType === 'publication',
+        dateIcon: contentType === 'event' ? 'map-marker-alt' : contentType === 'publication' ? 'file' : 'clock',
+    };
+}
+
 export default function UpdatesSection() {
     const [activeTab, setActiveTab] = useState<UpdateType>('all');
+    const { data: apiData } = useApi(() => getLatestUpdates({ limit: 12 }));
+
+    // Use API data if available, otherwise fallback
+    const updates = useMemo(() => {
+        if (apiData?.data && apiData.data.length > 0) {
+            return apiData.data.map(transformApiData);
+        }
+        return fallbackUpdates;
+    }, [apiData]);
 
     const filteredUpdates = activeTab === 'all'
         ? updates
@@ -147,12 +183,6 @@ export default function UpdatesSection() {
                                     {update.hasPlayButton && (
                                         <div className="play-overlay">
                                             <i className="fas fa-play"></i>
-                                        </div>
-                                    )}
-                                    {update.eventDate && (
-                                        <div className="event-date-overlay">
-                                            <span className="day">{update.eventDate.day}</span>
-                                            <span className="month">{update.eventDate.month}</span>
                                         </div>
                                     )}
                                     {update.isPDF && (
