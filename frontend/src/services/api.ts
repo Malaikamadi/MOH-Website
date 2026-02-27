@@ -6,6 +6,7 @@
  */
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337';
+const API_TOKEN = import.meta.env.VITE_API_TOKEN || '53b5ea3f17b8f19ca86026640384ba5cd5314ace0fe90899f09437a1091601b0e5d34438315fa1f4ddd19bd63ea085fdad5a23a176fae8a3812a4b688e275c78f636a15028f08f77cc7cfccfbdf6bffa994941c2123d1d33f18f79e2255de67e8497b1d5257c7bfc3ab0f11f75b59b0cd7da2befaf8ce6ca68a2979e05647c6d';
 
 // ─── Types ───────────────────────────────────────────────────────
 
@@ -192,7 +193,12 @@ async function fetchAPI<T>(
     const queryString = new URLSearchParams(params).toString();
     const url = `${API_URL}/api/${endpoint}${queryString ? `?${queryString}` : ''}`;
 
-    const response = await fetch(url);
+    const headers: Record<string, string> = {};
+    if (API_TOKEN) {
+        headers['Authorization'] = `Bearer ${API_TOKEN}`;
+    }
+
+    const response = await fetch(url, { headers });
 
     if (!response.ok) {
         throw new Error(`API error: ${response.status} ${response.statusText}`);
@@ -371,11 +377,16 @@ export async function getDiseaseSurveillance(options?: {
  * Subscribe to newsletter
  */
 export async function subscribeNewsletter(email: string): Promise<StrapiSingleResponse<{ email: string }>> {
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+    };
+    if (API_TOKEN) {
+        headers['Authorization'] = `Bearer ${API_TOKEN}`;
+    }
+
     const response = await fetch(`${API_URL}/api/newsletter-subscribers`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
             data: {
                 email,

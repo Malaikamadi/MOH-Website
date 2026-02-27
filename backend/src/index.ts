@@ -57,11 +57,11 @@ export default {
               enabled: true,
             },
           });
-          strapi.log.info(`✅ Enabled public permission: ${perm.controller}.${action}`);
+          strapi.log.info(` Enabled public permission: ${perm.controller}.${action}`);
         }
       }
     }
 
-    strapi.log.info('🔓 Public API permissions configured successfully!');
+    strapi.log.info('Public API permissions configured successfully!');
   },
 };

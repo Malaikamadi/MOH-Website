@@ -3,36 +3,7 @@ import { useApi } from '../../hooks/useApi';
 import { getHeroSlides, getMediaUrl } from '../../services/api';
 import type { HeroSlide } from '../../services/api';
 
-// Static fallback slides (used when API has no data or is unavailable)
-const fallbackSlides = [
-    {
-        id: 1,
-        image: '/images/hub2.png',
-        badge: { icon: 'shield-heart', text: 'National Health Information Hub' },
-        title: 'Revolutionizing Healthcare',
-        description: 'MoH Unveils State-of-the-Art Health Information System.',
-        primaryBtn: { text: 'View Details', link: '/services', icon: 'stethoscope' },
-        secondaryBtn: { text: 'Contact Us', link: '/contact', icon: 'phone' }
-    },
-    {
-        id: 2,
-        image: '/images/slide-3.jpg',
-        badge: { icon: 'baby', text: 'Maternal & Child Health' },
-        title: 'Safe Motherhood for All',
-        description: 'Comprehensive maternal health programs to ensure safe pregnancies, deliveries, and healthy babies across Sierra Leone.',
-        primaryBtn: { text: 'Maternal Health', link: '#', icon: 'heart' },
-        secondaryBtn: { text: 'Learn More', link: '/contact', icon: 'info-circle' }
-    },
-    {
-        id: 3,
-        image: '/images/hub.png',
-        badge: { icon: 'syringe', text: 'National Immunization Program' },
-        title: "Protecting Our Children's Future",
-        description: 'Free vaccination programs reaching every child in Sierra Leone. Protecting communities through immunization.',
-        primaryBtn: { text: 'Immunization Info', link: '#', icon: 'syringe' },
-        secondaryBtn: { text: 'Find a Clinic', link: '/contact', icon: 'calendar' }
-    }
-];
+
 
 interface SlideData {
     id: number;
@@ -75,7 +46,7 @@ export default function HeroSlider() {
                 };
             });
         }
-        return fallbackSlides;
+        return [];
     })();
 
     useEffect(() => {
@@ -97,7 +68,7 @@ export default function HeroSlider() {
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     };
 
-    if (loading) {
+    if (loading || slides.length === 0) {
         return (
             <section className="hero-slider" id="heroSlider">
                 <div className="slides-container">

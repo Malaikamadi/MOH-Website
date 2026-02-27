@@ -34,6 +34,7 @@ function App() {
         <Route path="/directorates/hrm" element={<HumanResourceManagementPage />} />
         <Route path="/directorate/tr" element={<TrainingandResearchPage />} />
         <Route path="/directorate/ehc" element={<EnvironmentalHealthandSanitation />} />
+      </Routes>
     </BrowserRouter>
   )
 }
