@@ -1,9 +1,37 @@
 import { useState, useEffect } from 'react';
 import { useApi } from '../../hooks/useApi';
 import { getHeroSlides, getMediaUrl } from '../../services/api';
-import type { HeroSlide } from '../../services/api';
 
-
+// Static fallback slides (used when API has no data or is unavailable)
+const fallbackSlides = [
+    {
+        id: 1,
+        image: '/images/hub2.png',
+        badge: { icon: 'shield-heart', text: 'National Health Information Hub' },
+        title: 'Revolutionizing Healthcare',
+        description: 'MoH Unveils State-of-the-Art Health Information System.',
+        primaryBtn: { text: 'View Details', link: '/services', icon: 'stethoscope' },
+        secondaryBtn: { text: 'Contact Us', link: '/contact', icon: 'phone' }
+    },
+    {
+        id: 2,
+        image: '/images/slide-3.jpg',
+        badge: { icon: 'baby', text: 'Maternal & Child Health' },
+        title: 'Safe Motherhood for All',
+        description: 'Comprehensive maternal health programs to ensure safe pregnancies, deliveries, and healthy babies across Sierra Leone.',
+        primaryBtn: { text: 'Maternal Health', link: '#', icon: 'heart' },
+        secondaryBtn: { text: 'Learn More', link: '/contact', icon: 'info-circle' }
+    },
+    {
+        id: 3,
+        image: '/images/hub.png',
+        badge: { icon: 'syringe', text: 'National Immunization Program' },
+        title: "Protecting Our Children's Future",
+        description: 'Free vaccination programs reaching every child in Sierra Leone. Protecting communities through immunization.',
+        primaryBtn: { text: 'Immunization Info', link: '#', icon: 'syringe' },
+        secondaryBtn: { text: 'Find a Clinic', link: '/contact', icon: 'calendar' }
+    }
+];
 
 interface SlideData {
     id: number;
@@ -19,34 +47,31 @@ export default function HeroSlider() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const { data: apiData, loading } = useApi(getHeroSlides);
 
-    // Transform API data to slide format, or use fallback
+    // Transform Strapi v5 flat data to slide format, or use fallback
     const slides: SlideData[] = (() => {
         if (apiData?.data && apiData.data.length > 0) {
-            return apiData.data.map((item) => {
-                const attrs = item.attributes || item as unknown as HeroSlide;
-                return {
-                    id: item.id,
-                    image: getMediaUrl((attrs as HeroSlide).image) || '/images/hub2.png',
-                    badge: {
-                        icon: (attrs as HeroSlide).badgeIcon || 'shield-heart',
-                        text: (attrs as HeroSlide).badge || 'Ministry of Health',
-                    },
-                    title: (attrs as HeroSlide).title,
-                    description: (attrs as HeroSlide).description || '',
-                    primaryBtn: {
-                        text: (attrs as HeroSlide).primaryButtonText || 'View Details',
-                        link: (attrs as HeroSlide).primaryButtonLink || '/',
-                        icon: (attrs as HeroSlide).primaryButtonIcon || 'stethoscope',
-                    },
-                    secondaryBtn: {
-                        text: (attrs as HeroSlide).secondaryButtonText || 'Contact Us',
-                        link: (attrs as HeroSlide).secondaryButtonLink || '/contact',
-                        icon: (attrs as HeroSlide).secondaryButtonIcon || 'phone',
-                    },
-                };
-            });
+            return apiData.data.map((item) => ({
+                id: item.id,
+                image: getMediaUrl(item.image) || '/images/hub2.png',
+                badge: {
+                    icon: item.badgeIcon || 'shield-heart',
+                    text: item.badge || 'Ministry of Health',
+                },
+                title: item.title,
+                description: item.description || '',
+                primaryBtn: {
+                    text: item.primaryButtonText || 'View Details',
+                    link: item.primaryButtonLink || '/',
+                    icon: item.primaryButtonIcon || 'stethoscope',
+                },
+                secondaryBtn: {
+                    text: item.secondaryButtonText || 'Contact Us',
+                    link: item.secondaryButtonLink || '/contact',
+                    icon: item.secondaryButtonIcon || 'phone',
+                },
+            }));
         }
-        return [];
+        return fallbackSlides;
     })();
 
     useEffect(() => {
@@ -68,7 +93,7 @@ export default function HeroSlider() {
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     };
 
-    if (loading || slides.length === 0) {
+    if (loading) {
         return (
             <section className="hero-slider" id="heroSlider">
                 <div className="slides-container">

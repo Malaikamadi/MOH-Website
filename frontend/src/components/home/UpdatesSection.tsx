@@ -7,12 +7,11 @@ type UpdateType = 'all' | 'news' | 'videos' | 'events' | 'publications';
 
 
 
-function transformApiData(item: { id: number; attributes?: NewsArticle } & Partial<NewsArticle>) {
-    const attrs = (item.attributes || item) as NewsArticle;
-    const contentType = attrs.contentType || 'news';
-    const imageUrl = getMediaUrl(attrs.coverImage);
-    const dateStr = attrs.publishedDate
-        ? new Date(attrs.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+function transformApiData(item: NewsArticle & { id: number; documentId: string }) {
+    const contentType = item.contentType || 'news';
+    const imageUrl = getMediaUrl(item.coverImage);
+    const dateStr = item.publishedDate
+        ? new Date(item.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
         : '';
 
     return {
@@ -20,9 +19,9 @@ function transformApiData(item: { id: number; attributes?: NewsArticle } & Parti
         image: imageUrl || '/images/news-1.jpg',
         fallbackImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop',
         date: dateStr,
-        title: attrs.title,
-        description: attrs.summary || '',
-        link: `/newsroom/${attrs.slug}`,
+        title: item.title,
+        description: item.summary || '',
+        link: `/newsroom/${item.slug}`,
         linkText: contentType === 'video' ? 'Watch Video' : contentType === 'publication' ? 'Download' : 'Read More',
         hasPlayButton: contentType === 'video',
         isPDF: contentType === 'publication',

@@ -5,22 +5,21 @@ import type { NewsArticle } from '../../services/api';
 
 
 
-function transformNewsItem(item: { id: number; attributes?: NewsArticle } & Partial<NewsArticle>) {
-    const attrs = (item.attributes || item) as NewsArticle;
-    const imageUrl = getMediaUrl(attrs.coverImage);
-    const dateStr = attrs.publishedDate
-        ? new Date(attrs.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+function transformNewsItem(item: NewsArticle & { id: number; documentId: string }) {
+    const imageUrl = getMediaUrl(item.coverImage);
+    const dateStr = item.publishedDate
+        ? new Date(item.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
         : '';
 
     return {
         image: imageUrl || '/images/news-1.jpg',
         fallbackImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop',
-        category: attrs.category || 'Latest News',
-        title: attrs.title,
-        description: attrs.summary || '',
+        category: item.category || 'Latest News',
+        title: item.title,
+        description: item.summary || '',
         date: dateStr,
-        slug: attrs.slug || '#',
-        tag: attrs.category || 'Latest News',
+        slug: item.slug || '#',
+        tag: item.category || 'Latest News',
     };
 }
 

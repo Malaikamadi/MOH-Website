@@ -1,17 +1,20 @@
 /**
- * Strapi API Service
+ * Strapi v5 API Service
  * 
  * Central service for all API calls to the Strapi backend.
- * All content types have public READ access configured via bootstrap.
+ * Strapi v5 returns FLAT data (no attributes wrapper).
+ * 
+ * v4 format: { data: [{ id: 1, attributes: { title: "..." } }] }
+ * v5 format: { data: [{ id: 1, title: "...", documentId: "..." }] }
  */
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337';
-const API_TOKEN = import.meta.env.VITE_API_TOKEN || '53b5ea3f17b8f19ca86026640384ba5cd5314ace0fe90899f09437a1091601b0e5d34438315fa1f4ddd19bd63ea085fdad5a23a176fae8a3812a4b688e275c78f636a15028f08f77cc7cfccfbdf6bffa994941c2123d1d33f18f79e2255de67e8497b1d5257c7bfc3ab0f11f75b59b0cd7da2befaf8ce6ca68a2979e05647c6d';
+const API_TOKEN = import.meta.env.VITE_API_TOKEN || '';
 
-// ─── Types ───────────────────────────────────────────────────────
+// ─── Types (Strapi v5 - flat format) ─────────────────────────────
 
 export interface StrapiResponse<T> {
-    data: StrapiItem<T>[];
+    data: (T & { id: number; documentId: string })[];
     meta: {
         pagination: {
             page: number;
@@ -23,32 +26,25 @@ export interface StrapiResponse<T> {
 }
 
 export interface StrapiSingleResponse<T> {
-    data: StrapiItem<T>;
+    data: T & { id: number; documentId: string };
     meta: {};
 }
 
-export interface StrapiItem<T> {
-    id: number;
-    attributes: T;
-}
-
+// Strapi v5 media is flat — no attributes wrapper
 export interface StrapiMedia {
-    data: {
-        id: number;
-        attributes: {
-            url: string;
-            name: string;
-            alternativeText: string | null;
-            width?: number;
-            height?: number;
-            formats?: {
-                thumbnail?: { url: string };
-                small?: { url: string };
-                medium?: { url: string };
-                large?: { url: string };
-            };
-        };
-    } | null;
+    id: number;
+    documentId: string;
+    url: string;
+    name: string;
+    alternativeText: string | null;
+    width?: number;
+    height?: number;
+    formats?: {
+        thumbnail?: { url: string; width: number; height: number };
+        small?: { url: string; width: number; height: number };
+        medium?: { url: string; width: number; height: number };
+        large?: { url: string; width: number; height: number };
+    };
 }
 
 // ─── Content Type Interfaces ─────────────────────────────────────
@@ -56,7 +52,7 @@ export interface StrapiMedia {
 export interface HeroSlide {
     title: string;
     description: string;
-    image: StrapiMedia;
+    image: StrapiMedia | null;
     badge: string;
     badgeIcon: string;
     primaryButtonText: string;
@@ -74,8 +70,8 @@ export interface NewsArticle {
     slug: string;
     summary: string;
     content: string;
-    coverImage: StrapiMedia;
-    gallery: { data: StrapiMedia['data'][] };
+    coverImage: StrapiMedia | null;
+    gallery: StrapiMedia[];
     category: 'Breaking News' | 'Latest News' | 'Press Release' | 'Public Notice' | 'Announcement' | 'Health Initiative';
     contentType: 'news' | 'video' | 'event' | 'publication';
     tags: string[];
@@ -93,7 +89,7 @@ export interface Event {
     location: string;
     eventStartDate: string;
     eventEndDate: string;
-    coverImage: StrapiMedia;
+    coverImage: StrapiMedia | null;
     registrationLink: string;
     organizer: string;
     featured: boolean;
@@ -103,13 +99,11 @@ export interface Publication {
     title: string;
     description: string;
     category: 'Policy' | 'Report' | 'Guideline' | 'Strategic Plan' | 'Annual Report' | 'Research' | 'Form' | 'Standard Operating Procedure' | 'Other';
-    file: StrapiMedia;
-    coverImage: StrapiMedia;
+    file: StrapiMedia | null;
+    coverImage: StrapiMedia | null;
     publishDate: string;
     year: number;
-    directorate: {
-        data: StrapiItem<Directorate> | null;
-    };
+    directorate: Directorate | null;
 }
 
 export interface Directorate {
@@ -125,7 +119,7 @@ export interface Directorate {
     statsPartners: string;
     directorName: string;
     directorCredentials: string;
-    directorImage: StrapiMedia;
+    directorImage: StrapiMedia | null;
     directorBio: string[];
     units: {
         id: string;
@@ -137,9 +131,7 @@ export interface Directorate {
     contactEmail: string;
     contactPhone: string;
     contactLocation: string;
-    publications: {
-        data: StrapiItem<Publication>[];
-    };
+    publications: Publication[];
 }
 
 export interface DiseaseSurveillance {
@@ -159,14 +151,12 @@ export interface DiseaseSurveillance {
 // ─── Helper Functions ────────────────────────────────────────────
 
 /**
- * Get the full URL for a Strapi media file
+ * Get the full URL for a Strapi v5 media file (flat format)
  */
 export function getMediaUrl(media: StrapiMedia | null | undefined): string {
-    if (!media?.data?.attributes?.url) return '';
-    const url = media.data.attributes.url;
-    // If the URL is already absolute, return as-is
+    if (!media?.url) return '';
+    const url = media.url;
     if (url.startsWith('http')) return url;
-    // Otherwise, prepend the API URL
     return `${API_URL}${url}`;
 }
 
@@ -177,7 +167,7 @@ export function getMediaFormat(
     media: StrapiMedia | null | undefined,
     format: 'thumbnail' | 'small' | 'medium' | 'large'
 ): string {
-    const formatUrl = media?.data?.attributes?.formats?.[format]?.url;
+    const formatUrl = media?.formats?.[format]?.url;
     if (!formatUrl) return getMediaUrl(media);
     if (formatUrl.startsWith('http')) return formatUrl;
     return `${API_URL}${formatUrl}`;
