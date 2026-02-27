@@ -5,7 +5,87 @@ import type { NewsArticle } from '../../services/api';
 
 type UpdateType = 'all' | 'news' | 'videos' | 'events' | 'publications';
 
-
+// Static fallback data (shown when API has no content)
+const fallbackUpdates = [
+    {
+        type: 'news',
+        image: '/images/news-1.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop',
+        date: 'Jan 10, 2026',
+        title: 'Minister Launches New Healthcare Initiative',
+        description: 'Dr. Austin Demby announces expanded healthcare access program for rural communities...',
+        link: '#',
+        linkText: 'Read More',
+        hasPlayButton: false,
+        isPDF: false,
+        dateIcon: 'clock'
+    },
+    {
+        type: 'videos',
+        image: '/images/video-thumb-1.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop',
+        date: 'Jan 8, 2026',
+        title: '2025 Year in Review: Healthcare Achievements',
+        description: 'Watch the highlights of our key health sector accomplishments in 2025...',
+        link: '#',
+        linkText: 'Watch Video',
+        hasPlayButton: true,
+        isPDF: false,
+        dateIcon: 'clock'
+    },
+    {
+        type: 'events',
+        image: '/images/event-1.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop',
+        date: 'Youyi Building, Freetown',
+        title: 'National Immunization Campaign Launch',
+        description: 'Join us for the nationwide vaccination drive launch with WHO and UNICEF...',
+        link: '#',
+        linkText: 'Register Now',
+        hasPlayButton: false,
+        isPDF: false,
+        dateIcon: 'map-marker-alt'
+    },
+    {
+        type: 'publications',
+        image: '/images/publication-1.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop',
+        date: '2.4 MB • PDF',
+        title: 'Annual Health Sector Report 2025',
+        description: 'Comprehensive report on healthcare indicators, achievements and challenges...',
+        link: '#',
+        linkText: 'Download',
+        hasPlayButton: false,
+        isPDF: true,
+        dateIcon: 'file'
+    },
+    {
+        type: 'news',
+        image: '/images/news-2.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400&h=250&fit=crop',
+        date: 'Jan 5, 2026',
+        title: 'New Medical Equipment Arrives at Regional Hospitals',
+        description: 'State-of-the-art diagnostic equipment now available across multiple districts...',
+        link: '#',
+        linkText: 'Read More',
+        hasPlayButton: false,
+        isPDF: false,
+        dateIcon: 'clock'
+    },
+    {
+        type: 'videos',
+        image: '/images/video-thumb-2.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=400&h=250&fit=crop',
+        date: 'Jan 3, 2026',
+        title: 'Community Health Workers: Heroes of Primary Care',
+        description: 'Meet the dedicated CHWs serving rural communities across Sierra Leone...',
+        link: '#',
+        linkText: 'Watch Video',
+        hasPlayButton: true,
+        isPDF: false,
+        dateIcon: 'clock'
+    }
+];
 
 function transformApiData(item: NewsArticle & { id: number; documentId: string }) {
     const contentType = item.contentType || 'news';
@@ -33,11 +113,12 @@ export default function UpdatesSection() {
     const [activeTab, setActiveTab] = useState<UpdateType>('all');
     const { data: apiData } = useApi(() => getLatestUpdates({ limit: 12 }));
 
+    // Use API data if available, otherwise fallback to static
     const updates = useMemo(() => {
         if (apiData?.data && apiData.data.length > 0) {
             return apiData.data.map(transformApiData);
         }
-        return [];
+        return fallbackUpdates;
     }, [apiData]);
 
     const filteredUpdates = activeTab === 'all'
@@ -133,6 +214,12 @@ export default function UpdatesSection() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+
+                    <div className="updates-view-all">
+                        <a href="/newsroom" className="btn btn-outline">
+                            View All Updates <i className="fas fa-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
             </div>
