@@ -1,0 +1,24 @@
+{
+    "collectionName": "components_about_histories",
+    "info": {
+        "displayName": "history",
+        "icon": "clock"
+    },
+    "options": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "subtitle": {
+            "type": "string"
+        },
+        "detail": {
+            "type": "customField",
+            "options": {
+                "preset": "standard"
+            },
+            "customField": "plugin::ckeditor5.CKEditor"
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "collectionName": "components_about_core_values",
+    "info": {
+        "displayName": "coreValues",
+        "icon": "star"
+    },
+    "options": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text",
+            "required": true
+        },
+        "icon": {
+            "type": "string",
+            "default": "check-circle",
+            "description": "FontAwesome icon name"
+        }
+    }
+}

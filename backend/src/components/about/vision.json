@@ -1,0 +1,18 @@
+{
+    "collectionName": "components_about_visions",
+    "info": {
+        "displayName": "vision",
+        "icon": "eye"
+    },
+    "options": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "detail": {
+            "type": "text",
+            "required": true
+        }
+    }
+}
