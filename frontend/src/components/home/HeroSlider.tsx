@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { getHeroSlides, getMediaUrl } from '../../services/api';
+import { getHeroSlides, getStatItems, getHomepageSettings, getMediaUrl } from '../../services/api';
 
 // Static fallback slides (used when API has no data or is unavailable)
 const fallbackSlides = [
@@ -33,6 +33,17 @@ const fallbackSlides = [
     }
 ];
 
+// Static fallback stats (used when API has no data)
+const fallbackStats = [
+    { value: '16', label: 'Districts Served', link: '/about#districts' },
+    { value: '1,200+', label: 'Health Facilities', link: '/health-facilities' },
+    { value: '100%', label: 'PHU Coverage', link: '/programs#phu' },
+    { value: '85%', label: 'Vaccine Coverage', link: '/programs#vaccination' },
+    { value: '$150M+', label: 'Health Investment', link: '/about#investments' },
+    { value: '15K+', label: 'Healthcare Workers', link: '/directorates#workforce' },
+    { value: '8M+', label: 'Citizens Covered', link: '/programs' },
+];
+
 interface SlideData {
     id: number;
     image: string;
@@ -43,9 +54,21 @@ interface SlideData {
     secondaryBtn: { text: string; link: string; icon: string };
 }
 
+interface StatData {
+    value: string;
+    label: string;
+    link: string;
+}
+
 export default function HeroSlider() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const { data: apiData, loading } = useApi(getHeroSlides);
+    const { data: statsData } = useApi(getStatItems);
+    const { data: homepageData } = useApi(getHomepageSettings);
+
+    // Get homepage config with defaults
+    const autoplaySpeed = homepageData?.data?.heroAutoplaySpeed || 6000;
+    const showStatsBar = homepageData?.data?.showStatsBar !== false;
 
     // Transform Strapi v5 flat data to slide format, or use fallback
     const slides: SlideData[] = (() => {
@@ -74,12 +97,24 @@ export default function HeroSlider() {
         return fallbackSlides;
     })();
 
+    // Transform stats data or use fallback
+    const stats: StatData[] = (() => {
+        if (statsData?.data && statsData.data.length > 0) {
+            return statsData.data.map((item) => ({
+                value: item.value,
+                label: item.label,
+                link: item.link || '#',
+            }));
+        }
+        return fallbackStats;
+    })();
+
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 6000);
+        }, autoplaySpeed);
         return () => clearInterval(timer);
-    }, [slides.length]);
+    }, [slides.length, autoplaySpeed]);
 
     const goToSlide = (index: number) => {
         setCurrentSlide(index);
@@ -178,37 +213,17 @@ export default function HeroSlider() {
                 <span className="nav-text" onClick={nextSlide}>NEXT</span>
             </div>
 
-            {/* Stats Bar */}
-            <div className="hero-stats-bar">
-                <a href="/about#districts" className="stat-item">
-                    <span className="stat-value">16</span>
-                    <span className="stat-label">Districts Served</span>
-                </a>
-                <a href="/health-facilities" className="stat-item">
-                    <span className="stat-value">1,200+</span>
-                    <span className="stat-label">Health Facilities</span>
-                </a>
-                <a href="/programs#phu" className="stat-item">
-                    <span className="stat-value">100%</span>
-                    <span className="stat-label">PHU Coverage</span>
-                </a>
-                <a href="/programs#vaccination" className="stat-item">
-                    <span className="stat-value">85%</span>
-                    <span className="stat-label">Vaccine Coverage</span>
-                </a>
-                <a href="/about#investments" className="stat-item">
-                    <span className="stat-value">$150M+</span>
-                    <span className="stat-label">Health Investment</span>
-                </a>
-                <a href="/directorates#workforce" className="stat-item">
-                    <span className="stat-value">15K+</span>
-                    <span className="stat-label">Healthcare Workers</span>
-                </a>
-                <a href="/programs" className="stat-item">
-                    <span className="stat-value">8M+</span>
-                    <span className="stat-label">Citizens Covered</span>
-                </a>
-            </div>
+            {/* Stats Bar — now driven by Strapi */}
+            {showStatsBar && (
+                <div className="hero-stats-bar">
+                    {stats.map((stat, index) => (
+                        <a key={index} href={stat.link} className="stat-item">
+                            <span className="stat-value">{stat.value}</span>
+                            <span className="stat-label">{stat.label}</span>
+                        </a>
+                    ))}
+                </div>
+            )}
         </section>
     );
 }

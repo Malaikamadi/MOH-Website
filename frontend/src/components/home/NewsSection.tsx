@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { getNewsArticles, getMediaUrl } from '../../services/api';
+import { getNewsArticles, getHomepageSettings, getMediaUrl } from '../../services/api';
 import type { NewsArticle } from '../../services/api';
 
 // Static fallback data
@@ -61,15 +61,26 @@ function transformNewsItem(item: NewsArticle & { id: number; documentId: string 
 export default function NewsSection() {
     const [activeSlide, setActiveSlide] = useState(0);
     const [activeFilter, setActiveFilter] = useState('all');
+    const { data: homepageData } = useApi(getHomepageSettings);
+
+    // Check if section should be visible
+    const showSection = homepageData?.data?.showNewsSection !== false;
+
+    // Get section header from backend or use defaults
+    const sectionHeader = homepageData?.data?.newsHeader;
+    const sectionTitle = sectionHeader?.title || 'Latest News';
+    const sectionSubtitle = sectionHeader?.subtitle || 'Stay informed about the latest health initiatives, announcements, and ministry activities';
+    const newsLimit = homepageData?.data?.newsPerPage || 5;
+    const pressLimit = homepageData?.data?.pressReleasesPerPage || 4;
 
     // Fetch all news
     const { data: newsData } = useApi(
-        () => getNewsArticles({ limit: 5 })
+        () => getNewsArticles({ limit: newsLimit })
     );
 
     // Fetch press releases
     const { data: pressData } = useApi(
-        () => getNewsArticles({ category: 'Press Release', limit: 4 })
+        () => getNewsArticles({ category: 'Press Release', limit: pressLimit })
     );
 
     const newsItems = useMemo(() => {
@@ -103,12 +114,14 @@ export default function NewsSection() {
         public: 'Public Notice',
     };
 
+    if (!showSection) return null;
+
     return (
         <section className="news-section section">
             <div className="container">
                 <div className="section-header">
-                    <h2>Latest News</h2>
-                    <p>Stay informed about the latest health initiatives, announcements, and ministry activities</p>
+                    <h2>{sectionTitle}</h2>
+                    <p>{sectionSubtitle}</p>
                 </div>
 
                 {/* News Filter Tabs */}

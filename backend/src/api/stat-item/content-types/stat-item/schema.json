@@ -1,0 +1,44 @@
+{
+    "kind": "collectionType",
+    "collectionName": "stat_items",
+    "info": {
+        "singularName": "stat-item",
+        "pluralName": "stat-items",
+        "displayName": "Stat Item",
+        "description": "Homepage stats bar items (Districts Served, Health Facilities, etc.)"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "value": {
+            "type": "string",
+            "required": true,
+            "description": "Display value (e.g. '16', '1,200+', '85%', '$150M+')"
+        },
+        "label": {
+            "type": "string",
+            "required": true,
+            "description": "Label text (e.g. 'Districts Served', 'Health Facilities')"
+        },
+        "icon": {
+            "type": "string",
+            "description": "FontAwesome icon name (optional)"
+        },
+        "link": {
+            "type": "string",
+            "default": "#",
+            "description": "URL when clicking the stat"
+        },
+        "order": {
+            "type": "integer",
+            "default": 0,
+            "description": "Display order (lower = first)"
+        },
+        "isActive": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}

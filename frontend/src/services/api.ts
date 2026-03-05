@@ -47,6 +47,48 @@ export interface StrapiMedia {
     };
 }
 
+// ─── Component Interfaces ────────────────────────────────────────
+
+export interface SocialLink {
+    id: number;
+    platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'youtube' | 'tiktok' | 'whatsapp' | 'telegram';
+    url: string;
+    isActive: boolean;
+}
+
+export interface ContactInfo {
+    id: number;
+    label: string;
+    value: string;
+    icon: string;
+    type: 'address' | 'email' | 'phone' | 'fax' | 'website';
+}
+
+export interface NavLink {
+    id: number;
+    label: string;
+    url: string;
+    icon: string;
+    openInNewTab: boolean;
+    order: number;
+}
+
+export interface SectionHeader {
+    id: number;
+    badge: string;
+    badgeIcon: string;
+    title: string;
+    subtitle: string;
+}
+
+export interface SeoMeta {
+    id: number;
+    metaTitle: string;
+    metaDescription: string;
+    shareImage: StrapiMedia | null;
+    keywords: string;
+}
+
 // ─── Content Type Interfaces ─────────────────────────────────────
 
 export interface HeroSlide {
@@ -63,6 +105,11 @@ export interface HeroSlide {
     secondaryButtonIcon: string;
     order: number;
     isActive: boolean;
+    contentAlignment: 'left' | 'center' | 'right';
+    theme: 'light' | 'dark';
+    overlayOpacity: number;
+    mobileImage: StrapiMedia | null;
+    animationType: 'fade' | 'slideUp' | 'zoomIn';
 }
 
 export interface NewsArticle {
@@ -146,6 +193,71 @@ export interface DiseaseSurveillance {
     recovered: number;
     sourceSystem: string;
     status: 'Confirmed' | 'Suspected' | 'Projected';
+}
+
+export interface StatItem {
+    value: string;
+    label: string;
+    icon: string;
+    link: string;
+    order: number;
+    isActive: boolean;
+}
+
+export interface KeyService {
+    title: string;
+    description: string;
+    icon: string;
+    link: string;
+    linkText: string;
+    image: StrapiMedia | null;
+    order: number;
+    isActive: boolean;
+    color: string;
+}
+
+export interface SiteSetting {
+    siteName: string;
+    siteTagline: string;
+    logo: StrapiMedia | null;
+    logoWhite: StrapiMedia | null;
+    favicon: StrapiMedia | null;
+    contactInfo: ContactInfo[];
+    socialLinks: SocialLink[];
+    footerAboutText: string;
+    footerQuickLinks: NavLink[];
+    footerServiceLinks: NavLink[];
+    copyrightText: string;
+    privacyPolicyUrl: string;
+    termsOfUseUrl: string;
+    accessibilityUrl: string;
+    emergencyHotline: string;
+    emergencyHotlineLabel: string;
+    googleAnalyticsId: string;
+    maintenanceMode: boolean;
+    maintenanceMessage: string;
+}
+
+export interface HomepageSetting {
+    heroAutoplaySpeed: number;
+    heroTransitionEffect: 'fade' | 'slide' | 'zoom';
+    showStatsBar: boolean;
+    servicesHeader: SectionHeader | null;
+    showServicesSection: boolean;
+    updatesHeader: SectionHeader | null;
+    showUpdatesSection: boolean;
+    updatesPerPage: number;
+    newsHeader: SectionHeader | null;
+    showNewsSection: boolean;
+    newsPerPage: number;
+    pressReleasesPerPage: number;
+    showNewsletterSection: boolean;
+    newsletterTitle: string;
+    newsletterSubtitle: string;
+    newsletterPlaceholder: string;
+    newsletterButtonText: string;
+    newsletterSuccessMessage: string;
+    seo: SeoMeta | null;
 }
 
 // ─── Helper Functions ────────────────────────────────────────────
@@ -415,4 +527,54 @@ export async function getLatestUpdates(options?: {
     }
 
     return fetchAPI<StrapiResponse<NewsArticle>>('news-articles', params);
+}
+
+// ─── Site Settings & Homepage Config ─────────────────────────────
+
+/**
+ * Fetch global site settings (single type — header, footer, social links, etc.)
+ */
+export async function getSiteSettings(): Promise<StrapiSingleResponse<SiteSetting>> {
+    return fetchAPI<StrapiSingleResponse<SiteSetting>>('site-setting', {
+        'populate[logo]': '*',
+        'populate[logoWhite]': '*',
+        'populate[favicon]': '*',
+        'populate[contactInfo]': '*',
+        'populate[socialLinks]': '*',
+        'populate[footerQuickLinks]': '*',
+        'populate[footerServiceLinks]': '*',
+    });
+}
+
+/**
+ * Fetch homepage settings (single type — section toggles, titles, SEO)
+ */
+export async function getHomepageSettings(): Promise<StrapiSingleResponse<HomepageSetting>> {
+    return fetchAPI<StrapiSingleResponse<HomepageSetting>>('homepage-setting', {
+        'populate[servicesHeader]': '*',
+        'populate[updatesHeader]': '*',
+        'populate[newsHeader]': '*',
+        'populate[seo][populate]': '*',
+    });
+}
+
+/**
+ * Fetch stats bar items (sorted by order, only active)
+ */
+export async function getStatItems(): Promise<StrapiResponse<StatItem>> {
+    return fetchAPI<StrapiResponse<StatItem>>('stat-items', {
+        'filters[isActive][$eq]': 'true',
+        'sort': 'order:asc',
+    });
+}
+
+/**
+ * Fetch key services (sorted by order, only active, with images)
+ */
+export async function getKeyServices(): Promise<StrapiResponse<KeyService>> {
+    return fetchAPI<StrapiResponse<KeyService>>('key-services', {
+        'populate': '*',
+        'filters[isActive][$eq]': 'true',
+        'sort': 'order:asc',
+    });
 }

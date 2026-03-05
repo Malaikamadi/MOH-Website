@@ -1,0 +1,26 @@
+{
+    "collectionName": "components_shared_section_headers",
+    "info": {
+        "displayName": "Section Header",
+        "icon": "heading",
+        "description": "Reusable section title/subtitle block"
+    },
+    "options": {},
+    "attributes": {
+        "badge": {
+            "type": "string",
+            "description": "Small badge text above the title"
+        },
+        "badgeIcon": {
+            "type": "string",
+            "description": "FontAwesome icon for the badge"
+        },
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "subtitle": {
+            "type": "text"
+        }
+    }
+}

@@ -1,8 +1,67 @@
 import { useState } from 'react';
+import { useApi } from '../../hooks/useApi';
+import { getSiteSettings, getMediaUrl } from '../../services/api';
+
+// Platform icon mapping for social links
+const platformIcons: Record<string, string> = {
+    facebook: 'fab fa-facebook-f',
+    twitter: 'fab fa-twitter',
+    instagram: 'fab fa-instagram',
+    linkedin: 'fab fa-linkedin-in',
+    youtube: 'fab fa-youtube',
+    tiktok: 'fab fa-tiktok',
+    whatsapp: 'fab fa-whatsapp',
+    telegram: 'fab fa-telegram-plane',
+};
+
+// Contact type icon mapping
+const contactTypeIcons: Record<string, string> = {
+    address: 'fas fa-map-marker-alt',
+    email: 'fas fa-envelope',
+    phone: 'fas fa-phone',
+    fax: 'fas fa-fax',
+    website: 'fas fa-globe',
+};
+
+// Fallback contact info
+const fallbackContacts = [
+    { icon: 'fas fa-map-marker-alt', value: '4th & 5th Floor, Youyi Building, Freetown' },
+    { icon: 'fas fa-envelope', value: 'info@mohs.gov.sl' },
+    { icon: 'fas fa-phone', value: '+232 76 460 440' },
+];
+
+// Fallback social links
+const fallbackSocials = [
+    { platform: 'facebook', url: '#' },
+    { platform: 'twitter', url: '#' },
+    { platform: 'instagram', url: '#' },
+    { platform: 'linkedin', url: '#' },
+    { platform: 'youtube', url: '#' },
+];
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+    const { data: siteData } = useApi(getSiteSettings);
+
+    // Extract site settings with fallbacks
+    const site = siteData?.data;
+    const siteName = site?.siteName || 'MINISTRY OF HEALTH';
+    const siteTagline = site?.siteTagline || 'SIERRA LEONE';
+    const logoUrl = site?.logo ? getMediaUrl(site.logo) : '/images/logo.png';
+
+    // Contact info from backend or fallback
+    const contacts = site?.contactInfo && site.contactInfo.length > 0
+        ? site.contactInfo.map(c => ({
+            icon: c.icon ? `fas fa-${c.icon}` : contactTypeIcons[c.type] || 'fas fa-info-circle',
+            value: c.value,
+        }))
+        : fallbackContacts;
+
+    // Social links from backend or fallback
+    const socials = site?.socialLinks && site.socialLinks.length > 0
+        ? site.socialLinks.filter(s => s.isActive)
+        : fallbackSocials;
 
     return (
         <header className="header-wrapper">
@@ -12,36 +71,41 @@ export default function Header() {
                     <div className="header-top-content">
                         {/* Logo and Ministry Name */}
                         <a href="/" className="header-brand">
-                            <img src="/images/logo.png" alt="MoH Logo" className="header-logo" onError={(e) => e.currentTarget.style.display = 'none'} />
+                            <img
+                                src={logoUrl}
+                                alt={`${siteName} Logo`}
+                                className="header-logo"
+                                onError={(e) => e.currentTarget.style.display = 'none'}
+                            />
                             <div className="header-brand-text">
-                                <span className="header-brand-name">MINISTRY OF HEALTH</span>
-                                <span className="header-brand-subtitle">SIERRA LEONE</span>
+                                <span className="header-brand-name">{siteName}</span>
+                                <span className="header-brand-subtitle">{siteTagline}</span>
                             </div>
                         </a>
 
-                        {/* Contact Info */}
+                        {/* Contact Info — driven by Strapi */}
                         <div className="header-contact-info">
-                            <div className="header-contact-item">
-                                <i className="fas fa-map-marker-alt"></i>
-                                <span>4th & 5th Floor, Youyi Building, Freetown</span>
-                            </div>
-                            <div className="header-contact-item">
-                                <i className="fas fa-envelope"></i>
-                                <span>info@mohs.gov.sl</span>
-                            </div>
-                            <div className="header-contact-item">
-                                <i className="fas fa-phone"></i>
-                                <span>+232 76 460 440</span>
-                            </div>
+                            {contacts.map((contact, index) => (
+                                <div key={index} className="header-contact-item">
+                                    <i className={contact.icon}></i>
+                                    <span>{contact.value}</span>
+                                </div>
+                            ))}
                         </div>
 
-                        {/* Social Icons */}
+                        {/* Social Icons — driven by Strapi */}
                         <div className="header-social-icons">
-                            <a href="#" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
-                            <a href="#" aria-label="Twitter"><i className="fab fa-twitter"></i></a>
-                            <a href="#" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
-                            <a href="#" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
-                            <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
+                            {socials.map((social, index) => (
+                                <a
+                                    key={index}
+                                    href={social.url}
+                                    aria-label={social.platform}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <i className={platformIcons[social.platform] || 'fas fa-link'}></i>
+                                </a>
+                            ))}
                         </div>
 
                         {/* Language Switcher */}

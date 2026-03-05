@@ -1,0 +1,108 @@
+{
+    "kind": "singleType",
+    "collectionName": "site_settings",
+    "info": {
+        "singularName": "site-setting",
+        "pluralName": "site-settings",
+        "displayName": "Site Setting",
+        "description": "Global site configuration — logo, contact info, social links, footer content"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "siteName": {
+            "type": "string",
+            "required": true,
+            "default": "Ministry of Health"
+        },
+        "siteTagline": {
+            "type": "string",
+            "default": "Sierra Leone"
+        },
+        "logo": {
+            "type": "media",
+            "multiple": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "logoWhite": {
+            "type": "media",
+            "multiple": false,
+            "allowedTypes": [
+                "images"
+            ],
+            "description": "White version of logo for dark backgrounds (footer)"
+        },
+        "favicon": {
+            "type": "media",
+            "multiple": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "contactInfo": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.contact-info"
+        },
+        "socialLinks": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.social-link"
+        },
+        "footerAboutText": {
+            "type": "text",
+            "default": "The Ministry of Health is committed to ensuring accessible, equitable, and affordable healthcare for all Sierra Leoneans through efficient service delivery and strong health systems."
+        },
+        "footerQuickLinks": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.nav-link"
+        },
+        "footerServiceLinks": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.nav-link"
+        },
+        "copyrightText": {
+            "type": "string",
+            "default": "© 2026 Ministry of Health, Sierra Leone. All rights reserved."
+        },
+        "privacyPolicyUrl": {
+            "type": "string",
+            "default": "/privacy-policy"
+        },
+        "termsOfUseUrl": {
+            "type": "string",
+            "default": "/terms-of-use"
+        },
+        "accessibilityUrl": {
+            "type": "string",
+            "default": "/accessibility"
+        },
+        "emergencyHotline": {
+            "type": "string",
+            "description": "Primary emergency phone number"
+        },
+        "emergencyHotlineLabel": {
+            "type": "string",
+            "default": "Emergency Hotline"
+        },
+        "googleAnalyticsId": {
+            "type": "string",
+            "description": "Google Analytics measurement ID (e.g. G-XXXXXXXXXX)"
+        },
+        "maintenanceMode": {
+            "type": "boolean",
+            "default": false,
+            "description": "When enabled, shows a maintenance page to visitors"
+        },
+        "maintenanceMessage": {
+            "type": "text",
+            "default": "We are currently performing scheduled maintenance. Please check back shortly."
+        }
+    }
+}

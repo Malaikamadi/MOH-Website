@@ -1,0 +1,57 @@
+{
+    "kind": "collectionType",
+    "collectionName": "key_services",
+    "info": {
+        "singularName": "key-service",
+        "pluralName": "key-services",
+        "displayName": "Key Service",
+        "description": "Homepage key services cards (Hospital Services, Emergency Response, etc.)"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text",
+            "required": true
+        },
+        "icon": {
+            "type": "string",
+            "required": true,
+            "description": "FontAwesome icon name (e.g. 'hospital', 'ambulance', 'user-md')"
+        },
+        "link": {
+            "type": "string",
+            "default": "#"
+        },
+        "linkText": {
+            "type": "string",
+            "default": "Learn More"
+        },
+        "image": {
+            "type": "media",
+            "multiple": false,
+            "allowedTypes": [
+                "images"
+            ],
+            "description": "Optional background/thumbnail image"
+        },
+        "order": {
+            "type": "integer",
+            "default": 0
+        },
+        "isActive": {
+            "type": "boolean",
+            "default": true
+        },
+        "color": {
+            "type": "string",
+            "description": "Optional accent color (hex code like #2ecc71)"
+        }
+    }
+}

@@ -1,10 +1,22 @@
 import { useState } from 'react';
-import { subscribeNewsletter } from '../../services/api';
+import { useApi } from '../../hooks/useApi';
+import { subscribeNewsletter, getHomepageSettings } from '../../services/api';
 
 export default function NewsletterSection() {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [message, setMessage] = useState('');
+    const { data: homepageData } = useApi(getHomepageSettings);
+
+    // Check if section should be visible
+    const showSection = homepageData?.data?.showNewsletterSection !== false;
+
+    // Get newsletter config from backend or use defaults
+    const title = homepageData?.data?.newsletterTitle || 'Stay Updated';
+    const subtitle = homepageData?.data?.newsletterSubtitle || 'Subscribe to receive the latest health news and ministry updates';
+    const placeholder = homepageData?.data?.newsletterPlaceholder || 'Enter your email address';
+    const buttonText = homepageData?.data?.newsletterButtonText || 'Subscribe';
+    const successMessage = homepageData?.data?.newsletterSuccessMessage || "Thank you for subscribing! You'll receive our latest updates.";
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -13,7 +25,7 @@ export default function NewsletterSection() {
         try {
             await subscribeNewsletter(email);
             setStatus('success');
-            setMessage('Thank you for subscribing! You\'ll receive our latest updates.');
+            setMessage(successMessage);
             setEmail('');
             // Reset success message after 5 seconds
             setTimeout(() => {
@@ -30,18 +42,20 @@ export default function NewsletterSection() {
         }
     };
 
+    if (!showSection) return null;
+
     return (
         <section className="newsletter section-sm">
             <div className="container">
                 <div className="newsletter-content">
                     <div className="newsletter-text">
-                        <h2>Stay Updated</h2>
-                        <p>Subscribe to receive the latest health news and ministry updates</p>
+                        <h2>{title}</h2>
+                        <p>{subtitle}</p>
                     </div>
                     <form className="newsletter-form" onSubmit={handleSubmit}>
                         <input
                             type="email"
-                            placeholder="Enter your email address"
+                            placeholder={placeholder}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -52,7 +66,7 @@ export default function NewsletterSection() {
                             className="btn btn-primary"
                             disabled={status === 'loading'}
                         >
-                            {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
+                            {status === 'loading' ? 'Subscribing...' : buttonText}
                         </button>
                     </form>
                     {message && (

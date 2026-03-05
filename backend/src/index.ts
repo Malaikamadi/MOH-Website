@@ -16,14 +16,21 @@ export default {
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     // Define which content types the public can READ
     const publicPermissions = [
-      // Content types - public can find and findOne
+      // ─── Collection Types (find + findOne) ─────────────────────
       { controller: 'api::hero-slide.hero-slide', actions: ['find', 'findOne'] },
       { controller: 'api::news-article.news-article', actions: ['find', 'findOne'] },
       { controller: 'api::event.event', actions: ['find', 'findOne'] },
       { controller: 'api::publication.publication', actions: ['find', 'findOne'] },
       { controller: 'api::directorate.directorate', actions: ['find', 'findOne'] },
       { controller: 'api::disease-surveillance.disease-surveillance', actions: ['find', 'findOne'] },
-      // Newsletter subscriber - public can CREATE (subscribe)
+      { controller: 'api::stat-item.stat-item', actions: ['find', 'findOne'] },
+      { controller: 'api::key-service.key-service', actions: ['find', 'findOne'] },
+
+      // ─── Single Types (find only) ─────────────────────────────
+      { controller: 'api::site-setting.site-setting', actions: ['find'] },
+      { controller: 'api::homepage-setting.homepage-setting', actions: ['find'] },
+
+      // ─── Newsletter subscriber — public can CREATE (subscribe) ─
       { controller: 'api::newsletter-subscriber.newsletter-subscriber', actions: ['create'] },
     ];
 

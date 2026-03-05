@@ -1,0 +1,106 @@
+{
+    "kind": "singleType",
+    "collectionName": "homepage_settings",
+    "info": {
+        "singularName": "homepage-setting",
+        "pluralName": "homepage-settings",
+        "displayName": "Homepage Setting",
+        "description": "Homepage section configuration — titles, subtitles, toggle sections on/off"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "heroAutoplaySpeed": {
+            "type": "integer",
+            "default": 6000,
+            "description": "Hero slider autoplay speed in milliseconds"
+        },
+        "heroTransitionEffect": {
+            "type": "enumeration",
+            "enum": [
+                "fade",
+                "slide",
+                "zoom"
+            ],
+            "default": "fade"
+        },
+        "showStatsBar": {
+            "type": "boolean",
+            "default": true,
+            "description": "Toggle stats bar visibility"
+        },
+        "servicesHeader": {
+            "type": "component",
+            "component": "shared.section-header",
+            "description": "Services section title and subtitle"
+        },
+        "showServicesSection": {
+            "type": "boolean",
+            "default": true
+        },
+        "updatesHeader": {
+            "type": "component",
+            "component": "shared.section-header",
+            "description": "Latest updates section title and subtitle"
+        },
+        "showUpdatesSection": {
+            "type": "boolean",
+            "default": true
+        },
+        "updatesPerPage": {
+            "type": "integer",
+            "default": 6,
+            "description": "Number of update cards to show"
+        },
+        "newsHeader": {
+            "type": "component",
+            "component": "shared.section-header",
+            "description": "News section title and subtitle"
+        },
+        "showNewsSection": {
+            "type": "boolean",
+            "default": true
+        },
+        "newsPerPage": {
+            "type": "integer",
+            "default": 5,
+            "description": "Number of news articles to show"
+        },
+        "pressReleasesPerPage": {
+            "type": "integer",
+            "default": 4,
+            "description": "Number of press releases in sidebar"
+        },
+        "showNewsletterSection": {
+            "type": "boolean",
+            "default": true
+        },
+        "newsletterTitle": {
+            "type": "string",
+            "default": "Stay Updated"
+        },
+        "newsletterSubtitle": {
+            "type": "text",
+            "default": "Subscribe to receive the latest health news and ministry updates"
+        },
+        "newsletterPlaceholder": {
+            "type": "string",
+            "default": "Enter your email address"
+        },
+        "newsletterButtonText": {
+            "type": "string",
+            "default": "Subscribe"
+        },
+        "newsletterSuccessMessage": {
+            "type": "text",
+            "default": "Thank you for subscribing! You'll receive our latest updates."
+        },
+        "seo": {
+            "type": "component",
+            "component": "shared.seo",
+            "description": "SEO metadata for the homepage"
+        }
+    }
+}

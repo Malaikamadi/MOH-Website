@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { getLatestUpdates, getMediaUrl } from '../../services/api';
+import { getLatestUpdates, getHomepageSettings, getMediaUrl } from '../../services/api';
 import type { NewsArticle } from '../../services/api';
 
 type UpdateType = 'all' | 'news' | 'videos' | 'events' | 'publications';
@@ -111,7 +111,20 @@ function transformApiData(item: NewsArticle & { id: number; documentId: string }
 
 export default function UpdatesSection() {
     const [activeTab, setActiveTab] = useState<UpdateType>('all');
-    const { data: apiData } = useApi(() => getLatestUpdates({ limit: 12 }));
+    const { data: homepageData } = useApi(getHomepageSettings);
+
+    // Check if section should be visible
+    const showSection = homepageData?.data?.showUpdatesSection !== false;
+
+    // Get section header from backend or use defaults
+    const sectionHeader = homepageData?.data?.updatesHeader;
+    const sectionBadge = sectionHeader?.badge || 'Stay Informed';
+    const sectionBadgeIcon = sectionHeader?.badgeIcon || 'bell';
+    const sectionTitle = sectionHeader?.title || 'Latest Updates';
+    const sectionSubtitle = sectionHeader?.subtitle || 'Stay connected with the latest news, events, videos, and publications from the Ministry';
+    const updatesLimit = homepageData?.data?.updatesPerPage || 12;
+
+    const { data: apiData } = useApi(() => getLatestUpdates({ limit: updatesLimit }));
 
     // Use API data if available, otherwise fallback to static
     const updates = useMemo(() => {
@@ -125,15 +138,17 @@ export default function UpdatesSection() {
         ? updates
         : updates.filter(update => update.type === activeTab);
 
+    if (!showSection) return null;
+
     return (
         <section className="latest-updates-section section">
             <div className="container">
                 <div className="section-header">
                     <span className="section-badge">
-                        <i className="fas fa-bell"></i> Stay Informed
+                        <i className={`fas fa-${sectionBadgeIcon}`}></i> {sectionBadge}
                     </span>
-                    <h2>Latest Updates</h2>
-                    <p>Stay connected with the latest news, events, videos, and publications from the Ministry</p>
+                    <h2>{sectionTitle}</h2>
+                    <p>{sectionSubtitle}</p>
                 </div>
 
                 {/* Tab Navigation */}

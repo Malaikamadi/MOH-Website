@@ -1,0 +1,31 @@
+{
+    "collectionName": "components_shared_nav_links",
+    "info": {
+        "displayName": "Nav Link",
+        "icon": "bars",
+        "description": "Navigation menu link item"
+    },
+    "options": {},
+    "attributes": {
+        "label": {
+            "type": "string",
+            "required": true
+        },
+        "url": {
+            "type": "string",
+            "required": true
+        },
+        "icon": {
+            "type": "string",
+            "description": "FontAwesome icon name"
+        },
+        "openInNewTab": {
+            "type": "boolean",
+            "default": false
+        },
+        "order": {
+            "type": "integer",
+            "default": 0
+        }
+    }
+}
