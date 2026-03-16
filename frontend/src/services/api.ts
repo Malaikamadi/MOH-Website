@@ -228,6 +228,9 @@ export interface LeadershipMember {
     order: number;
     isMinister: boolean;
     stats: StatItem[];
+    education: string;
+    experience: string;
+    focusAreas: string;
 }
 
 export interface DiseaseSurveillance {

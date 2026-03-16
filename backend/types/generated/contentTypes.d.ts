@@ -708,6 +708,9 @@ export interface ApiLeadershipMemberLeadershipMember
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     credentials: Schema.Attribute.String;
+    education: Schema.Attribute.String;
+    experience: Schema.Attribute.String;
+    focusAreas: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images'>;
     isMinister: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;

@@ -18,10 +18,6 @@ const fallbackNav: NavItem[] = [
         { label: 'Emergency Medical Services', url: '/directorates/nems', icon: 'ambulance' },
         { label: 'Support Services', url: '/directorates/ss', icon: 'cogs' },
     ]},
-    { label: 'Emergency', url: '#', children: [
-        { label: 'Emergency Response', url: '#', icon: 'ambulance' },
-        { label: 'Emergency Hotlines', url: '#', icon: 'phone-alt' },
-    ]},
     { label: 'Media', url: '/media', children: [
         { label: 'Newsroom', url: '/newsroom', icon: 'rss' },
         { label: 'Events', url: '/events', icon: 'calendar-alt' },

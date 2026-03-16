@@ -5,6 +5,8 @@ import DirectoratePage from './pages/DirectoratePage'
 import DirectorateDetailPage from './pages/DirectorateDetailPage'
 import EmergencyPage from './pages/EmergencyPage'
 import FindFacilityPage from './pages/FindFacilityPage'
+import ContactPage from './pages/ContactPage'
+import JobPortalPage from './pages/JobPortalPage'
 import FloatingButtons from './components/layout/FloatingButtons'
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
         <Route path="/directorates/:slug" element={<DirectorateDetailPage />} />
         <Route path="/emergency" element={<EmergencyPage />} />
         <Route path="/find-facility" element={<FindFacilityPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/jobs" element={<JobPortalPage />} />
       </Routes>
     </BrowserRouter>
   )

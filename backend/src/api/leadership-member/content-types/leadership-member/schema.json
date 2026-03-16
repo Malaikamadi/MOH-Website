@@ -44,6 +44,15 @@
             "type": "component",
             "repeatable": true,
             "component": "shared.stat-item"
+        },
+        "education": {
+            "type": "string"
+        },
+        "experience": {
+            "type": "string"
+        },
+        "focusAreas": {
+            "type": "string"
         }
     }
 }
