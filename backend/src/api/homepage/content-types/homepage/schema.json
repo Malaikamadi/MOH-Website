@@ -1,0 +1,42 @@
+{
+    "kind": "singleType",
+    "collectionName": "homepages",
+    "info": {
+        "singularName": "homepage",
+        "pluralName": "homepages",
+        "displayName": "Homepage",
+        "description": "Homepage content: stats bar, services section, newsletter copy"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "statsBar": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.stat-item"
+        },
+        "services": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.service-card"
+        },
+        "newsletterTitle": {
+            "type": "string",
+            "default": "Stay Updated"
+        },
+        "newsletterSubtitle": {
+            "type": "text",
+            "default": "Subscribe to receive the latest health news and ministry updates directly in your inbox."
+        },
+        "newsletterButtonText": {
+            "type": "string",
+            "default": "Subscribe"
+        },
+        "newsletterPlaceholder": {
+            "type": "string",
+            "default": "Enter your email address"
+        }
+    }
+}

@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useApi } from '../../hooks/useApi';
 import { getNewsArticles, getMediaUrl } from '../../services/api';
-import type { NewsArticle } from '../../services/api';
+import type { NewsArticle, StrapiItem } from '../../services/api';
 
-// Static fallback data
-const fallbackNewsItems = [
+type NewsFilter = 'all' | 'breaking' | 'latest' | 'press' | 'public';
+
+const fallbackFeatured = [
     {
         image: '/images/news-1.jpg',
         fallbackImage: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=600&h=500&fit=crop',
@@ -12,8 +13,17 @@ const fallbackNewsItems = [
         title: 'New Maternal Health Program Launched Across All Districts',
         description: 'The Ministry has rolled out an enhanced maternal health program aimed at reducing maternal mortality rates nationwide. This comprehensive initiative includes training for midwives, new equipment for health facilities, and community outreach programs.',
         date: 'January 5, 2026',
-        slug: '#'
-    }
+        slug: '#',
+    },
+    {
+        image: '/images/news-2.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=500&fit=crop',
+        category: 'Breaking News',
+        title: 'Free Healthcare Initiative Expands to Cover Adolescents',
+        description: 'The government extends the Free Healthcare Initiative to include adolescents aged 10-19, ensuring comprehensive healthcare access for Sierra Leone\'s youth population.',
+        date: 'January 12, 2026',
+        slug: '#',
+    },
 ];
 
 const fallbackPressReleases = [
@@ -26,21 +36,21 @@ const fallbackPressReleases = [
     },
     {
         image: '/images/slide-3.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=100&h=80&fit=crop',
+        fallbackImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=100&h=80&fit=crop',
         tag: 'Press Release',
         title: 'HMIS Platform Upgrade Improves Health Data Management',
         description: 'Real-time data collection across all health facilities now enabled.',
     },
     {
-        image: '/images/minister.jpg',
+        image: '/images/hub2.png',
         fallbackImage: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=80&fit=crop',
         tag: 'Announcement',
         title: 'Ministry Partners with WHO for Disease Prevention',
         description: 'New partnership to strengthen health systems nationwide.',
-    }
+    },
 ];
 
-function transformNewsItem(item: NewsArticle & { id: number; documentId: string }) {
+function transformFeatured(item: StrapiItem<NewsArticle>) {
     const imageUrl = getMediaUrl(item.coverImage);
     const dateStr = item.publishedDate
         ? new Date(item.publishedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
@@ -51,57 +61,66 @@ function transformNewsItem(item: NewsArticle & { id: number; documentId: string 
         fallbackImage: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=600&h=500&fit=crop',
         category: item.category || 'Latest News',
         title: item.title,
-        description: item.summary || item.content?.substring(0, 200) + '...' || '',
+        description: item.summary || '',
         date: dateStr,
         slug: item.slug || '#',
-        tag: item.category || 'Latest News',
+    };
+}
+
+function transformPress(item: StrapiItem<NewsArticle>) {
+    const imageUrl = getMediaUrl(item.coverImage);
+    return {
+        image: imageUrl || '/images/news-1.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1632053003385-245e3897eeea?w=100&h=80&fit=crop',
+        tag: item.category || 'Press Release',
+        title: item.title,
+        description: item.summary || '',
     };
 }
 
 export default function NewsSection() {
     const [activeSlide, setActiveSlide] = useState(0);
-    const [activeFilter, setActiveFilter] = useState('all');
+    const [activeFilter, setActiveFilter] = useState<NewsFilter>('all');
 
-    // Fetch all news
     const { data: newsData } = useApi(
         () => getNewsArticles({ limit: 5 })
     );
 
-    // Fetch press releases
     const { data: pressData } = useApi(
         () => getNewsArticles({ category: 'Press Release', limit: 4 })
     );
 
-    const newsItems = useMemo(() => {
+    const featuredItems = useMemo(() => {
         if (newsData?.data && newsData.data.length > 0) {
-            return newsData.data.map(transformNewsItem);
+            return newsData.data.map(transformFeatured);
         }
-        return fallbackNewsItems;
+        return fallbackFeatured;
     }, [newsData]);
 
     const pressReleases = useMemo(() => {
         if (pressData?.data && pressData.data.length > 0) {
-            return pressData.data.map(transformNewsItem);
+            return pressData.data.map(transformPress);
         }
         return fallbackPressReleases;
     }, [pressData]);
 
+    const currentSlide = featuredItems[activeSlide] || featuredItems[0];
+
     const nextSlide = () => {
-        setActiveSlide((prev) => (prev + 1) % newsItems.length);
+        setActiveSlide((prev) => (prev + 1) % featuredItems.length);
     };
 
     const prevSlide = () => {
-        setActiveSlide((prev) => (prev - 1 + newsItems.length) % newsItems.length);
+        setActiveSlide((prev) => (prev - 1 + featuredItems.length) % featuredItems.length);
     };
 
-    const filters = ['all', 'breaking', 'latest', 'press', 'public'];
-    const filterLabels: Record<string, string> = {
-        all: 'All',
-        breaking: 'Breaking News',
-        latest: 'Latest News',
-        press: 'Press Release',
-        public: 'Public Notice',
-    };
+    const filters: { key: NewsFilter; label: string }[] = [
+        { key: 'all', label: 'All' },
+        { key: 'breaking', label: 'Breaking News' },
+        { key: 'latest', label: 'Latest News' },
+        { key: 'press', label: 'Press Release' },
+        { key: 'public', label: 'Public Notice' },
+    ];
 
     return (
         <section className="news-section section">
@@ -113,13 +132,13 @@ export default function NewsSection() {
 
                 {/* News Filter Tabs */}
                 <div className="news-filter-tabs">
-                    {filters.map((filter) => (
+                    {filters.map((f) => (
                         <button
-                            key={filter}
-                            className={`news-tab ${activeFilter === filter ? 'active' : ''}`}
-                            onClick={() => setActiveFilter(filter)}
+                            key={f.key}
+                            className={`news-tab ${activeFilter === f.key ? 'active' : ''}`}
+                            onClick={() => setActiveFilter(f.key)}
                         >
-                            {filterLabels[filter]}
+                            {f.label}
                         </button>
                     ))}
                 </div>
@@ -128,31 +147,26 @@ export default function NewsSection() {
                     {/* Featured Article Slider */}
                     <div className="featured-news">
                         <div className="featured-slider">
-                            {newsItems.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className={`featured-slide ${index === activeSlide ? 'active' : ''}`}
-                                >
-                                    <div className="featured-image">
-                                        <img
-                                            src={item.image}
-                                            alt={item.title}
-                                            onError={(e) => e.currentTarget.src = item.fallbackImage}
-                                        />
-                                    </div>
-                                    <div className="featured-content">
-                                        <span className="featured-category">{item.category}</span>
-                                        <h3>{item.title}</h3>
-                                        <p>{item.description}</p>
-                                        <div className="featured-meta">
-                                            <span><i className="far fa-calendar"></i> {item.date}</span>
-                                        </div>
-                                        <a href={`/newsroom/${item.slug}`} className="btn btn-primary">
-                                            Read Full Story <i className="fas fa-arrow-right"></i>
-                                        </a>
-                                    </div>
+                            <div className="featured-slide active">
+                                <div className="featured-image">
+                                    <img
+                                        src={currentSlide.image}
+                                        alt={currentSlide.title}
+                                        onError={(e) => { e.currentTarget.src = currentSlide.fallbackImage; }}
+                                    />
                                 </div>
-                            ))}
+                                <div className="featured-content">
+                                    <span className="featured-category">{currentSlide.category}</span>
+                                    <h3>{currentSlide.title}</h3>
+                                    <p>{currentSlide.description}</p>
+                                    <div className="featured-meta">
+                                        <span><i className="far fa-calendar"></i> {currentSlide.date}</span>
+                                    </div>
+                                    <a href={`/newsroom/${currentSlide.slug}`} className="btn btn-primary">
+                                        Read Full Story <i className="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <div className="featured-nav">
                             <button className="featured-nav-btn prev" onClick={prevSlide}>
@@ -174,7 +188,7 @@ export default function NewsSection() {
                                     <img
                                         src={item.image}
                                         alt={item.title}
-                                        onError={(e) => e.currentTarget.src = item.fallbackImage}
+                                        onError={(e) => { e.currentTarget.src = item.fallbackImage; }}
                                     />
                                 </div>
                                 <div className="press-content">

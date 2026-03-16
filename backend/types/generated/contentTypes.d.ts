@@ -430,6 +430,46 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
+  collectionName: 'about_pages';
+  info: {
+    description: 'About page content: overview, mission, vision, core values';
+    displayName: 'About Page';
+    pluralName: 'about-pages';
+    singularName: 'about-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    coreValues: Schema.Attribute.Component<'shared.highlight', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    highlights: Schema.Attribute.Component<'shared.highlight', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::about-page.about-page'
+    > &
+      Schema.Attribute.Private;
+    missionText: Schema.Attribute.RichText;
+    overviewBadge: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Serving Sierra Leone Since 1961'>;
+    overviewBodyText: Schema.Attribute.RichText;
+    overviewHeadline: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Building a Healthier Sierra Leone'>;
+    overviewImage: Schema.Attribute.Media<'images'>;
+    overviewLeadText: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    stats: Schema.Attribute.Component<'shared.stat-item', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visionText: Schema.Attribute.RichText;
+  };
+}
+
 export interface ApiDirectorateDirectorate extends Struct.CollectionTypeSchema {
   collectionName: 'directorates';
   info: {
@@ -583,7 +623,7 @@ export interface ApiHeroSlideHeroSlide extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
-    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images'>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -606,6 +646,81 @@ export interface ApiHeroSlideHeroSlide extends Struct.CollectionTypeSchema {
     secondaryButtonText: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Contact Us'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
+  collectionName: 'homepages';
+  info: {
+    description: 'Homepage content: stats bar, services section, newsletter copy';
+    displayName: 'Homepage';
+    pluralName: 'homepages';
+    singularName: 'homepage';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::homepage.homepage'
+    > &
+      Schema.Attribute.Private;
+    newsletterButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Subscribe'>;
+    newsletterPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Enter your email address'>;
+    newsletterSubtitle: Schema.Attribute.Text &
+      Schema.Attribute.DefaultTo<'Subscribe to receive the latest health news and ministry updates directly in your inbox.'>;
+    newsletterTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Stay Updated'>;
+    publishedAt: Schema.Attribute.DateTime;
+    services: Schema.Attribute.Component<'shared.service-card', true>;
+    statsBar: Schema.Attribute.Component<'shared.stat-item', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiLeadershipMemberLeadershipMember
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'leadership_members';
+  info: {
+    description: 'Ministry leadership: Minister, deputies, CMO, and executive team';
+    displayName: 'Leadership Member';
+    pluralName: 'leadership-members';
+    singularName: 'leadership-member';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    bio: Schema.Attribute.RichText;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    credentials: Schema.Attribute.String;
+    image: Schema.Attribute.Media<'images'>;
+    isMinister: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::leadership-member.leadership-member'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    position: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    stats: Schema.Attribute.Component<'shared.stat-item', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -754,6 +869,56 @@ export interface ApiPublicationPublication extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     year: Schema.Attribute.Integer;
+  };
+}
+
+export interface ApiSiteSettingSiteSetting extends Struct.SingleTypeSchema {
+  collectionName: 'site_settings';
+  info: {
+    description: 'Global site configuration: branding, contact, social links, footer, navigation';
+    displayName: 'Site Settings';
+    pluralName: 'site-settings';
+    singularName: 'site-setting';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    contactAddress: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'4th & 5th Floor, Youyi Building, Freetown'>;
+    contactEmail: Schema.Attribute.Email &
+      Schema.Attribute.DefaultTo<'info@mohs.gov.sl'>;
+    contactPhone: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'+232 76 460 440'>;
+    copyrightText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'\u00A9 2026 Ministry of Health, Sierra Leone. All rights reserved.'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    footerAboutText: Schema.Attribute.Text &
+      Schema.Attribute.DefaultTo<'The Ministry of Health is committed to ensuring accessible, affordable, and quality healthcare services for all Sierra Leoneans through evidence-based policies and programs.'>;
+    footerQuickLinks: Schema.Attribute.Component<'shared.link-item', true>;
+    footerServiceLinks: Schema.Attribute.Component<'shared.link-item', true>;
+    legalLinks: Schema.Attribute.Component<'shared.link-item', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::site-setting.site-setting'
+    > &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images'>;
+    logoWhite: Schema.Attribute.Media<'images'>;
+    mainNavigation: Schema.Attribute.JSON;
+    ministryName: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Ministry of Health'>;
+    ministryTagline: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Sierra Leone'>;
+    publishedAt: Schema.Attribute.DateTime;
+    socialLinks: Schema.Attribute.Component<'shared.social-link', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1267,13 +1432,17 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::about-page.about-page': ApiAboutPageAboutPage;
       'api::directorate.directorate': ApiDirectorateDirectorate;
       'api::disease-surveillance.disease-surveillance': ApiDiseaseSurveillanceDiseaseSurveillance;
       'api::event.event': ApiEventEvent;
       'api::hero-slide.hero-slide': ApiHeroSlideHeroSlide;
+      'api::homepage.homepage': ApiHomepageHomepage;
+      'api::leadership-member.leadership-member': ApiLeadershipMemberLeadershipMember;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::newsletter-subscriber.newsletter-subscriber': ApiNewsletterSubscriberNewsletterSubscriber;
       'api::publication.publication': ApiPublicationPublication;
+      'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

@@ -1,0 +1,22 @@
+{
+    "collectionName": "components_shared_highlights",
+    "info": {
+        "displayName": "Highlight",
+        "icon": "star",
+        "description": "A highlight/value with icon, title, and description"
+    },
+    "attributes": {
+        "icon": {
+            "type": "string",
+            "required": true
+        },
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text",
+            "required": true
+        }
+    }
+}

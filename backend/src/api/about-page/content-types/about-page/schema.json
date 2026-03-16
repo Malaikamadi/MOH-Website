@@ -1,0 +1,57 @@
+{
+    "kind": "singleType",
+    "collectionName": "about_pages",
+    "info": {
+        "singularName": "about-page",
+        "pluralName": "about-pages",
+        "displayName": "About Page",
+        "description": "About page content: overview, mission, vision, core values"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "overviewBadge": {
+            "type": "string",
+            "default": "Serving Sierra Leone Since 1961"
+        },
+        "overviewHeadline": {
+            "type": "string",
+            "default": "Building a Healthier Sierra Leone"
+        },
+        "overviewLeadText": {
+            "type": "text"
+        },
+        "overviewBodyText": {
+            "type": "richtext"
+        },
+        "overviewImage": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": ["images"]
+        },
+        "highlights": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.highlight"
+        },
+        "stats": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.stat-item"
+        },
+        "missionText": {
+            "type": "richtext"
+        },
+        "visionText": {
+            "type": "richtext"
+        },
+        "coreValues": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.highlight"
+        }
+    }
+}

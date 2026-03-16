@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { subscribeNewsletter } from '../../services/api';
+import { useApi } from '../../hooks/useApi';
+import { subscribeNewsletter, getHomepage } from '../../services/api';
 
 export default function NewsletterSection() {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [message, setMessage] = useState('');
+    const { data: homepageRes } = useApi(getHomepage);
+    const hp = homepageRes?.data;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,13 +38,13 @@ export default function NewsletterSection() {
             <div className="container">
                 <div className="newsletter-content">
                     <div className="newsletter-text">
-                        <h2>Stay Updated</h2>
-                        <p>Subscribe to receive the latest health news and ministry updates</p>
+                        <h2>{hp?.newsletterTitle || 'Stay Updated'}</h2>
+                        <p>{hp?.newsletterSubtitle || 'Subscribe to receive the latest health news and ministry updates'}</p>
                     </div>
                     <form className="newsletter-form" onSubmit={handleSubmit}>
                         <input
                             type="email"
-                            placeholder="Enter your email address"
+                            placeholder={hp?.newsletterPlaceholder || 'Enter your email address'}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -52,7 +55,7 @@ export default function NewsletterSection() {
                             className="btn btn-primary"
                             disabled={status === 'loading'}
                         >
-                            {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
+                            {status === 'loading' ? 'Subscribing...' : (hp?.newsletterButtonText || 'Subscribe')}
                         </button>
                     </form>
                     {message && (

@@ -1,0 +1,25 @@
+{
+    "collectionName": "components_shared_service_cards",
+    "info": {
+        "displayName": "Service Card",
+        "icon": "grid",
+        "description": "A service card with icon, title, description, and link"
+    },
+    "attributes": {
+        "icon": {
+            "type": "string",
+            "required": true
+        },
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text",
+            "required": true
+        },
+        "link": {
+            "type": "string"
+        }
+    }
+}

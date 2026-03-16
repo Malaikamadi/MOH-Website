@@ -5,7 +5,7 @@ import type { NewsArticle } from '../../services/api';
 
 type UpdateType = 'all' | 'news' | 'videos' | 'events' | 'publications';
 
-// Static fallback data (shown when API has no content)
+// Static fallback data
 const fallbackUpdates = [
     {
         type: 'news',
@@ -15,10 +15,7 @@ const fallbackUpdates = [
         title: 'Minister Launches New Healthcare Initiative',
         description: 'Dr. Austin Demby announces expanded healthcare access program for rural communities...',
         link: '#',
-        linkText: 'Read More',
-        hasPlayButton: false,
-        isPDF: false,
-        dateIcon: 'clock'
+        linkText: 'Read More'
     },
     {
         type: 'videos',
@@ -29,9 +26,7 @@ const fallbackUpdates = [
         description: 'Watch the highlights of our key health sector accomplishments in 2025...',
         link: '#',
         linkText: 'Watch Video',
-        hasPlayButton: true,
-        isPDF: false,
-        dateIcon: 'clock'
+        hasPlayButton: true
     },
     {
         type: 'events',
@@ -42,8 +37,7 @@ const fallbackUpdates = [
         description: 'Join us for the nationwide vaccination drive launch with WHO and UNICEF...',
         link: '#',
         linkText: 'Register Now',
-        hasPlayButton: false,
-        isPDF: false,
+        eventDate: { day: '25', month: 'JAN' },
         dateIcon: 'map-marker-alt'
     },
     {
@@ -55,7 +49,6 @@ const fallbackUpdates = [
         description: 'Comprehensive report on healthcare indicators, achievements and challenges...',
         link: '#',
         linkText: 'Download',
-        hasPlayButton: false,
         isPDF: true,
         dateIcon: 'file'
     },
@@ -67,10 +60,7 @@ const fallbackUpdates = [
         title: 'New Medical Equipment Arrives at Regional Hospitals',
         description: 'State-of-the-art diagnostic equipment now available across multiple districts...',
         link: '#',
-        linkText: 'Read More',
-        hasPlayButton: false,
-        isPDF: false,
-        dateIcon: 'clock'
+        linkText: 'Read More'
     },
     {
         type: 'videos',
@@ -81,13 +71,11 @@ const fallbackUpdates = [
         description: 'Meet the dedicated CHWs serving rural communities across Sierra Leone...',
         link: '#',
         linkText: 'Watch Video',
-        hasPlayButton: true,
-        isPDF: false,
-        dateIcon: 'clock'
+        hasPlayButton: true
     }
 ];
 
-function transformApiData(item: NewsArticle & { id: number; documentId: string }) {
+function transformApiData(item: NewsArticle & { id: number }) {
     const contentType = item.contentType || 'news';
     const imageUrl = getMediaUrl(item.coverImage);
     const dateStr = item.publishedDate
@@ -113,7 +101,7 @@ export default function UpdatesSection() {
     const [activeTab, setActiveTab] = useState<UpdateType>('all');
     const { data: apiData } = useApi(() => getLatestUpdates({ limit: 12 }));
 
-    // Use API data if available, otherwise fallback to static
+    // Use API data if available, otherwise fallback
     const updates = useMemo(() => {
         if (apiData?.data && apiData.data.length > 0) {
             return apiData.data.map(transformApiData);
@@ -129,9 +117,6 @@ export default function UpdatesSection() {
         <section className="latest-updates-section section">
             <div className="container">
                 <div className="section-header">
-                    <span className="section-badge">
-                        <i className="fas fa-bell"></i> Stay Informed
-                    </span>
                     <h2>Latest Updates</h2>
                     <p>Stay connected with the latest news, events, videos, and publications from the Ministry</p>
                 </div>
@@ -189,7 +174,7 @@ export default function UpdatesSection() {
                                     <img
                                         src={update.image}
                                         alt={update.title}
-                                        onError={(e) => e.currentTarget.src = update.fallbackImage}
+                                        onError={(e) => { e.currentTarget.src = update.fallbackImage; }}
                                     />
                                     {update.hasPlayButton && (
                                         <div className="play-overlay">

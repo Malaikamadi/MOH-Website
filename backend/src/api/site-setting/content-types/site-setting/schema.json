@@ -1,0 +1,81 @@
+{
+    "kind": "singleType",
+    "collectionName": "site_settings",
+    "info": {
+        "singularName": "site-setting",
+        "pluralName": "site-settings",
+        "displayName": "Site Settings",
+        "description": "Global site configuration: branding, contact, social links, footer, navigation"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "ministryName": {
+            "type": "string",
+            "required": true,
+            "default": "Ministry of Health"
+        },
+        "ministryTagline": {
+            "type": "string",
+            "default": "Sierra Leone"
+        },
+        "logo": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": ["images"]
+        },
+        "logoWhite": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": ["images"]
+        },
+        "contactAddress": {
+            "type": "string",
+            "default": "4th & 5th Floor, Youyi Building, Freetown"
+        },
+        "contactEmail": {
+            "type": "email",
+            "default": "info@mohs.gov.sl"
+        },
+        "contactPhone": {
+            "type": "string",
+            "default": "+232 76 460 440"
+        },
+        "socialLinks": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.social-link"
+        },
+        "mainNavigation": {
+            "type": "json",
+            "required": false
+        },
+        "footerAboutText": {
+            "type": "text",
+            "default": "The Ministry of Health is committed to ensuring accessible, affordable, and quality healthcare services for all Sierra Leoneans through evidence-based policies and programs."
+        },
+        "footerQuickLinks": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.link-item"
+        },
+        "footerServiceLinks": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.link-item"
+        },
+        "copyrightText": {
+            "type": "string",
+            "default": "© 2026 Ministry of Health, Sierra Leone. All rights reserved."
+        },
+        "legalLinks": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.link-item"
+        }
+    }
+}

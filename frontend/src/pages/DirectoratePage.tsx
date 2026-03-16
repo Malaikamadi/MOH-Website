@@ -1,21 +1,34 @@
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
+import { useApi } from '../hooks/useApi';
+import { getDirectorates } from '../services/api';
+
+const fallbackDirectorates = [
+    { acronym: 'DPPI', name: 'Policy, Planning & Information', icon: 'chart-line', link: '/directorates/dppi' },
+    { acronym: 'RCH', name: 'Reproductive & Child Health', icon: 'baby', link: '/directorates/rch' },
+    { acronym: 'PHC', name: 'Primary Health Care', icon: 'hospital', link: '/directorates/phc' },
+    { acronym: 'DPC', name: 'Disease Prevention and Control', icon: 'virus', link: '/directorates/dpc' },
+    { acronym: 'NEMS', name: 'National Emergency Medical Services', icon: 'ambulance', link: '/directorates/nems' },
+    { acronym: 'SS', name: 'Support Services', icon: 'cogs', link: '/directorates/ss' },
+    { acronym: 'NM', name: 'Nursing and Midwifery', icon: 'user-nurse', link: '/directorates/nm' },
+    { acronym: 'NCD & MH', name: 'NCD and Mental Health', icon: 'brain', link: '/directorates/ncdandmh' },
+    { acronym: 'PS', name: 'Pharmaceutical Services', icon: 'pills', link: '/directorates/ps' },
+    { acronym: 'HRM', name: 'Human Resource Management', icon: 'users', link: '/directorates/hrm' },
+    { acronym: 'EHC', name: 'Environmental Health and Sanitation', icon: 'leaf', link: '/directorates/ehc' },
+    { acronym: 'FN', name: 'Food and Nutrition', icon: 'utensils', link: '/directorates/fn' },
+];
 
 export default function DirectoratePage() {
-    const directorates = [
-        { acronym: 'DPPI', name: 'Policy, Planning & Information', icon: 'chart-line', link: '/directorates/dppi' },
-        { acronym: 'RCH', name: 'Reproductive & Child Health', icon: 'baby', link: '/directorates/rch' },
-        { acronym: 'PHC', name: 'Primary Health Care', icon: 'hospital', link: '/directorates/phc' },
-        { acronym: 'DPC', name: 'Disease Prevention and Control', icon: 'virus', link: '/directorates/dpc' },
-        { acronym: 'NEMS', name: 'National Emergency Medical Services', icon: 'ambulance', link: '/directorates/nems' },
-        { acronym: 'SS', name: 'Support Services', icon: 'cogs', link: '/directorates/ss' },
-        { acronym: 'NM', name: 'Nursing and Midwifery', icon: 'nurse', link: '/directorates/nm' },
-        { acronym: 'NCD & MH', name: 'NCD and Mental Health', icon: 'brain', link: '/directorates/ncdandmh' },
-        { acronym: 'PS', name: 'Pharmaceutical Services', icon: 'pharmacy', link: '/directorates/ps' },
-        { acronym: 'HRM', name: 'Human Resource Management', icon: 'user-tie', link: '/directorates/hrm' },
-        { acronym: 'EHC', name: 'Environmental Health and Sanitation', icon: 'sanitation', link: '/directorates/ehc' },
-        { acronym: 'FN', name: 'Food and Nutrition', icon: 'food', link: '/directorates/fn' },
-    ];
+    const { data: dirRes } = useApi(getDirectorates);
+
+    const directorates = dirRes?.data?.length
+        ? dirRes.data.map(d => ({
+            acronym: d.name,
+            name: d.fullName,
+            icon: d.icon,
+            link: `/directorates/${d.slug}`,
+        }))
+        : fallbackDirectorates;
 
     return (
         <>

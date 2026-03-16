@@ -1,20 +1,16 @@
 /**
- * Strapi v5 API Service
+ * Strapi API Service
  * 
  * Central service for all API calls to the Strapi backend.
- * Strapi v5 returns FLAT data (no attributes wrapper).
- * 
- * v4 format: { data: [{ id: 1, attributes: { title: "..." } }] }
- * v5 format: { data: [{ id: 1, title: "...", documentId: "..." }] }
+ * All content types have public READ access configured via bootstrap.
  */
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337';
-const API_TOKEN = import.meta.env.VITE_API_TOKEN || '';
 
-// ─── Types (Strapi v5 - flat format) ─────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────
 
 export interface StrapiResponse<T> {
-    data: (T & { id: number; documentId: string })[];
+    data: StrapiItem<T>[];
     meta: {
         pagination: {
             page: number;
@@ -26,11 +22,18 @@ export interface StrapiResponse<T> {
 }
 
 export interface StrapiSingleResponse<T> {
-    data: T & { id: number; documentId: string };
+    data: StrapiItem<T>;
     meta: {};
 }
 
-// Strapi v5 media is flat — no attributes wrapper
+export type StrapiItem<T> = {
+    id: number;
+    documentId: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+} & T;
+
 export interface StrapiMedia {
     id: number;
     documentId: string;
@@ -40,10 +43,10 @@ export interface StrapiMedia {
     width?: number;
     height?: number;
     formats?: {
-        thumbnail?: { url: string; width: number; height: number };
-        small?: { url: string; width: number; height: number };
-        medium?: { url: string; width: number; height: number };
-        large?: { url: string; width: number; height: number };
+        thumbnail?: { url: string };
+        small?: { url: string };
+        medium?: { url: string };
+        large?: { url: string };
     };
 }
 
@@ -70,7 +73,7 @@ export interface NewsArticle {
     slug: string;
     summary: string;
     content: string;
-    coverImage: StrapiMedia | null;
+    coverImage: StrapiMedia;
     gallery: StrapiMedia[];
     category: 'Breaking News' | 'Latest News' | 'Press Release' | 'Public Notice' | 'Announcement' | 'Health Initiative';
     contentType: 'news' | 'video' | 'event' | 'publication';
@@ -89,7 +92,7 @@ export interface Event {
     location: string;
     eventStartDate: string;
     eventEndDate: string;
-    coverImage: StrapiMedia | null;
+    coverImage: StrapiMedia;
     registrationLink: string;
     organizer: string;
     featured: boolean;
@@ -103,7 +106,7 @@ export interface Publication {
     coverImage: StrapiMedia | null;
     publishDate: string;
     year: number;
-    directorate: Directorate | null;
+    directorate: StrapiItem<Directorate> | null;
 }
 
 export interface Directorate {
@@ -131,7 +134,100 @@ export interface Directorate {
     contactEmail: string;
     contactPhone: string;
     contactLocation: string;
-    publications: Publication[];
+    publications: StrapiItem<Publication>[];
+}
+
+// ─── Single Type Interfaces ──────────────────────────────────────
+
+export interface LinkItem {
+    id: number;
+    label: string;
+    url: string;
+}
+
+export interface SocialLink {
+    id: number;
+    platform: string;
+    url: string;
+    icon: string;
+}
+
+export interface StatItem {
+    id: number;
+    value: string;
+    label: string;
+    link?: string;
+}
+
+export interface ServiceCard {
+    id: number;
+    icon: string;
+    title: string;
+    description: string;
+    link?: string;
+}
+
+export interface Highlight {
+    id: number;
+    icon: string;
+    title: string;
+    description: string;
+}
+
+export interface NavItem {
+    label: string;
+    url: string;
+    children?: { label: string; url: string; icon?: string }[];
+}
+
+export interface SiteSettings {
+    ministryName: string;
+    ministryTagline: string;
+    logo: StrapiMedia | null;
+    logoWhite: StrapiMedia | null;
+    contactAddress: string;
+    contactEmail: string;
+    contactPhone: string;
+    socialLinks: SocialLink[];
+    mainNavigation: NavItem[];
+    footerAboutText: string;
+    footerQuickLinks: LinkItem[];
+    footerServiceLinks: LinkItem[];
+    copyrightText: string;
+    legalLinks: LinkItem[];
+}
+
+export interface Homepage {
+    statsBar: StatItem[];
+    services: ServiceCard[];
+    newsletterTitle: string;
+    newsletterSubtitle: string;
+    newsletterButtonText: string;
+    newsletterPlaceholder: string;
+}
+
+export interface AboutPage {
+    overviewBadge: string;
+    overviewHeadline: string;
+    overviewLeadText: string;
+    overviewBodyText: string;
+    overviewImage: StrapiMedia | null;
+    highlights: Highlight[];
+    stats: StatItem[];
+    missionText: string;
+    visionText: string;
+    coreValues: Highlight[];
+}
+
+export interface LeadershipMember {
+    name: string;
+    position: string;
+    credentials: string;
+    bio: string;
+    image: StrapiMedia | null;
+    order: number;
+    isMinister: boolean;
+    stats: StatItem[];
 }
 
 export interface DiseaseSurveillance {
@@ -151,7 +247,7 @@ export interface DiseaseSurveillance {
 // ─── Helper Functions ────────────────────────────────────────────
 
 /**
- * Get the full URL for a Strapi v5 media file (flat format)
+ * Get the full URL for a Strapi media file
  */
 export function getMediaUrl(media: StrapiMedia | null | undefined): string {
     if (!media?.url) return '';
@@ -183,12 +279,7 @@ async function fetchAPI<T>(
     const queryString = new URLSearchParams(params).toString();
     const url = `${API_URL}/api/${endpoint}${queryString ? `?${queryString}` : ''}`;
 
-    const headers: Record<string, string> = {};
-    if (API_TOKEN) {
-        headers['Authorization'] = `Bearer ${API_TOKEN}`;
-    }
-
-    const response = await fetch(url, { headers });
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error(`API error: ${response.status} ${response.statusText}`);
@@ -319,7 +410,7 @@ export async function getPublications(options?: {
  */
 export async function getDirectorates(): Promise<StrapiResponse<Directorate>> {
     return fetchAPI<StrapiResponse<Directorate>>('directorates', {
-        'populate': 'directorImage,publications',
+        'populate': '*',
     });
 }
 
@@ -328,8 +419,7 @@ export async function getDirectorates(): Promise<StrapiResponse<Directorate>> {
  */
 export async function getDirectorateBySlug(slug: string): Promise<StrapiResponse<Directorate>> {
     return fetchAPI<StrapiResponse<Directorate>>('directorates', {
-        'populate[directorImage]': '*',
-        'populate[publications][populate]': '*',
+        'populate': '*',
         'filters[slug][$eq]': slug,
     });
 }
@@ -367,16 +457,11 @@ export async function getDiseaseSurveillance(options?: {
  * Subscribe to newsletter
  */
 export async function subscribeNewsletter(email: string): Promise<StrapiSingleResponse<{ email: string }>> {
-    const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-    };
-    if (API_TOKEN) {
-        headers['Authorization'] = `Bearer ${API_TOKEN}`;
-    }
-
     const response = await fetch(`${API_URL}/api/newsletter-subscribers`, {
         method: 'POST',
-        headers,
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
             data: {
                 email,
@@ -415,4 +500,31 @@ export async function getLatestUpdates(options?: {
     }
 
     return fetchAPI<StrapiResponse<NewsArticle>>('news-articles', params);
+}
+
+// ─── Single Type & New Collection API Functions ──────────────────
+
+export async function getSiteSettings(): Promise<StrapiSingleResponse<SiteSettings>> {
+    return fetchAPI<StrapiSingleResponse<SiteSettings>>('site-setting', {
+        'populate': '*',
+    });
+}
+
+export async function getHomepage(): Promise<StrapiSingleResponse<Homepage>> {
+    return fetchAPI<StrapiSingleResponse<Homepage>>('homepage', {
+        'populate': '*',
+    });
+}
+
+export async function getAboutPage(): Promise<StrapiSingleResponse<AboutPage>> {
+    return fetchAPI<StrapiSingleResponse<AboutPage>>('about-page', {
+        'populate': '*',
+    });
+}
+
+export async function getLeadershipMembers(): Promise<StrapiResponse<LeadershipMember>> {
+    return fetchAPI<StrapiResponse<LeadershipMember>>('leadership-members', {
+        'populate': '*',
+        'sort': 'order:asc',
+    });
 }

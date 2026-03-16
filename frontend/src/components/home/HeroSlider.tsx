@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { getHeroSlides, getMediaUrl } from '../../services/api';
+import { getHeroSlides, getHomepage, getMediaUrl } from '../../services/api';
+import type { HeroSlide } from '../../services/api';
 
 // Static fallback slides (used when API has no data or is unavailable)
 const fallbackSlides = [
@@ -46,8 +47,9 @@ interface SlideData {
 export default function HeroSlider() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const { data: apiData, loading } = useApi(getHeroSlides);
+    const { data: homepageRes } = useApi(getHomepage);
+    const statsBar = homepageRes?.data?.statsBar;
 
-    // Transform Strapi v5 flat data to slide format, or use fallback
     const slides: SlideData[] = (() => {
         if (apiData?.data && apiData.data.length > 0) {
             return apiData.data.map((item) => ({
@@ -180,34 +182,20 @@ export default function HeroSlider() {
 
             {/* Stats Bar */}
             <div className="hero-stats-bar">
-                <a href="/about#districts" className="stat-item">
-                    <span className="stat-value">16</span>
-                    <span className="stat-label">Districts Served</span>
-                </a>
-                <a href="/health-facilities" className="stat-item">
-                    <span className="stat-value">1,200+</span>
-                    <span className="stat-label">Health Facilities</span>
-                </a>
-                <a href="/programs#phu" className="stat-item">
-                    <span className="stat-value">100%</span>
-                    <span className="stat-label">PHU Coverage</span>
-                </a>
-                <a href="/programs#vaccination" className="stat-item">
-                    <span className="stat-value">85%</span>
-                    <span className="stat-label">Vaccine Coverage</span>
-                </a>
-                <a href="/about#investments" className="stat-item">
-                    <span className="stat-value">$150M+</span>
-                    <span className="stat-label">Health Investment</span>
-                </a>
-                <a href="/directorates#workforce" className="stat-item">
-                    <span className="stat-value">15K+</span>
-                    <span className="stat-label">Healthcare Workers</span>
-                </a>
-                <a href="/programs" className="stat-item">
-                    <span className="stat-value">8M+</span>
-                    <span className="stat-label">Citizens Covered</span>
-                </a>
+                {(statsBar && statsBar.length > 0 ? statsBar : [
+                    { id: 1, value: '16', label: 'Districts Served', link: '/about#districts' },
+                    { id: 2, value: '1,200+', label: 'Health Facilities', link: '/health-facilities' },
+                    { id: 3, value: '100%', label: 'PHU Coverage', link: '/programs#phu' },
+                    { id: 4, value: '85%', label: 'Vaccine Coverage', link: '/programs#vaccination' },
+                    { id: 5, value: '$150M+', label: 'Health Investment', link: '/about#investments' },
+                    { id: 6, value: '15K+', label: 'Healthcare Workers', link: '/directorates#workforce' },
+                    { id: 7, value: '8M+', label: 'Citizens Covered', link: '/programs' },
+                ]).map((stat) => (
+                    <a key={stat.id} href={stat.link || '#'} className="stat-item">
+                        <span className="stat-value">{stat.value}</span>
+                        <span className="stat-label">{stat.label}</span>
+                    </a>
+                ))}
             </div>
         </section>
     );
