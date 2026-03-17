@@ -90,7 +90,7 @@ export default function Footer() {
                 </div>
 
                 <div className="footer-bottom">
-                    <p>{s?.copyrightText || '© 2026 Ministry of Health, Sierra Leone. All rights reserved.'}</p>
+                    <p>{s?.copyrightText || '\u00a9 2026 Ministry of Health, Sierra Leone. All rights reserved.'}</p>
                     <div className="footer-bottom-links">
                         {legalLinks.map((link) => (
                             <a key={link.id} href={link.url}>{link.label}</a>

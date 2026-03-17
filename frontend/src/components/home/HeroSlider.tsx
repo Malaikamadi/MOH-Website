@@ -111,7 +111,7 @@ export default function HeroSlider() {
     return (
         <section className="hero-slider" id="heroSlider">
             {/* Floating Particles Animation */}
-            <div className="floating-particles">
+            <div className="floating-particles notranslate" translate="no">
                 {[...Array(16)].map((_, i) => (
                     <div key={i} className={`particle particle-${i + 1}`}>
                         <i className={`fas fa-${['plus', 'stethoscope', 'heartbeat', 'syringe', 'shield-heart', 'heart'][i % 6]}`}></i>
@@ -154,15 +154,15 @@ export default function HeroSlider() {
             </div>
 
             {/* Slider Navigation Arrows */}
-            <button className="slider-nav slider-prev" onClick={prevSlide} aria-label="Previous slide">
+            <button className="slider-nav slider-prev notranslate" translate="no" onClick={prevSlide} aria-label="Previous slide">
                 <i className="fas fa-chevron-left"></i>
             </button>
-            <button className="slider-nav slider-next" onClick={nextSlide} aria-label="Next slide">
+            <button className="slider-nav slider-next notranslate" translate="no" onClick={nextSlide} aria-label="Next slide">
                 <i className="fas fa-chevron-right"></i>
             </button>
 
             {/* Slider Dots */}
-            <div className="slider-dots">
+            <div className="slider-dots notranslate" translate="no">
                 {slides.map((slide, index) => (
                     <button
                         key={slide.id}
@@ -174,7 +174,7 @@ export default function HeroSlider() {
             </div>
 
             {/* Vertical PREV/NEXT Navigation */}
-            <div className="slider-nav-vertical">
+            <div className="slider-nav-vertical notranslate" translate="no">
                 <span className="nav-text" onClick={prevSlide}>PREV</span>
                 <span className="nav-divider"></span>
                 <span className="nav-text" onClick={nextSlide}>NEXT</span>

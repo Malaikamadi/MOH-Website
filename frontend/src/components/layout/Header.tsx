@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useApi } from '../../hooks/useApi';
 import { getSiteSettings, getMediaUrl } from '../../services/api';
 import type { SiteSettings, NavItem } from '../../services/api';
@@ -34,15 +34,56 @@ const fallbackNav: NavItem[] = [
     { label: 'Job Portal', url: '/jobs' },
 ];
 
+interface LangOption {
+    code: string;
+    label: string;
+    flag: string;
+}
+
+const LANGUAGES: LangOption[] = [
+    { code: 'en', label: 'English', flag: '\u{1F1EC}\u{1F1E7}' },
+    { code: 'fr', label: 'Fran\u00e7ais', flag: '\u{1F1EB}\u{1F1F7}' },
+    { code: 'ar', label: '\u0627\u0644\u0639\u0631\u0628\u064A\u0629', flag: '\u{1F1F8}\u{1F1E6}' },
+    { code: 'kr', label: 'Krio', flag: '\u{1F1F8}\u{1F1F1}' },
+];
+
+function triggerGoogleTranslate(langCode: string) {
+    const gtCombo = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+    if (gtCombo) {
+        gtCombo.value = langCode === 'kr' ? 'en' : langCode;
+        gtCombo.dispatchEvent(new Event('change'));
+    }
+}
+
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+    const [currentLang, setCurrentLang] = useState('en');
+    const langRef = useRef<HTMLDivElement>(null);
     const { data: settingsRes } = useApi(getSiteSettings);
 
     const s: Partial<SiteSettings> = settingsRes?.data || {};
     const nav = s.mainNavigation?.length ? s.mainNavigation : fallbackNav;
     const socialLinks = s.socialLinks || [];
     const logoUrl = s.logo ? getMediaUrl(s.logo) : '/images/logo.png';
+
+    const currentMeta = LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0];
+
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (langRef.current && !langRef.current.contains(e.target as Node)) {
+                setLangDropdownOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    function handleLangChange(code: string) {
+        setCurrentLang(code);
+        setLangDropdownOpen(false);
+        triggerGoogleTranslate(code);
+    }
 
     return (
         <header className="header-wrapper">
@@ -88,18 +129,24 @@ export default function Header() {
                             )}
                         </div>
 
-                        <div className="language-switcher">
+                        <div className={`language-switcher notranslate ${langDropdownOpen ? 'active' : ''}`} ref={langRef} translate="no">
                             <button className="lang-btn" onClick={() => setLangDropdownOpen(!langDropdownOpen)}>
                                 <i className="fas fa-globe"></i>
-                                <span>EN</span>
+                                <span>{currentMeta.code.toUpperCase()}</span>
                                 <i className="fas fa-chevron-down"></i>
                             </button>
                             {langDropdownOpen && (
                                 <div className="lang-dropdown">
-                                    <a href="#" className="lang-option active" data-lang="en"><span className="lang-flag">🇬🇧</span><span>English</span></a>
-                                    <a href="#" className="lang-option" data-lang="fr"><span className="lang-flag">🇫🇷</span><span>Français</span></a>
-                                    <a href="#" className="lang-option" data-lang="ar"><span className="lang-flag">🇸🇦</span><span>العربية</span></a>
-                                    <a href="#" className="lang-option" data-lang="kr"><span className="lang-flag">🇸🇱</span><span>Krio</span></a>
+                                    {LANGUAGES.map((l) => (
+                                        <button
+                                            key={l.code}
+                                            className={`lang-option ${currentLang === l.code ? 'active' : ''}`}
+                                            onClick={() => handleLangChange(l.code)}
+                                        >
+                                            <span className="lang-flag">{l.flag}</span>
+                                            <span>{l.label}</span>
+                                        </button>
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -146,7 +193,6 @@ export default function Header() {
                                 );
                             })}
                         </ul>
-
                     </div>
                 </div>
             </nav>
