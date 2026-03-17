@@ -7,6 +7,10 @@ import EmergencyPage from './pages/EmergencyPage'
 import FindFacilityPage from './pages/FindFacilityPage'
 import ContactPage from './pages/ContactPage'
 import JobPortalPage from './pages/JobPortalPage'
+import NewsroomPage from './pages/NewsroomPage'
+import NewsArticlePage from './pages/NewsArticlePage'
+import EventsPage from './pages/EventsPage'
+import PressReleasesPage from './pages/PressReleasesPage'
 import FloatingButtons from './components/layout/FloatingButtons'
 
 function App() {
@@ -18,6 +22,10 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/directorates" element={<DirectoratePage />} />
         <Route path="/directorates/:slug" element={<DirectorateDetailPage />} />
+        <Route path="/newsroom" element={<NewsroomPage />} />
+        <Route path="/newsroom/:slug" element={<NewsArticlePage />} />
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/press-releases" element={<PressReleasesPage />} />
         <Route path="/emergency" element={<EmergencyPage />} />
         <Route path="/find-facility" element={<FindFacilityPage />} />
         <Route path="/contact" element={<ContactPage />} />

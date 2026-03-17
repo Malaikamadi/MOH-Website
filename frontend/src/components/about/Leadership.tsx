@@ -33,7 +33,6 @@ export default function Leadership() {
         <section className="leadership-section section" id="leadership">
             <div className="container">
                 <div className="section-header">
-                    <span className="section-badge">Our Team</span>
                     <h2>Leadership</h2>
                     <p>Meet the dedicated leaders driving healthcare transformation in Sierra Leone</p>
                 </div>

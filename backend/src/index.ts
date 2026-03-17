@@ -11,6 +11,7 @@ export default {
     await seedHomepage(strapi);
     await seedAboutPage(strapi);
     await seedLeadershipMembers(strapi);
+    await seedCommunicationsRole(strapi);
   },
 };
 
@@ -224,15 +225,18 @@ async function seedSiteSettings(strapi: Core.Strapi) {
         ]},
         { label: 'Directorates', url: '/directorates', children: [
           { label: 'DPPI', url: '/directorates/dppi', icon: 'chart-line' },
-          { label: 'Primary Health Care', url: '/directorates/phc', icon: 'heartbeat' },
           { label: 'Reproductive & Child Health', url: '/directorates/rch', icon: 'baby' },
-          { label: 'Disease Prevention', url: '/directorates/dpc', icon: 'virus-slash' },
+          { label: 'Primary Health Care', url: '/directorates/phc', icon: 'heartbeat' },
+          { label: 'Disease Prevention & Control', url: '/directorates/dpc', icon: 'virus-slash' },
           { label: 'Emergency Medical Services', url: '/directorates/nems', icon: 'ambulance' },
           { label: 'Support Services', url: '/directorates/ss', icon: 'cogs' },
-        ]},
-        { label: 'Emergency', url: '#', children: [
-          { label: 'Emergency Response', url: '#', icon: 'ambulance' },
-          { label: 'Emergency Hotlines', url: '#', icon: 'phone-alt' },
+          { label: 'Nursing & Midwifery', url: '/directorates/nm', icon: 'user-nurse' },
+          { label: 'NCD & Mental Health', url: '/directorates/ncdandmh', icon: 'brain' },
+          { label: 'Pharmaceutical Services', url: '/directorates/ps', icon: 'pills' },
+          { label: 'Human Resource Management', url: '/directorates/hrm', icon: 'users' },
+          { label: 'Training & Research', url: '/directorates/tr', icon: 'book' },
+          { label: 'Environmental Health', url: '/directorates/ehc', icon: 'leaf' },
+          { label: 'Food & Nutrition', url: '/directorates/fn', icon: 'utensils' },
         ]},
         { label: 'Media', url: '/media', children: [
           { label: 'Newsroom', url: '/newsroom', icon: 'rss' },
@@ -447,4 +451,145 @@ async function seedLeadershipMembers(strapi: Core.Strapi) {
     }
   }
   strapi.log.info('🌱 Leadership members seeded.');
+}
+
+// ─── Seed: Communications Admin Role & User ─────────────────────
+
+async function seedCommunicationsRole(strapi: Core.Strapi) {
+  const adminRoleService = strapi.service('admin::role') as any;
+  const adminUserService = strapi.service('admin::user') as any;
+
+  // Check if role already exists
+  const existingRoles = await adminRoleService.find();
+  const commsRole = existingRoles.find((r: any) => r.name === 'Communications');
+
+  let roleId: number;
+
+  if (commsRole) {
+    strapi.log.info('📋 Communications admin role exists, updating permissions...');
+    roleId = commsRole.id;
+  } else {
+    strapi.log.info('🌱 Creating Communications admin role...');
+    const newRole = await adminRoleService.create({
+      name: 'Communications',
+      code: 'strapi-communications',
+      description: 'Media content management: news articles, events, and publications. For the Communications department.',
+    });
+    roleId = newRole.id;
+  }
+
+  const contentTypeFields: Record<string, string[]> = {
+    'api::news-article.news-article': [
+      'title', 'slug', 'summary', 'content', 'coverImage', 'gallery',
+      'category', 'contentType', 'tags', 'author', 'publishedDate', 'featured', 'videoUrl',
+    ],
+    'api::event.event': [
+      'title', 'slug', 'description', 'summary', 'location',
+      'eventStartDate', 'eventEndDate', 'coverImage', 'registrationLink', 'organizer', 'featured',
+    ],
+    'api::publication.publication': [
+      'title', 'description', 'category', 'file', 'coverImage',
+      'publishDate', 'year', 'directorate',
+    ],
+  };
+
+  const crudActions = ['create', 'read', 'update', 'delete', 'publish'];
+
+  const permissions: any[] = [];
+
+  for (const [uid, fields] of Object.entries(contentTypeFields)) {
+    for (const action of crudActions) {
+      permissions.push({
+        action: `plugin::content-manager.explorer.${action}`,
+        subject: uid,
+        properties: { fields, locales: [] },
+        conditions: [],
+      });
+    }
+  }
+
+  // Read-only access to directorates (needed for Publication relation dropdown)
+  const directorateFields = [
+    'name', 'fullName', 'slug', 'icon', 'about', 'aboutExtra',
+    'statsUnits', 'statsDistricts', 'statsStaff', 'statsPartners',
+    'directorName', 'directorCredentials', 'directorImage', 'directorBio',
+    'units', 'contactEmail', 'contactPhone', 'contactLocation', 'publications',
+  ];
+  permissions.push({
+    action: 'plugin::content-manager.explorer.read',
+    subject: 'api::directorate.directorate',
+    properties: { fields: directorateFields, locales: [] },
+    conditions: [],
+  });
+
+  // Upload / media library permissions
+  permissions.push(
+    { action: 'plugin::upload.read', subject: null, properties: {}, conditions: [] },
+    { action: 'plugin::upload.assets.create', subject: null, properties: {}, conditions: [] },
+    { action: 'plugin::upload.assets.update', subject: null, properties: {}, conditions: ['admin::is-creator'] },
+    { action: 'plugin::upload.assets.download', subject: null, properties: {}, conditions: [] },
+    { action: 'plugin::upload.assets.copy-link', subject: null, properties: {}, conditions: [] },
+  );
+
+  // Content-manager configuration permissions (required to view collection types)
+  for (const uid of [...Object.keys(contentTypeFields), 'api::directorate.directorate']) {
+    permissions.push({
+      action: 'plugin::content-manager.collection-types.configure-view',
+      subject: uid,
+      properties: {},
+      conditions: [],
+    });
+  }
+
+  // Content-type-builder read permission (needed for the admin sidebar)
+  permissions.push(
+    { action: 'plugin::content-type-builder.read', subject: null, properties: {}, conditions: [] },
+  );
+
+  try {
+    await adminRoleService.assignPermissions(roleId, permissions);
+    strapi.log.info('✅ Communications admin role permissions configured.');
+  } catch (err: any) {
+    strapi.log.error(`❌ Failed to assign Communications role permissions: ${err.message}`);
+  }
+
+  await seedCommunicationsUser(strapi, roleId);
+}
+
+async function seedCommunicationsUser(strapi: Core.Strapi, roleId: number) {
+  const existingUser = await strapi.query('admin::user').findOne({
+    where: { email: 'comms@mohs.gov.sl' },
+  });
+
+  if (existingUser) {
+    strapi.log.info('📋 Communications admin user exists, updating password...');
+    const hashedPassword = await strapi.service('admin::auth').hashPassword('Comms2026!');
+    await strapi.query('admin::user').update({
+      where: { id: existingUser.id },
+      data: { password: hashedPassword },
+    });
+    strapi.log.info('✅ Communications admin user password updated.');
+    return;
+  }
+
+  strapi.log.info('🌱 Creating Communications admin user...');
+
+  try {
+    const hashedPassword = await strapi.service('admin::auth').hashPassword('Comms2026!');
+    await strapi.query('admin::user').create({
+      data: {
+        email: 'comms@mohs.gov.sl',
+        firstname: 'Communications',
+        lastname: 'Team',
+        password: hashedPassword,
+        isActive: true,
+        blocked: false,
+        registrationToken: null,
+        roles: [roleId],
+      },
+    });
+    strapi.log.info('✅ Communications admin user created (comms@mohs.gov.sl / Comms2026!).');
+  } catch (err: any) {
+    strapi.log.error(`❌ Failed to create Communications user: ${err.message}`);
+  }
 }

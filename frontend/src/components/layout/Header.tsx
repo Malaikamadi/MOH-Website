@@ -12,19 +12,26 @@ const fallbackNav: NavItem[] = [
     ]},
     { label: 'Directorates', url: '/directorates', children: [
         { label: 'DPPI', url: '/directorates/dppi', icon: 'chart-line' },
-        { label: 'Primary Health Care', url: '/directorates/phc', icon: 'heartbeat' },
         { label: 'Reproductive & Child Health', url: '/directorates/rch', icon: 'baby' },
-        { label: 'Disease Prevention', url: '/directorates/dpc', icon: 'virus-slash' },
+        { label: 'Primary Health Care', url: '/directorates/phc', icon: 'heartbeat' },
+        { label: 'Disease Prevention & Control', url: '/directorates/dpc', icon: 'virus-slash' },
         { label: 'Emergency Medical Services', url: '/directorates/nems', icon: 'ambulance' },
         { label: 'Support Services', url: '/directorates/ss', icon: 'cogs' },
+        { label: 'Nursing & Midwifery', url: '/directorates/nm', icon: 'user-nurse' },
+        { label: 'NCD & Mental Health', url: '/directorates/ncdandmh', icon: 'brain' },
+        { label: 'Pharmaceutical Services', url: '/directorates/ps', icon: 'pills' },
+        { label: 'Human Resource Management', url: '/directorates/hrm', icon: 'users' },
+        { label: 'Training & Research', url: '/directorates/tr', icon: 'book' },
+        { label: 'Environmental Health', url: '/directorates/ehc', icon: 'leaf' },
+        { label: 'Food & Nutrition', url: '/directorates/fn', icon: 'utensils' },
     ]},
     { label: 'Media', url: '/media', children: [
         { label: 'Newsroom', url: '/newsroom', icon: 'rss' },
         { label: 'Events', url: '/events', icon: 'calendar-alt' },
         { label: 'Press Releases', url: '/press-releases', icon: 'bullhorn' },
     ]},
-    { label: 'Contact Us', url: '/contact', children: [] },
-    { label: 'Job Portal', url: '/jobs', children: [] },
+    { label: 'Contact Us', url: '/contact' },
+    { label: 'Job Portal', url: '/jobs' },
 ];
 
 export default function Header() {
@@ -96,6 +103,16 @@ export default function Header() {
                                 </div>
                             )}
                         </div>
+
+                        <button
+                            className="navbar-toggle topbar-toggle"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            aria-label="Toggle navigation"
+                        >
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -106,44 +123,23 @@ export default function Header() {
                         <ul className={`nav-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
                             {nav.map((item, idx) => {
                                 const hasChildren = item.children && item.children.length > 0;
-                                const isWide = item.children && item.children.length > 4;
+                                const isMega = item.children && item.children.length > 4;
 
                                 return (
-                                    <li key={idx} className={`nav-menu-item ${hasChildren ? 'has-dropdown' : ''}`}>
+                                    <li key={idx} className={`nav-menu-item ${hasChildren ? 'has-dropdown' : ''} ${isMega ? 'has-mega' : ''}`}>
                                         <a href={item.url} className="nav-menu-link">
                                             {item.label} {hasChildren && <i className="fas fa-caret-down"></i>}
                                         </a>
                                         {hasChildren && (
-                                            <div className={`dropdown-menu ${isWide ? 'dropdown-wide' : 'dropdown-standard'}`}>
-                                                {isWide ? (
-                                                    <div className="dropdown-columns">
-                                                        <div className="dropdown-column">
-                                                            {item.children!.slice(0, Math.ceil(item.children!.length / 2)).map((child, ci) => (
-                                                                <a key={ci} href={child.url} className="dropdown-item">
-                                                                    {child.icon && <i className={`fas fa-${child.icon}`}></i>}
-                                                                    <span>{child.label}</span>
-                                                                </a>
-                                                            ))}
-                                                        </div>
-                                                        <div className="dropdown-column">
-                                                            {item.children!.slice(Math.ceil(item.children!.length / 2)).map((child, ci) => (
-                                                                <a key={ci} href={child.url} className="dropdown-item">
-                                                                    {child.icon && <i className={`fas fa-${child.icon}`}></i>}
-                                                                    <span>{child.label}</span>
-                                                                </a>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="dropdown-content">
-                                                        {item.children!.map((child, ci) => (
-                                                            <a key={ci} href={child.url} className="dropdown-item">
-                                                                {child.icon && <i className={`fas fa-${child.icon}`}></i>}
-                                                                <span>{child.label}</span>
-                                                            </a>
-                                                        ))}
-                                                    </div>
-                                                )}
+                                            <div className={`dropdown-menu ${isMega ? 'dropdown-mega' : 'dropdown-standard'}`}>
+                                                <div className={isMega ? 'mega-grid' : 'dropdown-content'}>
+                                                    {item.children!.map((child, ci) => (
+                                                        <a key={ci} href={child.url} className="dropdown-item">
+                                                            {child.icon && <i className={`fas fa-${child.icon}`}></i>}
+                                                            <span>{child.label}</span>
+                                                        </a>
+                                                    ))}
+                                                </div>
                                             </div>
                                         )}
                                     </li>
@@ -151,15 +147,6 @@ export default function Header() {
                             })}
                         </ul>
 
-                        <button
-                            className="navbar-toggle"
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            aria-label="Toggle navigation"
-                        >
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
                     </div>
                 </div>
             </nav>
