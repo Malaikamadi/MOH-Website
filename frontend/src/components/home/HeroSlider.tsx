@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { getHeroSlides, getHomepage, getMediaUrl } from '../../services/api';
-import type { HeroSlide } from '../../services/api';
+import { getNewsArticles, getHomepage, getMediaUrl } from '../../services/api';
+import type { NewsArticle } from '../../services/api';
 
-// Static fallback slides (used when API has no data or is unavailable)
+const categoryToIcon: Record<string, string> = {
+    'Breaking News': 'newspaper',
+    'Latest News': 'rss',
+    'Press Release': 'bullhorn',
+    'Public Notice': 'bullhorn',
+    'Announcement': 'bullhorn',
+    'Health Initiative': 'heart',
+};
+
+// Static fallback slides (used when no featured news in backend)
 const fallbackSlides = [
     {
         id: 1,
@@ -46,30 +55,31 @@ interface SlideData {
 
 export default function HeroSlider() {
     const [currentSlide, setCurrentSlide] = useState(0);
-    const { data: apiData, loading } = useApi(getHeroSlides);
+    const { data: newsData, loading } = useApi(() => getNewsArticles({ featured: true, limit: 5 }));
     const { data: homepageRes } = useApi(getHomepage);
     const statsBar = homepageRes?.data?.statsBar;
 
     const slides: SlideData[] = (() => {
-        if (apiData?.data && apiData.data.length > 0) {
-            return apiData.data.map((item) => ({
+        const items = newsData?.data;
+        if (items && items.length > 0) {
+            return items.map((item: { id: number } & NewsArticle) => ({
                 id: item.id,
-                image: getMediaUrl(item.image) || '/images/hub2.png',
+                image: getMediaUrl(item.coverImage) || '/images/hub2.png',
                 badge: {
-                    icon: item.badgeIcon || 'shield-heart',
-                    text: item.badge || 'Ministry of Health',
+                    icon: categoryToIcon[item.category] || 'rss',
+                    text: item.category || 'Latest News',
                 },
                 title: item.title,
-                description: item.description || '',
+                description: item.summary || '',
                 primaryBtn: {
-                    text: item.primaryButtonText || 'View Details',
-                    link: item.primaryButtonLink || '/',
-                    icon: item.primaryButtonIcon || 'stethoscope',
+                    text: 'Read Article',
+                    link: `/newsroom/${item.slug}`,
+                    icon: 'arrow-right',
                 },
                 secondaryBtn: {
-                    text: item.secondaryButtonText || 'Contact Us',
-                    link: item.secondaryButtonLink || '/contact',
-                    icon: item.secondaryButtonIcon || 'phone',
+                    text: 'Learn More',
+                    link: `/newsroom/${item.slug}`,
+                    icon: 'info-circle',
                 },
             }));
         }

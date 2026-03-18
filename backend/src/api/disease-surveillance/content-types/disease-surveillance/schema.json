@@ -23,7 +23,7 @@
         "district": {
             "type": "string"
         },
-        "reportingPeriodStart": {
+        "reportingPerSodStart": {
             "type": "date",
             "required": true
         },

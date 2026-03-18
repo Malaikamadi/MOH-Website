@@ -233,6 +233,23 @@ export interface LeadershipMember {
     focusAreas: string;
 }
 
+export interface Job {
+    title: string;
+    slug: string;
+    description: string;
+    summary: string;
+    sector: string;
+    location: string;
+    jobType: string;
+    experienceLevel: string;
+    icon: string;
+    tags: string[];
+    deadline: string;
+    featured: boolean;
+    applyLink: string;
+    directorate: StrapiItem<Directorate> | null;
+}
+
 export interface DiseaseSurveillance {
     diseaseName: string;
     region: string;
@@ -422,6 +439,58 @@ export async function getDirectorates(): Promise<StrapiResponse<Directorate>> {
  */
 export async function getDirectorateBySlug(slug: string): Promise<StrapiResponse<Directorate>> {
     return fetchAPI<StrapiResponse<Directorate>>('directorates', {
+        'populate': '*',
+        'filters[slug][$eq]': slug,
+    });
+}
+
+/**
+ * Fetch jobs with optional filters
+ */
+export async function getJobs(options?: {
+    sector?: string;
+    location?: string;
+    jobType?: string;
+    experienceLevel?: string;
+    featured?: boolean;
+    limit?: number;
+    page?: number;
+}): Promise<StrapiResponse<Job>> {
+    const params: Record<string, string> = {
+        'populate': '*',
+        'sort': 'deadline:asc',
+    };
+
+    if (options?.sector) {
+        params['filters[sector][$eq]'] = options.sector;
+    }
+    if (options?.location) {
+        params['filters[location][$eq]'] = options.location;
+    }
+    if (options?.jobType) {
+        params['filters[jobType][$eq]'] = options.jobType;
+    }
+    if (options?.experienceLevel) {
+        params['filters[experienceLevel][$eq]'] = options.experienceLevel;
+    }
+    if (options?.featured !== undefined) {
+        params['filters[featured][$eq]'] = String(options.featured);
+    }
+    if (options?.limit) {
+        params['pagination[pageSize]'] = String(options.limit);
+    }
+    if (options?.page) {
+        params['pagination[page]'] = String(options.page);
+    }
+
+    return fetchAPI<StrapiResponse<Job>>('jobs', params);
+}
+
+/**
+ * Fetch a single job by slug
+ */
+export async function getJobBySlug(slug: string): Promise<StrapiResponse<Job>> {
+    return fetchAPI<StrapiResponse<Job>>('jobs', {
         'populate': '*',
         'filters[slug][$eq]': slug,
     });

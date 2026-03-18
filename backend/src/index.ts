@@ -7,6 +7,7 @@ export default {
     await setupPublicPermissions(strapi);
     await seedHeroSlides(strapi);
     await seedDirectorates(strapi);
+    await seedJobs(strapi);
     await seedSiteSettings(strapi);
     await seedHomepage(strapi);
     await seedAboutPage(strapi);
@@ -25,6 +26,7 @@ async function setupPublicPermissions(strapi: Core.Strapi) {
     { controller: 'api::publication.publication', actions: ['find', 'findOne'] },
     { controller: 'api::directorate.directorate', actions: ['find', 'findOne'] },
     { controller: 'api::disease-surveillance.disease-surveillance', actions: ['find', 'findOne'] },
+    { controller: 'api::job.job', actions: ['find', 'findOne'] },
     { controller: 'api::newsletter-subscriber.newsletter-subscriber', actions: ['create'] },
     // Single types — public can read
     { controller: 'api::site-setting.site-setting', actions: ['find'] },
@@ -190,6 +192,93 @@ async function seedDirectorates(strapi: Core.Strapi) {
     }
   }
   strapi.log.info('🌱 Directorates seeded.');
+}
+
+// ─── Seed: Jobs ───────────────────────────────────────────────────
+
+async function seedJobs(strapi: Core.Strapi) {
+  const existing = await strapi.documents('api::job.job').findMany({});
+  if (existing.length > 0) {
+    strapi.log.info(`📋 ${existing.length} jobs exist, skipping.`);
+    return;
+  }
+
+  strapi.log.info('🌱 Seeding jobs...');
+  const jobs = [
+    {
+      title: 'Consulting Firm - Electronic Medical Records System',
+      slug: 'consulting-firm-electronic-medical-records-system',
+      sector: 'Digital Health',
+      location: 'Freetown',
+      jobType: 'Contract',
+      icon: 'laptop-medical',
+      tags: ['Urgent', 'Consultants', 'IT'],
+      deadline: new Date('2025-12-30'),
+      featured: true,
+      summary: 'Consulting opportunity for Electronic Medical Records System implementation.',
+    },
+    {
+      title: 'Registered Nurse - Maternal Health Unit',
+      slug: 'registered-nurse-maternal-health-unit',
+      sector: 'Nursing',
+      location: 'Bo',
+      jobType: 'Full Time',
+      icon: 'user-nurse',
+      tags: ['Healthcare', 'Nursing'],
+      deadline: new Date('2026-01-15'),
+      featured: false,
+      summary: 'Join our Maternal Health Unit as a Registered Nurse.',
+    },
+    {
+      title: 'Medical Officer - District Hospital',
+      slug: 'medical-officer-district-hospital',
+      sector: 'Medical',
+      location: 'Kenema',
+      jobType: 'Full Time',
+      icon: 'user-md',
+      tags: ['Doctor', 'Clinical'],
+      deadline: new Date('2026-01-20'),
+      featured: false,
+      summary: 'Medical Officer position at District Hospital.',
+    },
+    {
+      title: 'Health Data Analyst',
+      slug: 'health-data-analyst',
+      sector: 'Digital Health',
+      location: 'Freetown',
+      jobType: 'Full Time',
+      icon: 'chart-line',
+      tags: ['Remote Friendly', 'Analytics'],
+      deadline: new Date('2026-01-25'),
+      featured: false,
+      summary: 'Analyze health data to support evidence-based decision making.',
+    },
+    {
+      title: 'Human Resource Officer',
+      slug: 'human-resource-officer',
+      sector: 'Human Resources',
+      location: 'Freetown',
+      jobType: 'Full Time',
+      icon: 'users-cog',
+      tags: ['Administration', 'HR'],
+      deadline: new Date('2026-02-01'),
+      featured: false,
+      summary: 'HR Officer for workforce management and recruitment.',
+    },
+  ];
+
+  for (const job of jobs) {
+    try {
+      await strapi.documents('api::job.job').create({
+        data: job as any,
+        status: 'published',
+      });
+      strapi.log.info(`  ✅ Job: ${job.title}`);
+    } catch (err: any) {
+      strapi.log.error(`  ❌ Job ${job.title}: ${err.message}`);
+    }
+  }
+  strapi.log.info('🌱 Jobs seeded.');
 }
 
 // ─── Seed: Site Settings ─────────────────────────────────────────
@@ -482,6 +571,10 @@ async function seedCommunicationsRole(strapi: Core.Strapi) {
     'api::news-article.news-article': [
       'title', 'slug', 'summary', 'content', 'coverImage', 'gallery',
       'category', 'contentType', 'tags', 'author', 'publishedDate', 'featured', 'videoUrl',
+    ],
+    'api::job.job': [
+      'title', 'slug', 'description', 'summary', 'sector', 'location', 'jobType',
+      'experienceLevel', 'icon', 'tags', 'deadline', 'featured', 'applyLink', 'directorate',
     ],
     'api::event.event': [
       'title', 'slug', 'description', 'summary', 'location',

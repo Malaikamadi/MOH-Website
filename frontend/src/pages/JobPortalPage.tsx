@@ -1,46 +1,32 @@
 import { useState, useMemo } from 'react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import { useApi } from '../hooks/useApi';
+import { getJobs } from '../services/api';
+import type { StrapiItem } from '../services/api';
 
-interface Job {
-    title: string;
-    sector: string;
-    location: string;
-    type: string;
-    icon: string;
-    tags: string[];
-    deadline: string;
-    featured: boolean;
-}
-
-const jobs: Job[] = [
-    { title: 'Consulting Firm - Electronic Medical Records System', sector: 'Digital Health', location: 'Freetown', type: 'Contract', icon: 'laptop-medical', tags: ['Urgent', 'Consultants', 'IT'], deadline: 'Dec 30, 2025', featured: true },
-    { title: 'Registered Nurse - Maternal Health Unit', sector: 'Nursing', location: 'Bo', type: 'Full Time', icon: 'user-nurse', tags: ['Healthcare', 'Nursing'], deadline: 'Jan 15, 2026', featured: false },
-    { title: 'Medical Officer - District Hospital', sector: 'Medical', location: 'Kenema', type: 'Full Time', icon: 'user-md', tags: ['Doctor', 'Clinical'], deadline: 'Jan 20, 2026', featured: false },
-    { title: 'Health Data Analyst', sector: 'Digital Health', location: 'Freetown', type: 'Full Time', icon: 'chart-line', tags: ['Remote Friendly', 'Analytics'], deadline: 'Jan 25, 2026', featured: false },
-    { title: 'Human Resource Officer', sector: 'HR', location: 'Freetown', type: 'Full Time', icon: 'users-cog', tags: ['Administration', 'HR'], deadline: 'Feb 1, 2026', featured: false },
-];
-
-const locations = ['All Locations', 'Freetown', 'Bo', 'Kenema', 'Makeni', 'Port Loko'];
+const locations = ['All Locations', 'Freetown', 'Bo', 'Kenema', 'Makeni', 'Port Loko', 'Kono', 'Kambia', 'Kailahun', 'Tonkolili', 'Bombali', 'Moyamba', 'Pujehun', 'Bonthe', 'Western Area Urban', 'Western Area Rural', 'National'];
 
 const filterGroups = {
     jobType: [
-        { label: 'Full Time', count: 12 },
-        { label: 'Part Time', count: 5 },
-        { label: 'Contract', count: 7 },
+        { label: 'Full Time' },
+        { label: 'Part Time' },
+        { label: 'Contract' },
+        { label: 'Internship' },
+        { label: 'Consultancy' },
     ],
     sector: [
-        { label: 'Doctors', count: 4 },
-        { label: 'Nurses', count: 8 },
-        { label: 'Administration', count: 3 },
-        { label: 'Digital Health', count: 5 },
-        { label: 'Finance', count: 2 },
-        { label: 'Human Resources', count: 2 },
+        { label: 'Medical' },
+        { label: 'Nursing' },
+        { label: 'Administration' },
+        { label: 'Digital Health' },
+        { label: 'Finance' },
+        { label: 'Human Resources' },
     ],
     experience: [
-        { label: 'Entry Level', count: 6 },
-        { label: 'Mid Level', count: 10 },
-        { label: 'Senior Level', count: 8 },
+        { label: 'Entry Level' },
+        { label: 'Mid Level' },
+        { label: 'Senior Level' },
     ],
 };
 
@@ -65,6 +51,19 @@ const iconColors: Record<string, string> = {
     'users-cog': '#f59e0b',
 };
 
+function formatDeadline(dateStr: string) {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric',
+    });
+}
+
+function ensureTags(tags: unknown): string[] {
+    if (Array.isArray(tags)) return tags;
+    if (typeof tags === 'object' && tags !== null) return Object.values(tags) as string[];
+    return [];
+}
+
 export default function JobPortalPage() {
     const [keyword, setKeyword] = useState('');
     const [locationFilter, setLocationFilter] = useState('All Locations');
@@ -74,14 +73,32 @@ export default function JobPortalPage() {
     const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
     const [alertEmail, setAlertEmail] = useState('');
 
+    const { data: jobsRes, loading } = useApi(
+        () => getJobs({ limit: 100 }),
+        []
+    );
+
+    const jobs = jobsRes?.data || [];
+
     const filteredJobs = useMemo(() => {
-        return jobs.filter(job => {
-            const matchKeyword = !keyword || job.title.toLowerCase().includes(keyword.toLowerCase()) || job.sector.toLowerCase().includes(keyword.toLowerCase()) || job.tags.some(t => t.toLowerCase().includes(keyword.toLowerCase()));
+        let result = jobs.filter((job: StrapiItem<{ title: string; sector: string; location: string; jobType: string; tags: unknown; experienceLevel: string }>) => {
+            const tags = ensureTags(job.tags);
+            const matchKeyword = !keyword || job.title.toLowerCase().includes(keyword.toLowerCase()) || job.sector.toLowerCase().includes(keyword.toLowerCase()) || tags.some((t: string) => t.toLowerCase().includes(keyword.toLowerCase()));
             const matchLocation = locationFilter === 'All Locations' || job.location === locationFilter;
-            const matchType = selectedTypes.length === 0 || selectedTypes.includes(job.type);
-            return matchKeyword && matchLocation && matchType;
+            const matchType = selectedTypes.length === 0 || selectedTypes.includes(job.jobType);
+            const matchSector = selectedSectors.length === 0 || selectedSectors.includes(job.sector);
+            const matchExperience = selectedExperience.length === 0 || !job.experienceLevel || selectedExperience.includes(job.experienceLevel);
+            return matchKeyword && matchLocation && matchType && matchSector && matchExperience;
         });
-    }, [keyword, locationFilter, selectedTypes]);
+        if (sortBy === 'deadline') {
+            result = [...result].sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
+        } else if (sortBy === 'title') {
+            result = [...result].sort((a, b) => a.title.localeCompare(b.title));
+        } else {
+            result = [...result].sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+        }
+        return result;
+    }, [jobs, keyword, locationFilter, selectedTypes, selectedSectors, selectedExperience, sortBy]);
 
     function toggleFilter(list: string[], item: string, setter: React.Dispatch<React.SetStateAction<string[]>>) {
         setter(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
@@ -141,7 +158,7 @@ export default function JobPortalPage() {
 
                             <div className="jp-stats-bar">
                                 <div className="jp-stat">
-                                    <span className="jp-stat-number">24</span>
+                                    <span className="jp-stat-number">{loading ? '...' : jobs.length}</span>
                                     <span className="jp-stat-label">Open Positions</span>
                                 </div>
                                 <div className="jp-stat-divider"></div>
@@ -181,7 +198,6 @@ export default function JobPortalPage() {
                                             />
                                             <span className="jp-checkbox"></span>
                                             <span className="jp-filter-label">{item.label}</span>
-                                            <span className="jp-filter-count">({item.count})</span>
                                         </label>
                                     ))}
                                 </div>
@@ -197,7 +213,6 @@ export default function JobPortalPage() {
                                             />
                                             <span className="jp-checkbox"></span>
                                             <span className="jp-filter-label">{item.label}</span>
-                                            <span className="jp-filter-count">({item.count})</span>
                                         </label>
                                     ))}
                                 </div>
@@ -213,7 +228,6 @@ export default function JobPortalPage() {
                                             />
                                             <span className="jp-checkbox"></span>
                                             <span className="jp-filter-label">{item.label}</span>
-                                            <span className="jp-filter-count">({item.count})</span>
                                         </label>
                                     ))}
                                 </div>
@@ -236,9 +250,15 @@ export default function JobPortalPage() {
                                 </div>
 
                                 <div className="jp-jobs-list">
-                                    {filteredJobs.map((job, index) => (
+                                    {loading && (
+                                        <div className="jp-no-results">
+                                            <i className="fas fa-spinner fa-spin"></i>
+                                            <h3>Loading jobs...</h3>
+                                        </div>
+                                    )}
+                                    {!loading && filteredJobs.map((job, index) => (
                                         <div
-                                            key={index}
+                                            key={job.id}
                                             className={`jp-job-card ${job.featured ? 'jp-featured' : ''}`}
                                             style={{ animationDelay: `${index * 0.1}s` }}
                                         >
@@ -247,7 +267,7 @@ export default function JobPortalPage() {
                                                     className="jp-job-icon"
                                                     style={{ background: iconColors[job.icon] || '#6366f1' }}
                                                 >
-                                                    <i className={`fas fa-${job.icon}`}></i>
+                                                    <i className={`fas fa-${job.icon || 'briefcase'}`}></i>
                                                 </div>
 
                                                 <div className="jp-job-info">
@@ -255,10 +275,10 @@ export default function JobPortalPage() {
                                                     <div className="jp-job-meta">
                                                         <span><i className="fas fa-building"></i> {job.sector}</span>
                                                         <span><i className="fas fa-map-marker-alt"></i> {job.location}</span>
-                                                        <span><i className="fas fa-clock"></i> {job.type}</span>
+                                                        <span><i className="fas fa-clock"></i> {job.jobType}</span>
                                                     </div>
                                                     <div className="jp-job-tags">
-                                                        {job.tags.map(tag => (
+                                                        {ensureTags(job.tags).map(tag => (
                                                             <span key={tag} className={`jp-tag ${getTagClass(tag)}`}>{tag}</span>
                                                         ))}
                                                     </div>
@@ -266,11 +286,16 @@ export default function JobPortalPage() {
 
                                                 <div className="jp-job-actions">
                                                     <span className="jp-deadline">
-                                                        <i className="fas fa-calendar-alt"></i> Deadline: {job.deadline}
+                                                        <i className="fas fa-calendar-alt"></i> Deadline: {formatDeadline(job.deadline)}
                                                     </span>
-                                                    <button className="jp-apply-btn">
+                                                    <a
+                                                        href={job.applyLink || `mailto:jobs@mohs.gov.sl?subject=Application: ${encodeURIComponent(job.title)}`}
+                                                        target={job.applyLink ? '_blank' : undefined}
+                                                        rel={job.applyLink ? 'noopener noreferrer' : undefined}
+                                                        className="jp-apply-btn"
+                                                    >
                                                         Apply Now <i className="fas fa-arrow-right"></i>
-                                                    </button>
+                                                    </a>
                                                     <button className="jp-save-btn">
                                                         <i className="far fa-bookmark"></i> Save
                                                     </button>
@@ -284,7 +309,7 @@ export default function JobPortalPage() {
                                         </div>
                                     ))}
 
-                                    {filteredJobs.length === 0 && (
+                                    {!loading && filteredJobs.length === 0 && (
                                         <div className="jp-no-results">
                                             <i className="fas fa-search"></i>
                                             <h3>No positions found</h3>

@@ -552,7 +552,7 @@ export interface ApiDiseaseSurveillanceDiseaseSurveillance
     recovered: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     region: Schema.Attribute.String & Schema.Attribute.Required;
     reportingPeriodEnd: Schema.Attribute.Date & Schema.Attribute.Required;
-    reportingPeriodStart: Schema.Attribute.Date & Schema.Attribute.Required;
+    reportingPerSodStart: Schema.Attribute.Date & Schema.Attribute.Required;
     sourceSystem: Schema.Attribute.String & Schema.Attribute.DefaultTo<'DHIS2'>;
     status: Schema.Attribute.Enumeration<
       ['Confirmed', 'Suspected', 'Projected']
@@ -684,6 +684,89 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     services: Schema.Attribute.Component<'shared.service-card', true>;
     statsBar: Schema.Attribute.Component<'shared.stat-item', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiJobJob extends Struct.CollectionTypeSchema {
+  collectionName: 'jobs';
+  info: {
+    description: 'Career opportunities and job postings at the Ministry of Health';
+    displayName: 'Job';
+    pluralName: 'jobs';
+    singularName: 'job';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    applyLink: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deadline: Schema.Attribute.Date & Schema.Attribute.Required;
+    description: Schema.Attribute.RichText;
+    directorate: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::directorate.directorate'
+    >;
+    experienceLevel: Schema.Attribute.Enumeration<
+      ['Entry Level', 'Mid Level', 'Senior Level']
+    >;
+    featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    icon: Schema.Attribute.String & Schema.Attribute.DefaultTo<'briefcase'>;
+    jobType: Schema.Attribute.Enumeration<
+      ['Full Time', 'Part Time', 'Contract', 'Internship', 'Consultancy']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Full Time'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::job.job'> &
+      Schema.Attribute.Private;
+    location: Schema.Attribute.Enumeration<
+      [
+        'Freetown',
+        'Bo',
+        'Kenema',
+        'Makeni',
+        'Port Loko',
+        'Kono',
+        'Kambia',
+        'Kailahun',
+        'Tonkolili',
+        'Bombali',
+        'Moyamba',
+        'Pujehun',
+        'Bonthe',
+        'Western Area Urban',
+        'Western Area Rural',
+        'National',
+      ]
+    > &
+      Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    sector: Schema.Attribute.Enumeration<
+      [
+        'Medical',
+        'Nursing',
+        'Administration',
+        'Digital Health',
+        'Finance',
+        'Human Resources',
+        'HR',
+        'Other',
+      ]
+    > &
+      Schema.Attribute.Required;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    summary: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    tags: Schema.Attribute.JSON;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1441,6 +1524,7 @@ declare module '@strapi/strapi' {
       'api::event.event': ApiEventEvent;
       'api::hero-slide.hero-slide': ApiHeroSlideHeroSlide;
       'api::homepage.homepage': ApiHomepageHomepage;
+      'api::job.job': ApiJobJob;
       'api::leadership-member.leadership-member': ApiLeadershipMemberLeadershipMember;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::newsletter-subscriber.newsletter-subscriber': ApiNewsletterSubscriberNewsletterSubscriber;

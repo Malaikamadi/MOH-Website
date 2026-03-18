@@ -1,0 +1,112 @@
+{
+    "kind": "collectionType",
+    "collectionName": "jobs",
+    "info": {
+        "singularName": "job",
+        "pluralName": "jobs",
+        "displayName": "Job",
+        "description": "Career opportunities and job postings at the Ministry of Health"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "slug": {
+            "type": "uid",
+            "targetField": "title",
+            "required": true
+        },
+        "description": {
+            "type": "richtext"
+        },
+        "summary": {
+            "type": "text",
+            "maxLength": 500
+        },
+        "sector": {
+            "type": "enumeration",
+            "enum": [
+                "Medical",
+                "Nursing",
+                "Administration",
+                "Digital Health",
+                "Finance",
+                "Human Resources",
+                "HR",
+                "Other"
+            ],
+            "required": true
+        },
+        "location": {
+            "type": "enumeration",
+            "enum": [
+                "Freetown",
+                "Bo",
+                "Kenema",
+                "Makeni",
+                "Port Loko",
+                "Kono",
+                "Kambia",
+                "Kailahun",
+                "Tonkolili",
+                "Bombali",
+                "Moyamba",
+                "Pujehun",
+                "Bonthe",
+                "Western Area Urban",
+                "Western Area Rural",
+                "National"
+            ],
+            "required": true
+        },
+        "jobType": {
+            "type": "enumeration",
+            "enum": [
+                "Full Time",
+                "Part Time",
+                "Contract",
+                "Internship",
+                "Consultancy"
+            ],
+            "default": "Full Time",
+            "required": true
+        },
+        "experienceLevel": {
+            "type": "enumeration",
+            "enum": [
+                "Entry Level",
+                "Mid Level",
+                "Senior Level"
+            ]
+        },
+        "icon": {
+            "type": "string",
+            "default": "briefcase"
+        },
+        "tags": {
+            "type": "json"
+        },
+        "deadline": {
+            "type": "date",
+            "required": true
+        },
+        "featured": {
+            "type": "boolean",
+            "default": false
+        },
+        "applyLink": {
+            "type": "string"
+        },
+        "directorate": {
+            "type": "relation",
+            "relation": "manyToOne",
+            "target": "api::directorate.directorate",
+            "description": "Optional link to hiring directorate"
+        }
+    }
+}
