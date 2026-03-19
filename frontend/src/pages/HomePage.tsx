@@ -1,9 +1,9 @@
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import HeroSlider from '../components/home/HeroSlider'
+import InfoHubDashboard from '../components/home/InfoHubDashboard'
 import ServicesSection from '../components/home/ServicesSection'
 import UpdatesSection from '../components/home/UpdatesSection'
-import NewsSection from '../components/home/NewsSection'
 import NewsletterSection from '../components/home/NewsletterSection'
 
 export default function HomePage() {
@@ -12,9 +12,9 @@ export default function HomePage() {
             <Header />
             <main>
                 <HeroSlider />
+                <InfoHubDashboard />
                 <ServicesSection />
                 <UpdatesSection />
-                <NewsSection />
                 <NewsletterSection />
             </main>
             <Footer />

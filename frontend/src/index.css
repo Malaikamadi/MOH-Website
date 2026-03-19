@@ -3545,6 +3545,854 @@ button {
 }
 
 /* ==========================================
+   Health Information Hub - Clean Dashboard
+   White-background data visualization design
+   ========================================== */
+.hih-section {
+  background: #f8fafc;
+  padding: 80px 0 60px;
+  position: relative;
+}
+
+.hih-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #054180, #0ea5e9, #054180);
+}
+
+/* ─── Header ─── */
+.hih-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.hih-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+}
+
+.hih-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: #054180;
+  border-radius: 2px;
+  margin: 14px auto 0;
+}
+
+.hih-subtitle {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 580px;
+  margin: 0 auto;
+  font-style: italic;
+}
+
+/* ─── Summary Stats Row ─── */
+.hih-summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+.hih-summary-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hih-summary-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 0 2px 2px 0;
+}
+
+.hih-summary-card:nth-child(1)::before { background: #dc2626; }
+.hih-summary-card:nth-child(2)::before { background: #f59e0b; }
+.hih-summary-card:nth-child(3)::before { background: #7c3aed; }
+.hih-summary-card:nth-child(4)::before { background: #059669; }
+
+.hih-summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.hih-summary-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.hih-icon-maternal {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.hih-icon-child {
+  background: #fffbeb;
+  color: #f59e0b;
+}
+
+.hih-icon-disease {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.hih-icon-facility {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.hih-summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.hih-summary-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hih-summary-value {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.hih-summary-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.hih-badge-caution {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.hih-badge-info {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.hih-badge-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ─── Section Label ─── */
+.hih-section-label {
+  margin-bottom: 28px;
+}
+
+.hih-section-label h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.hih-section-label p {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ─── Charts Grid ─── */
+.hih-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.hih-chart-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.hih-chart-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  border-color: #cbd5e1;
+}
+
+.hih-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+}
+
+.hih-chart-header h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.hih-chart-badge {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hih-chart-body {
+  padding: 16px 12px 20px;
+  position: relative;
+}
+
+.hih-chart-years {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 40px;
+  margin-top: -4px;
+}
+
+.hih-chart-years span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: 0.02em;
+}
+
+/* Tooltip */
+.hih-chart-tooltip {
+  background: #1e293b;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hih-tooltip-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hih-tooltip-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* ─── Data Grid (Tables) ─── */
+.hih-data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.hih-table-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.hih-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.hih-table-header h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hih-table-header h4 i {
+  color: #054180;
+  font-size: 1.1rem;
+}
+
+.hih-view-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #054180;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.hih-view-link:hover {
+  gap: 10px;
+  color: #0766b5;
+}
+
+/* Table */
+.hih-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.hih-table thead th {
+  padding: 12px 20px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.hih-table tbody td {
+  padding: 14px 20px;
+  font-size: 0.88rem;
+  color: #475569;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.hih-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.hih-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.hih-disease-name {
+  font-weight: 700;
+  color: #1e293b !important;
+}
+
+.hih-cases-cell {
+  font-weight: 700;
+  color: #1e293b !important;
+}
+
+/* Trend Badges */
+.hih-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.hih-trend-up {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.hih-trend-down {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.hih-trend-stable {
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+/* Rate Cell */
+.hih-rate-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hih-rate-bar {
+  flex: 1;
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.hih-rate-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #054180, #0ea5e9);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.hih-rate-text {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  min-width: 36px;
+}
+
+/* ─── CTA ─── */
+.hih-cta {
+  text-align: center;
+  padding-top: 8px;
+}
+
+.hih-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 36px;
+  background: #054180;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(5, 65, 128, 0.25);
+}
+
+.hih-cta-btn:hover {
+  background: #0766b5;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(5, 65, 128, 0.35);
+}
+
+.hih-cta-btn i {
+  font-size: 1.05rem;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1200px) {
+  .hih-summary-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .hih-charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hih-data-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hih-section {
+    padding: 60px 0 40px;
+  }
+
+  .hih-title {
+    font-size: 1.75rem;
+  }
+
+  .hih-summary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .hih-summary-card {
+    padding: 20px;
+  }
+
+  .hih-summary-value {
+    font-size: 1.5rem;
+  }
+
+  .hih-table thead th,
+  .hih-table tbody td {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hih-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* ─── Health Coverage Card ─── */
+.hih-coverage-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.hih-coverage-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  border-color: #cbd5e1;
+}
+
+.hih-coverage-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+}
+
+.hih-coverage-header h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.hih-coverage-header p {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.hih-live-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #059669;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hih-live-dot > span {
+  width: 8px;
+  height: 8px;
+  background: #059669;
+  border-radius: 50%;
+  animation: hihPulse 2s ease-in-out infinite;
+}
+
+@keyframes hihPulse {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4); }
+  50% { opacity: 0.7; transform: scale(1.2); box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); }
+}
+
+.hih-coverage-rings {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 24px 20px;
+}
+
+.hih-ring-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.hih-circle-svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
+}
+
+.hih-circle-progress {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hih-ring-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hih-ring-label i {
+  font-size: 0.85rem;
+}
+
+.hih-ring-label span {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.hih-coverage-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px 24px;
+  border-top: 1px solid #f1f5f9;
+  background: #fafbfc;
+}
+
+.hih-coverage-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.hih-cov-num {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #054180;
+  letter-spacing: -0.02em;
+}
+
+.hih-cov-label {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hih-coverage-divider {
+  width: 1px;
+  height: 32px;
+  background: #e2e8f0;
+}
+
+/* ─── District Health Alerts Card ─── */
+.hih-alerts-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.hih-alerts-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  border-color: #cbd5e1;
+}
+
+.hih-alerts-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.hih-alerts-header h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.hih-alerts-header h4 i {
+  color: #f59e0b;
+  font-size: 1rem;
+}
+
+.hih-alerts-header p {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.hih-alerts-count {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.hih-alerts-list {
+  padding: 8px 0;
+}
+
+.hih-alert-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  transition: background 0.2s ease;
+}
+
+.hih-alert-row:hover {
+  background: #f8fafc;
+}
+
+.hih-alert-status {
+  flex-shrink: 0;
+}
+
+.hih-status-dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.hih-dot-normal {
+  background: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+}
+
+.hih-dot-warning {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+  animation: hihAlertPulse 2s ease-in-out infinite;
+}
+
+.hih-dot-critical {
+  background: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  animation: hihAlertPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes hihAlertPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+  50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0.08); }
+}
+
+.hih-alert-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.hih-alert-district {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.hih-alert-time {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.hih-alert-cases {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 44px;
+}
+
+.hih-alert-num {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.hih-alert-label {
+  font-size: 0.6rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.hih-priority-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.hih-priority-normal {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.hih-priority-warning {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.hih-priority-critical {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Responsive for new cards */
+@media (max-width: 768px) {
+  .hih-coverage-rings {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hih-coverage-footer {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+
+
+
+
+/* ==========================================
    News Section - Professional Redesign
    ========================================== */
 .news-section {
