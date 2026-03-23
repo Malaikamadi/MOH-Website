@@ -11,6 +11,7 @@ import NewsroomPage from './pages/NewsroomPage'
 import NewsArticlePage from './pages/NewsArticlePage'
 import EventsPage from './pages/EventsPage'
 import PressReleasesPage from './pages/PressReleasesPage'
+import DashboardPage from './pages/DashboardPage'
 import FloatingButtons from './components/layout/FloatingButtons'
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
       <FloatingButtons />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/directorates" element={<DirectoratePage />} />
         <Route path="/directorates/:slug" element={<DirectorateDetailPage />} />

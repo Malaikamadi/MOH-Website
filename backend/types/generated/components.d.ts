@@ -98,6 +98,18 @@ export interface SharedLinkItem extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedReviewBullet extends Struct.ComponentSchema {
+  collectionName: 'components_shared_review_bullets';
+  info: {
+    description: 'Single line for the annual review highlight list';
+    displayName: 'Review bullet';
+    icon: 'check';
+  };
+  attributes: {
+    text: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedServiceCard extends Struct.ComponentSchema {
   collectionName: 'components_shared_service_cards';
   info: {
@@ -151,6 +163,7 @@ declare module '@strapi/strapi' {
       'hub.quarterly-data': HubQuarterlyData;
       'shared.highlight': SharedHighlight;
       'shared.link-item': SharedLinkItem;
+      'shared.review-bullet': SharedReviewBullet;
       'shared.service-card': SharedServiceCard;
       'shared.social-link': SharedSocialLink;
       'shared.stat-item': SharedStatItem;

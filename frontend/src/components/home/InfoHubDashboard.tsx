@@ -366,7 +366,7 @@ export default function InfoHubDashboard() {
                 </div>
                 {/* CTA */}
                 <div className="hih-cta">
-                    <a href="/emergency" className="hih-cta-btn">
+                    <a href="/dashboard" className="hih-cta-btn">
                         <i className="fas fa-chart-line"></i>
                         Explore Full Dashboard
                     </a>

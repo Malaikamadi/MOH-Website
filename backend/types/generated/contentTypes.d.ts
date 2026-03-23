@@ -552,7 +552,7 @@ export interface ApiDiseaseSurveillanceDiseaseSurveillance
     recovered: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     region: Schema.Attribute.String & Schema.Attribute.Required;
     reportingPeriodEnd: Schema.Attribute.Date & Schema.Attribute.Required;
-    reportingPerSodStart: Schema.Attribute.Date & Schema.Attribute.Required;
+    reportingPeriodStart: Schema.Attribute.Date & Schema.Attribute.Required;
     sourceSystem: Schema.Attribute.String & Schema.Attribute.DefaultTo<'DHIS2'>;
     status: Schema.Attribute.Enumeration<
       ['Confirmed', 'Suspected', 'Projected']
@@ -737,6 +737,46 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     services: Schema.Attribute.Component<'shared.service-card', true>;
     statsBar: Schema.Attribute.Component<'shared.stat-item', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiHubSyncSyncLog extends Struct.CollectionTypeSchema {
+  collectionName: 'sync_logs';
+  info: {
+    description: 'Audit log for data syncs from Ministry Information Hub / DHIS2';
+    displayName: 'Hub Sync Log';
+    pluralName: 'sync-logs';
+    singularName: 'sync-log';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::hub-sync.sync-log'
+    > &
+      Schema.Attribute.Private;
+    message: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    recordsCreated: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    recordsProcessed: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    recordsUpdated: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    source: Schema.Attribute.Enumeration<['DHIS2', 'Ministry Hub', 'Manual']> &
+      Schema.Attribute.Required;
+    status: Schema.Attribute.Enumeration<['success', 'partial', 'failed']> &
+      Schema.Attribute.Required;
+    syncType: Schema.Attribute.Enumeration<
+      ['disease-surveillance', 'health-dashboard', 'full']
+    > &
+      Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1578,6 +1618,7 @@ declare module '@strapi/strapi' {
       'api::health-information-hub.health-information-hub': ApiHealthInformationHubHealthInformationHub;
       'api::hero-slide.hero-slide': ApiHeroSlideHeroSlide;
       'api::homepage.homepage': ApiHomepageHomepage;
+      'api::hub-sync.sync-log': ApiHubSyncSyncLog;
       'api::job.job': ApiJobJob;
       'api::leadership-member.leadership-member': ApiLeadershipMemberLeadershipMember;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;

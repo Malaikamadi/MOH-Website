@@ -10,6 +10,7 @@ export default {
     await seedJobs(strapi);
     await seedSiteSettings(strapi);
     await seedHomepage(strapi);
+    await seedAnnualHealthcareReview(strapi);
     await seedAboutPage(strapi);
     await seedHealthInformationHub(strapi);
     await seedLeadershipMembers(strapi);
@@ -33,6 +34,7 @@ async function setupPublicPermissions(strapi: Core.Strapi) {
     { controller: 'api::site-setting.site-setting', actions: ['find'] },
     { controller: 'api::homepage.homepage', actions: ['find'] },
     { controller: 'api::about-page.about-page', actions: ['find'] },
+    { controller: 'api::annual-healthcare-review.annual-healthcare-review', actions: ['find'] },
     { controller: 'api::health-information-hub.health-information-hub', actions: ['find'] },
     // Leadership members
     { controller: 'api::leadership-member.leadership-member', actions: ['find', 'findOne'] },
@@ -401,6 +403,42 @@ async function seedHomepage(strapi: Core.Strapi) {
   strapi.log.info('🌱 Homepage seeded.');
 }
 
+// ─── Seed: Annual Healthcare Review (homepage section) ───────────
+
+async function seedAnnualHealthcareReview(strapi: Core.Strapi) {
+  const existing = await strapi.documents('api::annual-healthcare-review.annual-healthcare-review' as any).findFirst({});
+  if (existing) {
+    strapi.log.info('📋 Annual Healthcare Review exists, skipping.');
+    return;
+  }
+
+  strapi.log.info('🌱 Seeding Annual Healthcare Review...');
+  await strapi.documents('api::annual-healthcare-review.annual-healthcare-review' as any).create({
+    data: {
+      isVisible: true,
+      badgeLabel: 'Annual Healthcare Review',
+      badgeIcon: 'book',
+      heading: 'End of Year Healthcare Reflection',
+      bodyParagraph1:
+        "The Health sector in Sierra Leone is on a transformative journey, one that is centered around the innovative 'life stages approach.' This concept prioritizes the human being as the center of focus in service provision; tailoring care across all stages of life.",
+      bodyParagraph2:
+        "Through the leadership of Dr. Austin Demby as Minister of Health, we reflect on the achievements, challenges, and the way forward for healthcare in Sierra Leone.",
+      highlights: [
+        { text: 'Major health infrastructure improvements' },
+        { text: 'Enhanced maternal and child health programs' },
+        { text: 'Digital health transformation initiatives' },
+      ],
+      youtubeUrl: '',
+      videoCaption: 'Final End of Year Healthcare Reflection Video',
+      reportButtonText: 'Read Full Report',
+      reportButtonUrl: '/publications',
+      reportButtonIcon: 'book-open',
+    } as any,
+    status: 'published',
+  });
+  strapi.log.info('🌱 Annual Healthcare Review seeded.');
+}
+
 // ─── Seed: About Page ────────────────────────────────────────────
 
 async function seedAboutPage(strapi: Core.Strapi) {
@@ -585,6 +623,20 @@ async function seedCommunicationsRole(strapi: Core.Strapi) {
     'api::publication.publication': [
       'title', 'description', 'category', 'file', 'coverImage',
       'publishDate', 'year', 'directorate',
+    ],
+    'api::annual-healthcare-review.annual-healthcare-review': [
+      'isVisible',
+      'badgeLabel',
+      'badgeIcon',
+      'heading',
+      'bodyParagraph1',
+      'bodyParagraph2',
+      'highlights',
+      'youtubeUrl',
+      'videoCaption',
+      'reportButtonText',
+      'reportButtonUrl',
+      'reportButtonIcon',
     ],
   };
 

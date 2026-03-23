@@ -206,6 +206,27 @@ export interface Homepage {
     newsletterPlaceholder: string;
 }
 
+export interface ReviewBullet {
+    id: number;
+    text: string;
+}
+
+/** Homepage “Annual Healthcare Review” / year-end reflection (single type in Strapi) */
+export interface AnnualHealthcareReview {
+    isVisible: boolean;
+    badgeLabel: string;
+    badgeIcon: string;
+    heading: string;
+    bodyParagraph1: string | null;
+    bodyParagraph2: string | null;
+    highlights: ReviewBullet[];
+    youtubeUrl: string | null;
+    videoCaption: string | null;
+    reportButtonText: string;
+    reportButtonUrl: string | null;
+    reportButtonIcon: string;
+}
+
 export interface AboutPage {
     overviewBadge: string;
     overviewHeadline: string;
@@ -279,6 +300,18 @@ export function getMediaUrl(media: StrapiMedia | null | undefined): string {
 /**
  * Get a specific format of a media file (thumbnail, small, medium, large)
  */
+/** Turn a YouTube watch or share URL into an embed URL (or return as-is if already embed). */
+export function toYouTubeEmbedUrl(url: string | null | undefined): string {
+    if (!url?.trim()) return '';
+    const u = url.trim();
+    if (u.includes('youtube.com/embed/')) return u.split('?')[0];
+    const watch = u.match(/[?&]v=([\w-]{11})/);
+    if (watch) return `https://www.youtube.com/embed/${watch[1]}`;
+    const short = u.match(/youtu\.be\/([\w-]{11})/);
+    if (short) return `https://www.youtube.com/embed/${short[1]}`;
+    return u;
+}
+
 export function getMediaFormat(
     media: StrapiMedia | null | undefined,
     format: 'thumbnail' | 'small' | 'medium' | 'large'
@@ -590,6 +623,12 @@ export async function getHomepage(): Promise<StrapiSingleResponse<Homepage>> {
 
 export async function getAboutPage(): Promise<StrapiSingleResponse<AboutPage>> {
     return fetchAPI<StrapiSingleResponse<AboutPage>>('about-page', {
+        'populate': '*',
+    });
+}
+
+export async function getAnnualHealthcareReview(): Promise<StrapiSingleResponse<AnnualHealthcareReview>> {
+    return fetchAPI<StrapiSingleResponse<AnnualHealthcareReview>>('annual-healthcare-review', {
         'populate': '*',
     });
 }

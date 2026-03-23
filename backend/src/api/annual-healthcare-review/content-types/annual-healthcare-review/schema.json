@@ -1,0 +1,61 @@
+{
+  "kind": "singleType",
+  "collectionName": "annual_healthcare_reviews",
+  "info": {
+    "singularName": "annual-healthcare-review",
+    "pluralName": "annual-healthcare-reviews",
+    "displayName": "Annual Healthcare Review",
+    "description": "Homepage section: year-end reflection, YouTube video, and report link (shown above Latest Updates)"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    },
+    "badgeLabel": {
+      "type": "string",
+      "default": "Annual Healthcare Review"
+    },
+    "badgeIcon": {
+      "type": "string",
+      "default": "book"
+    },
+    "heading": {
+      "type": "string",
+      "default": "End of Year Healthcare Reflection"
+    },
+    "bodyParagraph1": {
+      "type": "text"
+    },
+    "bodyParagraph2": {
+      "type": "text"
+    },
+    "highlights": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.review-bullet"
+    },
+    "youtubeUrl": {
+      "type": "string"
+    },
+    "videoCaption": {
+      "type": "string",
+      "default": "Final End of Year Healthcare Reflection Video"
+    },
+    "reportButtonText": {
+      "type": "string",
+      "default": "Read Full Report"
+    },
+    "reportButtonUrl": {
+      "type": "string"
+    },
+    "reportButtonIcon": {
+      "type": "string",
+      "default": "book-open"
+    }
+  }
+}

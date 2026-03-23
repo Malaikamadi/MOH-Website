@@ -3,6 +3,7 @@ import Footer from '../components/layout/Footer'
 import HeroSlider from '../components/home/HeroSlider'
 import InfoHubDashboard from '../components/home/InfoHubDashboard'
 import ServicesSection from '../components/home/ServicesSection'
+import AnnualHealthcareReviewSection from '../components/home/AnnualHealthcareReviewSection'
 import UpdatesSection from '../components/home/UpdatesSection'
 import NewsletterSection from '../components/home/NewsletterSection'
 
@@ -14,6 +15,7 @@ export default function HomePage() {
                 <HeroSlider />
                 <InfoHubDashboard />
                 <ServicesSection />
+                <AnnualHealthcareReviewSection />
                 <UpdatesSection />
                 <NewsletterSection />
             </main>

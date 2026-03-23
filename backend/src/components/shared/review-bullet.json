@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_shared_review_bullets",
+  "info": {
+    "displayName": "Review bullet",
+    "icon": "check",
+    "description": "Single line for the annual review highlight list"
+  },
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

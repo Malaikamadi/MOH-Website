@@ -1,0 +1,46 @@
+{
+    "kind": "collectionType",
+    "collectionName": "sync_logs",
+    "info": {
+        "singularName": "sync-log",
+        "pluralName": "sync-logs",
+        "displayName": "Hub Sync Log",
+        "description": "Audit log for data syncs from Ministry Information Hub / DHIS2"
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "source": {
+            "type": "enumeration",
+            "enum": ["DHIS2", "Ministry Hub", "Manual"],
+            "required": true
+        },
+        "syncType": {
+            "type": "enumeration",
+            "enum": ["disease-surveillance", "health-dashboard", "full"],
+            "required": true
+        },
+        "recordsProcessed": {
+            "type": "integer",
+            "default": 0
+        },
+        "recordsCreated": {
+            "type": "integer",
+            "default": 0
+        },
+        "recordsUpdated": {
+            "type": "integer",
+            "default": 0
+        },
+        "status": {
+            "type": "enumeration",
+            "enum": ["success", "partial", "failed"],
+            "required": true
+        },
+        "message": {
+            "type": "text"
+        }
+    }
+}
