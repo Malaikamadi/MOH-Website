@@ -9,7 +9,7 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 import { useApi } from '../../hooks/useApi';
-import { getDiseaseSurveillance } from '../../services/api';
+import { getDiseaseSurveillance, getHealthInformationHub } from '../../services/api';
 import type { StrapiItem, DiseaseSurveillance } from '../../services/api';
 
 /* ─── Sample Data ─── */
@@ -63,14 +63,6 @@ const diseaseOutbreaks = [
     { disease: 'Lassa Fever', cases: 43, region: 'Kenema District', trend: 'down' as const },
 ];
 
-const facilityReports = [
-    { district: 'Western Area Urban', facilities: 145, reporting: 138, rate: 95 },
-    { district: 'Bo', facilities: 98, reporting: 89, rate: 91 },
-    { district: 'Kenema', facilities: 112, reporting: 101, rate: 90 },
-    { district: 'Bombali', facilities: 87, reporting: 76, rate: 87 },
-    { district: 'Port Loko', facilities: 93, reporting: 79, rate: 85 },
-    { district: 'Kono', facilities: 64, reporting: 52, rate: 81 },
-];
 
 const TOTAL_MATERNAL = 137;
 const TOTAL_UNDER_FIVE = 292;
@@ -136,6 +128,9 @@ function CircleProgress({ value, color, size = 80, strokeWidth = 7 }: {
 
 export default function InfoHubDashboard() {
     const { data: surveillanceData } = useApi(() => getDiseaseSurveillance({ limit: 5 }));
+    const { data: hubRes } = useApi(getHealthInformationHub);
+
+    const hubData = hubRes?.data;
 
     const surveillanceSummary = useMemo(() => {
         const items = surveillanceData?.data || [];
@@ -146,7 +141,18 @@ export default function InfoHubDashboard() {
         return { count: items.length, totalCases };
     }, [surveillanceData]);
 
-    const quarterlyLabels = maternalDeathsQuarterly.map(
+    const displayMaternalQuarterly = hubData?.maternalDeathsQuarterly || maternalDeathsQuarterly;
+    const displayMaternalMonthly = hubData?.maternalDeathsMonthly || maternalDeathsMonthly;
+    const displayCoverage = hubData?.healthCoverage || healthCoverage;
+    const displayAlerts = hubData?.districtAlerts || districtAlerts;
+
+    const totalMaternal = hubData?.totalMaternalDeaths ?? TOTAL_MATERNAL;
+    const totalUnderFive = hubData?.totalUnderFiveDeaths ?? TOTAL_UNDER_FIVE;
+    const facilitiesReportingCount = hubData?.facilitiesReportingCount ?? FACILITIES;
+    
+
+
+    const quarterlyLabels = displayMaternalQuarterly.map(
         (d) => `${d.period}\n${d.year}`
     );
     void quarterlyLabels;
@@ -158,7 +164,7 @@ export default function InfoHubDashboard() {
                 <div className="hih-header">
                     <h2 className="hih-title">Health Information Hub</h2>
                     <p className="hih-subtitle">
-                        Real-time health data collected across Sierra Leone's {DISTRICTS} districts and {FACILITIES}+ health facilities.
+                        Real-time health data collected across Sierra Leone's {DISTRICTS} districts and {facilitiesReportingCount}+ health facilities.
                     </p>
                 </div>
 
@@ -170,7 +176,7 @@ export default function InfoHubDashboard() {
                         </div>
                         <div className="hih-summary-info">
                             <span className="hih-summary-label">Maternal Deaths</span>
-                            <span className="hih-summary-value">{TOTAL_MATERNAL}</span>
+                            <span className="hih-summary-value">{totalMaternal}</span>
                         </div>
                         <span className="hih-summary-badge hih-badge-caution">2025 Total</span>
                     </div>
@@ -180,7 +186,7 @@ export default function InfoHubDashboard() {
                         </div>
                         <div className="hih-summary-info">
                             <span className="hih-summary-label">Under-Five Deaths</span>
-                            <span className="hih-summary-value">{TOTAL_UNDER_FIVE}</span>
+                            <span className="hih-summary-value">{totalUnderFive}</span>
                         </div>
                         <span className="hih-summary-badge hih-badge-caution">2025 Total</span>
                     </div>
@@ -190,7 +196,7 @@ export default function InfoHubDashboard() {
                         </div>
                         <div className="hih-summary-info">
                             <span className="hih-summary-label">Disease Reports</span>
-                            <span className="hih-summary-value">{surveillanceSummary.count || diseaseOutbreaks.length}</span>
+                            <span className="hih-summary-value">{hubData?.diseaseReportsActive || surveillanceSummary.count || diseaseOutbreaks.length}</span>
                         </div>
                         <span className="hih-summary-badge hih-badge-info">Active</span>
                     </div>
@@ -200,7 +206,7 @@ export default function InfoHubDashboard() {
                         </div>
                         <div className="hih-summary-info">
                             <span className="hih-summary-label">Facilities Reporting</span>
-                            <span className="hih-summary-value">{FACILITIES}+</span>
+                            <span className="hih-summary-value">{facilitiesReportingCount}+</span>
                         </div>
                         <span className="hih-summary-badge hih-badge-success">Online</span>
                     </div>
@@ -221,7 +227,7 @@ export default function InfoHubDashboard() {
                         </div>
                         <div className="hih-chart-body">
                             <ResponsiveContainer width="100%" height={240}>
-                                <LineChart data={maternalDeathsQuarterly} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+                                <LineChart data={displayMaternalQuarterly} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                                     <XAxis
                                         dataKey="period"
@@ -262,8 +268,8 @@ export default function InfoHubDashboard() {
                             <span className="hih-live-dot"><span></span> Live</span>
                         </div>
                         <div className="hih-coverage-rings">
-                            {healthCoverage.map((item, i) => (
-                                <div className="hih-ring-item" key={i}>
+                            {displayCoverage.map((item: any, i: number) => (
+                                <div className="hih-ring-item" key={item?.id || i}>
                                     <CircleProgress value={item.value} color={item.color} />
                                     <div className="hih-ring-label">
                                         <i className={`fas ${item.icon}`} style={{ color: item.color }}></i>
@@ -298,7 +304,7 @@ export default function InfoHubDashboard() {
                         </div>
                         <div className="hih-chart-body">
                             <ResponsiveContainer width="100%" height={240}>
-                                <LineChart data={maternalDeathsMonthly} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+                                <LineChart data={displayMaternalMonthly} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                                     <XAxis
                                         dataKey="month"
@@ -333,12 +339,12 @@ export default function InfoHubDashboard() {
                                 <p>Real-time surveillance status by district</p>
                             </div>
                             <span className="hih-alerts-count">
-                                {districtAlerts.filter(a => a.status !== 'normal').length} Active
+                                {displayAlerts.filter(a => a.status !== 'normal').length} Active
                             </span>
                         </div>
                         <div className="hih-alerts-list">
-                            {districtAlerts.map((alert, i) => (
-                                <div className={`hih-alert-row hih-alert-${alert.status}`} key={i}>
+                            {displayAlerts.map((alert: any, i: number) => (
+                                <div className={`hih-alert-row hih-alert-${alert.status}`} key={alert?.id || i}>
                                     <div className="hih-alert-status">
                                         <span className={`hih-status-dot hih-dot-${alert.status}`}></span>
                                     </div>
@@ -358,81 +364,6 @@ export default function InfoHubDashboard() {
                         </div>
                     </div>
                 </div>
-
-                {/* Disease Surveillance + Facility Reporting */}
-                <div className="hih-data-grid">
-                    {/* Disease Surveillance Table */}
-                    <div className="hih-table-card">
-                        <div className="hih-table-header">
-                            <h4><i className="fas fa-shield-virus"></i> Disease Surveillance</h4>
-                            <a href="/emergency" className="hih-view-link">View All <i className="fas fa-arrow-right"></i></a>
-                        </div>
-                        <table className="hih-table">
-                            <thead>
-                                <tr>
-                                    <th>Disease</th>
-                                    <th>Region</th>
-                                    <th>Cases</th>
-                                    <th>Trend</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {diseaseOutbreaks.map((d, i) => (
-                                    <tr key={i}>
-                                        <td className="hih-disease-name">{d.disease}</td>
-                                        <td>{d.region}</td>
-                                        <td className="hih-cases-cell">{d.cases.toLocaleString()}</td>
-                                        <td>
-                                            <span className={`hih-trend hih-trend-${d.trend}`}>
-                                                <i className={`fas fa-arrow-${d.trend === 'up' ? 'up' : d.trend === 'down' ? 'down' : 'right'}`}></i>
-                                                {d.trend.charAt(0).toUpperCase() + d.trend.slice(1)}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* Facility Reporting Table */}
-                    <div className="hih-table-card">
-                        <div className="hih-table-header">
-                            <h4><i className="fas fa-hospital-alt"></i> Facility Reporting Rates</h4>
-                            <a href="/emergency" className="hih-view-link">View All <i className="fas fa-arrow-right"></i></a>
-                        </div>
-                        <table className="hih-table">
-                            <thead>
-                                <tr>
-                                    <th>District</th>
-                                    <th>Facilities</th>
-                                    <th>Reporting</th>
-                                    <th>Rate</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {facilityReports.map((f, i) => (
-                                    <tr key={i}>
-                                        <td className="hih-disease-name">{f.district}</td>
-                                        <td>{f.facilities}</td>
-                                        <td>{f.reporting}</td>
-                                        <td>
-                                            <div className="hih-rate-cell">
-                                                <div className="hih-rate-bar">
-                                                    <div
-                                                        className="hih-rate-fill"
-                                                        style={{ width: `${f.rate}%` }}
-                                                    ></div>
-                                                </div>
-                                                <span className="hih-rate-text">{f.rate}%</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
                 {/* CTA */}
                 <div className="hih-cta">
                     <a href="/emergency" className="hih-cta-btn">

@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_hub_health_coverages",
+  "info": {
+    "displayName": "Health Coverage"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "integer",
+      "required": true,
+      "default": 0
+    },
+    "color": {
+      "type": "string",
+      "default": "#2563eb"
+    },
+    "icon": {
+      "type": "string"
+    }
+  }
+}

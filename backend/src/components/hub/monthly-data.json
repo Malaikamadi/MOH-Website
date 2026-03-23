@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_hub_monthly_data",
+  "info": {
+    "displayName": "Monthly Data"
+  },
+  "options": {},
+  "attributes": {
+    "month": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "integer",
+      "required": true,
+      "default": 0
+    }
+  }
+}

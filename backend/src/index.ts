@@ -11,6 +11,7 @@ export default {
     await seedSiteSettings(strapi);
     await seedHomepage(strapi);
     await seedAboutPage(strapi);
+    await seedHealthInformationHub(strapi);
     await seedLeadershipMembers(strapi);
     await seedCommunicationsRole(strapi);
   },
@@ -32,6 +33,7 @@ async function setupPublicPermissions(strapi: Core.Strapi) {
     { controller: 'api::site-setting.site-setting', actions: ['find'] },
     { controller: 'api::homepage.homepage', actions: ['find'] },
     { controller: 'api::about-page.about-page', actions: ['find'] },
+    { controller: 'api::health-information-hub.health-information-hub', actions: ['find'] },
     // Leadership members
     { controller: 'api::leadership-member.leadership-member', actions: ['find', 'findOne'] },
   ];
@@ -685,4 +687,71 @@ async function seedCommunicationsUser(strapi: Core.Strapi, roleId: number) {
   } catch (err: any) {
     strapi.log.error(`❌ Failed to create Communications user: ${err.message}`);
   }
+}
+
+// ─── Seed: Health Information Hub ────────────────────────────────
+async function seedHealthInformationHub(strapi: Core.Strapi) {
+  const existing = await strapi.documents('api::health-information-hub.health-information-hub' as any).findFirst({});
+  if (existing) {
+    strapi.log.info('📋 Health Information Hub exists, skipping.');
+    return;
+  }
+
+  strapi.log.info('🌱 Seeding Health Information Hub...');
+  await strapi.documents('api::health-information-hub.health-information-hub' as any).create({
+    data: {
+      totalMaternalDeaths: 137,
+      totalUnderFiveDeaths: 292,
+      diseaseReportsActive: 5,
+      facilitiesReportingCount: 1205,
+      healthCoverage: [
+        { label: 'Vaccination', value: 85, color: '#059669', icon: 'fa-syringe' },
+        { label: 'PHU Coverage', value: 100, color: '#2563eb', icon: 'fa-clinic-medical' },
+        { label: 'ANC Visits', value: 72, color: '#7c3aed', icon: 'fa-heartbeat' },
+        { label: 'Birth Registration', value: 64, color: '#f59e0b', icon: 'fa-file-medical' },
+      ],
+      maternalDeathsQuarterly: [
+        { period: 'Q1', year: 2025, value: 27 }, { period: 'Q2', year: 2025, value: 41 },
+        { period: 'Q3', year: 2025, value: 43 }, { period: 'Q4', year: 2025, value: 26 },
+        { period: 'Q1', year: 2026, value: 0 }, { period: 'Q2', year: 2026, value: 0 },
+        { period: 'Q3', year: 2026, value: 0 }, { period: 'Q4', year: 2026, value: 0 },
+      ],
+      underFiveDeathsQuarterly: [
+        { period: 'Q1', year: 2025, value: 84 }, { period: 'Q2', year: 2025, value: 108 },
+        { period: 'Q3', year: 2025, value: 60 }, { period: 'Q4', year: 2025, value: 60 },
+        { period: 'Q1', year: 2026, value: 0 }, { period: 'Q2', year: 2026, value: 0 },
+        { period: 'Q3', year: 2026, value: 0 }, { period: 'Q4', year: 2026, value: 0 },
+      ],
+      maternalDeathsMonthly: [
+        { month: 'Jan', value: 6 }, { month: 'Feb', value: 11 }, { month: 'Mar', value: 10 },
+        { month: 'Apr', value: 14 }, { month: 'May', value: 13 }, { month: 'Jun', value: 14 },
+        { month: 'Jul', value: 18 }, { month: 'Aug', value: 18 }, { month: 'Sep', value: 8 },
+        { month: 'Oct', value: 11 }, { month: 'Nov', value: 10 }, { month: 'Dec', value: 5 },
+      ],
+      underFiveDeathsMonthly: [
+        { month: 'Jan', value: 16 }, { month: 'Feb', value: 28 }, { month: 'Mar', value: 20 },
+        { month: 'Apr', value: 14 }, { month: 'May', value: 44 }, { month: 'Jun', value: 50 },
+        { month: 'Jul', value: 28 }, { month: 'Aug', value: 23 }, { month: 'Sep', value: 9 },
+        { month: 'Oct', value: 21 }, { month: 'Nov', value: 15 }, { month: 'Dec', value: 23 },
+      ],
+      districtAlerts: [
+        { district: 'Western Area Urban', status: 'normal', activeCases: 12, lastUpdate: '2 hrs ago' },
+        { district: 'Kenema', status: 'warning', activeCases: 47, lastUpdate: '30 min ago' },
+        { district: 'Bo', status: 'normal', activeCases: 8, lastUpdate: '1 hr ago' },
+        { district: 'Bombali', status: 'critical', activeCases: 89, lastUpdate: '15 min ago' },
+        { district: 'Port Loko', status: 'warning', activeCases: 34, lastUpdate: '45 min ago' },
+        { district: 'Kailahun', status: 'normal', activeCases: 5, lastUpdate: '3 hrs ago' },
+      ],
+      facilityReports: [
+        { district: 'Western Area Urban', facilities: 145, reporting: 138, rate: 95 },
+        { district: 'Bo', facilities: 98, reporting: 89, rate: 91 },
+        { district: 'Kenema', facilities: 112, reporting: 101, rate: 90 },
+        { district: 'Bombali', facilities: 87, reporting: 76, rate: 87 },
+        { district: 'Port Loko', facilities: 93, reporting: 79, rate: 85 },
+        { district: 'Kono', facilities: 64, reporting: 52, rate: 81 },
+      ],
+    } as any,
+    status: 'published',
+  });
+  strapi.log.info('🌱 Health Information Hub seeded.');
 }

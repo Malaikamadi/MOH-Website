@@ -600,3 +600,60 @@ export async function getLeadershipMembers(): Promise<StrapiResponse<LeadershipM
         'sort': 'order:asc',
     });
 }
+
+export interface HubMonthlyData {
+    id: number;
+    month: string;
+    value: number;
+}
+
+export interface HubQuarterlyData {
+    id: number;
+    period: string;
+    year: number;
+    value: number;
+}
+
+export interface HubHealthCoverage {
+    id: number;
+    label: string;
+    value: number;
+    color: string;
+    icon: string;
+}
+
+export interface HubDistrictAlert {
+    id: number;
+    district: string;
+    status: 'normal' | 'warning' | 'critical';
+    activeCases: number;
+    lastUpdate: string;
+}
+
+export interface HubFacilityReport {
+    id: number;
+    district: string;
+    facilities: number;
+    reporting: number;
+    rate: number;
+}
+
+export interface HealthInformationHub {
+    totalMaternalDeaths: number;
+    totalUnderFiveDeaths: number;
+    diseaseReportsActive: number;
+    facilitiesReportingCount: number;
+    maternalDeathsQuarterly: HubQuarterlyData[];
+    underFiveDeathsQuarterly: HubQuarterlyData[];
+    maternalDeathsMonthly: HubMonthlyData[];
+    underFiveDeathsMonthly: HubMonthlyData[];
+    healthCoverage: HubHealthCoverage[];
+    districtAlerts: HubDistrictAlert[];
+    facilityReports: HubFacilityReport[];
+}
+
+export async function getHealthInformationHub(): Promise<StrapiSingleResponse<HealthInformationHub>> {
+    return fetchAPI<StrapiSingleResponse<HealthInformationHub>>('health-information-hub', {
+        'populate': '*',
+    });
+}

@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_hub_district_alerts",
+  "info": {
+    "displayName": "District Alert",
+    "description": "Alert status for a specific district"
+  },
+  "options": {},
+  "attributes": {
+    "district": {
+      "type": "string",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["normal", "warning", "critical"],
+      "default": "normal",
+      "required": true
+    },
+    "activeCases": {
+      "type": "integer",
+      "required": true
+    },
+    "lastUpdate": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

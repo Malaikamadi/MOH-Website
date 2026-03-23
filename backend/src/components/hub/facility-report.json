@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_hub_facility_reports",
+  "info": {
+    "displayName": "Facility Report"
+  },
+  "options": {},
+  "attributes": {
+    "district": {
+      "type": "string",
+      "required": true
+    },
+    "facilities": {
+      "type": "integer",
+      "required": true
+    },
+    "reporting": {
+      "type": "integer",
+      "required": true
+    },
+    "rate": {
+      "type": "integer",
+      "required": true
+    }
+  }
+}

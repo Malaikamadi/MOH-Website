@@ -1,5 +1,76 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface HubDistrictAlert extends Struct.ComponentSchema {
+  collectionName: 'components_hub_district_alerts';
+  info: {
+    description: 'Alert status for a specific district';
+    displayName: 'District Alert';
+  };
+  attributes: {
+    activeCases: Schema.Attribute.Integer & Schema.Attribute.Required;
+    district: Schema.Attribute.String & Schema.Attribute.Required;
+    lastUpdate: Schema.Attribute.String & Schema.Attribute.Required;
+    status: Schema.Attribute.Enumeration<['normal', 'warning', 'critical']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'normal'>;
+  };
+}
+
+export interface HubFacilityReport extends Struct.ComponentSchema {
+  collectionName: 'components_hub_facility_reports';
+  info: {
+    displayName: 'Facility Report';
+  };
+  attributes: {
+    district: Schema.Attribute.String & Schema.Attribute.Required;
+    facilities: Schema.Attribute.Integer & Schema.Attribute.Required;
+    rate: Schema.Attribute.Integer & Schema.Attribute.Required;
+    reporting: Schema.Attribute.Integer & Schema.Attribute.Required;
+  };
+}
+
+export interface HubHealthCoverage extends Struct.ComponentSchema {
+  collectionName: 'components_hub_health_coverages';
+  info: {
+    displayName: 'Health Coverage';
+  };
+  attributes: {
+    color: Schema.Attribute.String & Schema.Attribute.DefaultTo<'#2563eb'>;
+    icon: Schema.Attribute.String;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    value: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface HubMonthlyData extends Struct.ComponentSchema {
+  collectionName: 'components_hub_monthly_data';
+  info: {
+    displayName: 'Monthly Data';
+  };
+  attributes: {
+    month: Schema.Attribute.String & Schema.Attribute.Required;
+    value: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface HubQuarterlyData extends Struct.ComponentSchema {
+  collectionName: 'components_hub_quarterly_data';
+  info: {
+    displayName: 'Quarterly Data';
+  };
+  attributes: {
+    period: Schema.Attribute.String & Schema.Attribute.Required;
+    value: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
+    year: Schema.Attribute.Integer & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedHighlight extends Struct.ComponentSchema {
   collectionName: 'components_shared_highlights';
   info: {
@@ -73,6 +144,11 @@ export interface SharedStatItem extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'hub.district-alert': HubDistrictAlert;
+      'hub.facility-report': HubFacilityReport;
+      'hub.health-coverage': HubHealthCoverage;
+      'hub.monthly-data': HubMonthlyData;
+      'hub.quarterly-data': HubQuarterlyData;
       'shared.highlight': SharedHighlight;
       'shared.link-item': SharedLinkItem;
       'shared.service-card': SharedServiceCard;

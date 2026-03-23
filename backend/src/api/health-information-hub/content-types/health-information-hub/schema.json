@@ -1,0 +1,67 @@
+{
+  "kind": "singleType",
+  "collectionName": "health_information_hubs",
+  "info": {
+    "singularName": "health-information-hub",
+    "pluralName": "health-information-hubs",
+    "displayName": "Health Information Hub",
+    "description": "Dashboard data for the Health Information Hub"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "totalMaternalDeaths": {
+      "type": "integer",
+      "default": 0
+    },
+    "totalUnderFiveDeaths": {
+      "type": "integer",
+      "default": 0
+    },
+    "diseaseReportsActive": {
+      "type": "integer",
+      "default": 0
+    },
+    "facilitiesReportingCount": {
+      "type": "integer",
+      "default": 0
+    },
+    "maternalDeathsQuarterly": {
+      "type": "component",
+      "repeatable": true,
+      "component": "hub.quarterly-data"
+    },
+    "underFiveDeathsQuarterly": {
+      "type": "component",
+      "repeatable": true,
+      "component": "hub.quarterly-data"
+    },
+    "maternalDeathsMonthly": {
+      "type": "component",
+      "repeatable": true,
+      "component": "hub.monthly-data"
+    },
+    "underFiveDeathsMonthly": {
+      "type": "component",
+      "repeatable": true,
+      "component": "hub.monthly-data"
+    },
+    "healthCoverage": {
+      "type": "component",
+      "repeatable": true,
+      "component": "hub.health-coverage"
+    },
+    "districtAlerts": {
+      "type": "component",
+      "repeatable": true,
+      "component": "hub.district-alert"
+    },
+    "facilityReports": {
+      "type": "component",
+      "repeatable": true,
+      "component": "hub.facility-report"
+    }
+  }
+}

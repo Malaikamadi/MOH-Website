@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_hub_quarterly_data",
+  "info": {
+    "displayName": "Quarterly Data"
+  },
+  "options": {},
+  "attributes": {
+    "period": {
+      "type": "string",
+      "required": true
+    },
+    "year": {
+      "type": "integer",
+      "required": true
+    },
+    "value": {
+      "type": "integer",
+      "required": true,
+      "default": 0
+    }
+  }
+}

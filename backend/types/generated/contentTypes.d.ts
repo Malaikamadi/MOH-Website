@@ -604,6 +604,59 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiHealthInformationHubHealthInformationHub
+  extends Struct.SingleTypeSchema {
+  collectionName: 'health_information_hubs';
+  info: {
+    description: 'Dashboard data for the Health Information Hub';
+    displayName: 'Health Information Hub';
+    pluralName: 'health-information-hubs';
+    singularName: 'health-information-hub';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    diseaseReportsActive: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
+    districtAlerts: Schema.Attribute.Component<'hub.district-alert', true>;
+    facilitiesReportingCount: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
+    facilityReports: Schema.Attribute.Component<'hub.facility-report', true>;
+    healthCoverage: Schema.Attribute.Component<'hub.health-coverage', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::health-information-hub.health-information-hub'
+    > &
+      Schema.Attribute.Private;
+    maternalDeathsMonthly: Schema.Attribute.Component<'hub.monthly-data', true>;
+    maternalDeathsQuarterly: Schema.Attribute.Component<
+      'hub.quarterly-data',
+      true
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    totalMaternalDeaths: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
+    totalUnderFiveDeaths: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
+    underFiveDeathsMonthly: Schema.Attribute.Component<
+      'hub.monthly-data',
+      true
+    >;
+    underFiveDeathsQuarterly: Schema.Attribute.Component<
+      'hub.quarterly-data',
+      true
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiHeroSlideHeroSlide extends Struct.CollectionTypeSchema {
   collectionName: 'hero_slides';
   info: {
@@ -1522,6 +1575,7 @@ declare module '@strapi/strapi' {
       'api::directorate.directorate': ApiDirectorateDirectorate;
       'api::disease-surveillance.disease-surveillance': ApiDiseaseSurveillanceDiseaseSurveillance;
       'api::event.event': ApiEventEvent;
+      'api::health-information-hub.health-information-hub': ApiHealthInformationHubHealthInformationHub;
       'api::hero-slide.hero-slide': ApiHeroSlideHeroSlide;
       'api::homepage.homepage': ApiHomepageHomepage;
       'api::job.job': ApiJobJob;
