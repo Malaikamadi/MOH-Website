@@ -2,14 +2,14 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy backend package files
-COPY backend/package.json backend/package-lock.json ./
+# Copy package files
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm ci --omit=dev
 
-# Copy backend source
-COPY backend/ ./
+# Copy source
+COPY . ./
 
 # Build Strapi
 RUN npm run build
