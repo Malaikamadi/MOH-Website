@@ -7158,6 +7158,80 @@ button {
   gap: 1.5rem;
 }
 
+.updates-state {
+  text-align: center;
+  padding: var(--space-10) var(--space-6);
+  background: #fff;
+  border-radius: var(--radius-xl);
+  border: 1px solid #e2e8f0;
+  max-width: 36rem;
+  margin: 0 auto 2rem;
+}
+
+.updates-state p {
+  margin-bottom: var(--space-4);
+  color: #334155;
+  line-height: 1.6;
+}
+
+.updates-state code {
+  font-size: 0.9em;
+  background: #f1f5f9;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.updates-state-detail {
+  font-size: var(--text-sm);
+  color: #64748b;
+}
+
+.updates-state--error strong {
+  color: #b45309;
+}
+
+.update-card--skeleton {
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(26, 39, 68, 0.06);
+}
+
+.update-skeleton-image {
+  height: 200px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: updatesShimmer 1.2s ease-in-out infinite;
+}
+
+.update-skeleton-body {
+  padding: 1.25rem;
+}
+
+.update-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: updatesShimmer 1.2s ease-in-out infinite;
+}
+
+.update-skeleton-line.short {
+  width: 40%;
+}
+
+.update-skeleton-line.long {
+  width: 55%;
+}
+
+@keyframes updatesShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
 /* Update Cards */
 .update-card {
   background: white;
