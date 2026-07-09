@@ -100,7 +100,7 @@ export default function JobPortalPage() {
         return result;
     }, [jobs, keyword, locationFilter, selectedTypes, selectedSectors, selectedExperience, sortBy]);
 
-    function toggleFilter(list: string[], item: string, setter: React.Dispatch<React.SetStateAction<string[]>>) {
+    function toggleFilter(_list: string[], item: string, setter: React.Dispatch<React.SetStateAction<string[]>>) {
         setter(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
     }
 

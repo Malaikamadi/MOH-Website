@@ -5,75 +5,24 @@ import type { NewsArticle } from '../../services/api';
 
 type UpdateType = 'all' | 'news' | 'videos' | 'events' | 'publications';
 
-// Static fallback data
-const fallbackUpdates = [
-    {
-        type: 'news',
-        image: '/images/news-1.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop',
-        date: 'Jan 10, 2026',
-        title: 'Minister Launches New Healthcare Initiative',
-        description: 'Dr. Austin Demby announces expanded healthcare access program for rural communities...',
-        link: '#',
-        linkText: 'Read More'
-    },
-    {
-        type: 'videos',
-        image: '/images/video-thumb-1.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop',
-        date: 'Jan 8, 2026',
-        title: '2025 Year in Review: Healthcare Achievements',
-        description: 'Watch the highlights of our key health sector accomplishments in 2025...',
-        link: '#',
-        linkText: 'Watch Video',
-        hasPlayButton: true
-    },
-    {
-        type: 'events',
-        image: '/images/event-1.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop',
-        date: 'Youyi Building, Freetown',
-        title: 'National Immunization Campaign Launch',
-        description: 'Join us for the nationwide vaccination drive launch with WHO and UNICEF...',
-        link: '#',
-        linkText: 'Register Now',
-        eventDate: { day: '25', month: 'JAN' },
-        dateIcon: 'map-marker-alt'
-    },
-    {
-        type: 'publications',
-        image: '/images/publication-1.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop',
-        date: '2.4 MB • PDF',
-        title: 'Annual Health Sector Report 2025',
-        description: 'Comprehensive report on healthcare indicators, achievements and challenges...',
-        link: '#',
-        linkText: 'Download',
-        isPDF: true,
-        dateIcon: 'file'
-    },
-    {
-        type: 'news',
-        image: '/images/news-2.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400&h=250&fit=crop',
-        date: 'Jan 5, 2026',
-        title: 'New Medical Equipment Arrives at Regional Hospitals',
-        description: 'State-of-the-art diagnostic equipment now available across multiple districts...',
-        link: '#',
-        linkText: 'Read More'
-    },
-    {
-        type: 'videos',
-        image: '/images/video-thumb-2.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=400&h=250&fit=crop',
-        date: 'Jan 3, 2026',
-        title: 'Community Health Workers: Heroes of Primary Care',
-        description: 'Meet the dedicated CHWs serving rural communities across Sierra Leone...',
-        link: '#',
-        linkText: 'Watch Video',
-        hasPlayButton: true
-    }
-];
+/** Set VITE_UPDATES_DEMO_FALLBACK=true in .env only for local UI demos without Strapi. */
+const DEMO_FALLBACK =
+    import.meta.env.VITE_UPDATES_DEMO_FALLBACK === 'true'
+        ? [
+              {
+                  type: 'news' as const,
+                  image: '/images/news-1.jpg',
+                  fallbackImage:
+                      'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop',
+                  date: 'Demo',
+                  title: 'Demo: Minister Launches New Healthcare Initiative',
+                  description:
+                      'Enable Strapi news-articles or turn off VITE_UPDATES_DEMO_FALLBACK.',
+                  link: '#',
+                  linkText: 'Read More',
+              },
+          ]
+        : [];
 
 function transformApiData(item: NewsArticle & { id: number }) {
     const contentType = item.contentType || 'news';
@@ -99,14 +48,17 @@ function transformApiData(item: NewsArticle & { id: number }) {
 
 export default function UpdatesSection() {
     const [activeTab, setActiveTab] = useState<UpdateType>('all');
-    const { data: apiData } = useApi(() => getLatestUpdates({ limit: 12 }));
+    const { data: apiData, loading, error, refetch } = useApi(() =>
+        getLatestUpdates({ limit: 12 })
+    );
 
-    // Use API data if available, otherwise fallback
+    /** Real data from Strapi `news-articles` (contentType: news | video | event | publication). */
     const updates = useMemo(() => {
         if (apiData?.data && apiData.data.length > 0) {
             return apiData.data.map(transformApiData);
         }
-        return fallbackUpdates;
+        if (DEMO_FALLBACK.length > 0) return DEMO_FALLBACK;
+        return [];
     }, [apiData]);
 
     const filteredUpdates = activeTab === 'all'
@@ -162,6 +114,49 @@ export default function UpdatesSection() {
 
                 {/* Tab Content */}
                 <div className="updates-content">
+                    {loading ? (
+                        <div className="updates-grid updates-grid--loading" aria-busy="true">
+                            {[0, 1, 2].map((i) => (
+                                <div key={i} className="update-card update-card--skeleton">
+                                    <div className="update-skeleton-image" />
+                                    <div className="update-skeleton-body">
+                                        <div className="update-skeleton-line short" />
+                                        <div className="update-skeleton-line" />
+                                        <div className="update-skeleton-line" />
+                                        <div className="update-skeleton-line long" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : error ? (
+                        <div className="updates-state updates-state--error" role="alert">
+                            <p>
+                                <strong>Could not load updates.</strong> Check that Strapi is
+                                running and <code>VITE_API_URL</code> is set correctly.
+                            </p>
+                            <p className="updates-state-detail">{error}</p>
+                            <button
+                                type="button"
+                                className="btn btn-outline"
+                                onClick={() => refetch()}
+                            >
+                                Try again
+                            </button>
+                        </div>
+                    ) : filteredUpdates.length === 0 ? (
+                        <div className="updates-state updates-state--empty">
+                            <p>
+                                <strong>No updates published yet.</strong> Add and publish entries
+                                in Strapi → <strong>News Articles</strong> (set content type:
+                                News, Video, Event, or Publication).
+                            </p>
+                            <a href="/newsroom" className="btn btn-outline">
+                                Go to Newsroom
+                            </a>
+                        </div>
+                    ) : null}
+
+                    {!loading && !error && filteredUpdates.length > 0 ? (
                     <div className="updates-grid">
                         {filteredUpdates.map((update, index) => (
                             <div key={index} className="update-card" data-type={update.type}>
@@ -176,12 +171,12 @@ export default function UpdatesSection() {
                                         alt={update.title}
                                         onError={(e) => { e.currentTarget.src = update.fallbackImage; }}
                                     />
-                                    {update.hasPlayButton && (
+                                    {'hasPlayButton' in update && update.hasPlayButton && (
                                         <div className="play-overlay">
                                             <i className="fas fa-play"></i>
                                         </div>
                                     )}
-                                    {update.isPDF && (
+                                    {'isPDF' in update && update.isPDF && (
                                         <div className="pdf-overlay">
                                             <i className="fas fa-file-pdf"></i>
                                         </div>
@@ -189,7 +184,7 @@ export default function UpdatesSection() {
                                 </div>
                                 <div className="update-info">
                                     <span className="update-date">
-                                        <i className={`fas fa-${update.dateIcon || 'clock'}`}></i> {update.date}
+                                        <i className={`fas fa-${'dateIcon' in update ? update.dateIcon : 'clock'}`}></i> {update.date}
                                     </span>
                                     <h4>{update.title}</h4>
                                     <p>{update.description}</p>
@@ -200,12 +195,15 @@ export default function UpdatesSection() {
                             </div>
                         ))}
                     </div>
+                    ) : null}
 
+                    {!loading && !error && filteredUpdates.length > 0 ? (
                     <div className="updates-view-all">
                         <a href="/newsroom" className="btn btn-outline">
                             View All Updates <i className="fas fa-arrow-right"></i>
                         </a>
                     </div>
+                    ) : null}
                 </div>
             </div>
         </section>

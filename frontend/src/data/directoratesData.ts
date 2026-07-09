@@ -1057,77 +1057,7 @@ export const directoratesData: Record<string, DirectorateData> = {
         }
     },
 
-    hrm: {
-        acronym: 'hrm',
-        fullName: 'Human Resource Management',
-        icon: '',
-        about: 'The Directorate of Human Resource Management is responsible for the strategic management of human resources within the Ministry of Health.',
-        aboutExtra: 'We oversee recruitment, deployment, training, and retention of health workers to ensure adequate staffing across all health facilities in Sierra Leone.',
-        stats: {
-            units: 4,
-            districts: 16,
-            staff: '8,000+',
-            partners: '15+'
-        },
-        director: {
-            name: 'Director of Human Resource Management',
-            image: '/images/directorates/dir_hrm.png',
-            bio: [
-                'The Director leads all HR functions including workforce planning, recruitment, staff development, and employee relations across the health sector'
-            ]
-        },
-        units: [
-            {
-                id: 'recruitment',
-                name: 'Recruitment',
-                icon: 'recruitment',
-                description: 'Recruitment and deployment of health workers.',
-                functions: [
-                    'Recruitment',
-                    'Deployment',
-                    'Training',
-                    'Retention'
-                ]
-            },
-            {
-                id: 'training',
-                name: 'Training',
-                icon: 'training',
-                description: 'Training of health workers.',
-                functions: [
-                    'Training',
-                    'Deployment',
-                    'Training',
-                    'Training'
-                ]
-            }
-        ],
-        documents: [
-            {
-                title: 'Recruitment Policy',
-                type: 'PDF',
-                size: '2.5 MB',
-                link: '#'
-            },
-            {
-                title: 'Training Policy',
-                type: 'PDF',
-                size: '1.8 MB',
-                link: '#'
-            },
-            {
-                title: 'Staff Development Policy',
-                type: 'PDF',
-                size: '2.2 MB',
-                link: '#'
-            }
-        ],
-        contact: {
-            email: 'hrm@mohs.gov.sl',
-            phone: '+232 76 460 440',
-            location: '4th Floor, Youyi Building'
-        }
-    },
+
     tr: {
         acronym: 'tr',
         fullName: 'Training and Research',

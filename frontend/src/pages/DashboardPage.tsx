@@ -15,7 +15,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { useApi } from '../hooks/useApi';
 import { getDiseaseSurveillance, getHealthInformationHub } from '../services/api';
-import type { StrapiItem, DiseaseSurveillance, HubFacilityReport } from '../services/api';
+import type { StrapiItem, DiseaseSurveillance } from '../services/api';
 
 const DISTRICT_COUNT = 16;
 
@@ -105,7 +105,7 @@ export default function DashboardPage() {
 
     const facilityChartData = useMemo(
         () =>
-            facilityRows.map((r: HubFacilityReport) => ({
+            facilityRows.map((r) => ({
                 name: r.district.length > 14 ? `${r.district.slice(0, 12)}…` : r.district,
                 fullName: r.district,
                 rate: r.rate,
@@ -134,7 +134,7 @@ export default function DashboardPage() {
 
     const uniqueDistricts = useMemo(() => {
         const s = new Set<string>();
-        facilityRows.forEach((r: HubFacilityReport) => s.add(r.district));
+        facilityRows.forEach((r) => s.add(r.district));
         alerts.forEach((a: { district: string }) => s.add(a.district));
         return Array.from(s);
     }, [facilityRows, alerts]);
