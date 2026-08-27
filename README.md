@@ -195,7 +195,7 @@ docker-compose exec -T database psql -U strapi -d strapi < backup.sql
 docker-compose logs database
 ```
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Port Already in Use
 If you see "port already allocated" errors:
