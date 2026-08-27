@@ -163,6 +163,21 @@ export interface AgencyUnit {
     icon: string;
     description: string;
     functions: string[];
+    kind?: 'unit' | 'program' | 'project';
+    summary?: string;
+    overview?: string;
+    objectives?: string[];
+    keyActivities?: string[];
+    fundingSource?: string;
+    fundingPartners?: string;
+    fundingAmount?: string;
+    status?: 'planned' | 'ongoing' | 'completed';
+    startDate?: string;
+    endDate?: string;
+    coverage?: string;
+    beneficiaries?: string;
+    outcomes?: string;
+    achievements?: string[];
 }
 
 /** Shared template for Ministry agencies, boards, councils, and commissions */

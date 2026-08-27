@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
+import UnitProgramPanel from '../components/shared/UnitProgramPanel'
 import { useApi } from '../hooks/useApi'
 import { getDirectorateBySlug, getMediaUrl } from '../services/api'
 import type { DirectorateUnit } from '../services/api'
@@ -10,159 +11,6 @@ function kindLabel(kind?: DirectorateUnit['kind']) {
     if (kind === 'project') return 'Project'
     if (kind === 'program') return 'Programme'
     return 'Unit'
-}
-
-function statusLabel(status?: DirectorateUnit['status']) {
-    if (status === 'completed') return 'Completed'
-    if (status === 'planned') return 'Planned'
-    return 'Ongoing'
-}
-
-function UnitDetailPanel({ unit }: { unit: DirectorateUnit }) {
-    const kind = unit.kind || 'unit'
-    const overview = unit.overview || unit.summary || unit.description
-    const objectives = unit.objectives?.length ? unit.objectives : []
-    const activities = unit.keyActivities?.length
-        ? unit.keyActivities
-        : unit.functions || []
-    const achievements = unit.achievements || []
-    const showFunding =
-        Boolean(unit.fundingSource || unit.fundingPartners || unit.fundingAmount)
-    const showMeta =
-        showFunding ||
-        Boolean(unit.coverage || unit.beneficiaries || unit.startDate || unit.endDate)
-
-    return (
-        <div className="unit-detail active" id={unit.id}>
-            <div className="unit-detail-header">
-                <div className="unit-detail-badges">
-                    <span className={`unit-kind-badge unit-kind-${kind}`}>
-                        {kindLabel(kind)}
-                    </span>
-                    <span className={`unit-status-badge unit-status-${unit.status || 'ongoing'}`}>
-                        {statusLabel(unit.status)}
-                    </span>
-                </div>
-                <h3>{unit.name}</h3>
-            </div>
-
-            {overview ? (
-                <div className="unit-overview">
-                    {overview.split(/\n\n+/).map((para, i) => (
-                        <p key={i}>{para}</p>
-                    ))}
-                </div>
-            ) : null}
-
-            {showMeta ? (
-                <div className="unit-meta-grid">
-                    {unit.fundingSource ? (
-                        <div className="unit-meta-item">
-                            <span className="unit-meta-label">Funding source</span>
-                            <span className="unit-meta-value">{unit.fundingSource}</span>
-                        </div>
-                    ) : null}
-                    {unit.fundingPartners ? (
-                        <div className="unit-meta-item">
-                            <span className="unit-meta-label">Funding partners</span>
-                            <span className="unit-meta-value">{unit.fundingPartners}</span>
-                        </div>
-                    ) : null}
-                    {unit.fundingAmount ? (
-                        <div className="unit-meta-item">
-                            <span className="unit-meta-label">Investment</span>
-                            <span className="unit-meta-value">{unit.fundingAmount}</span>
-                        </div>
-                    ) : null}
-                    {unit.coverage ? (
-                        <div className="unit-meta-item">
-                            <span className="unit-meta-label">Coverage</span>
-                            <span className="unit-meta-value">{unit.coverage}</span>
-                        </div>
-                    ) : null}
-                    {unit.beneficiaries ? (
-                        <div className="unit-meta-item">
-                            <span className="unit-meta-label">Beneficiaries</span>
-                            <span className="unit-meta-value">{unit.beneficiaries}</span>
-                        </div>
-                    ) : null}
-                    {(unit.startDate || unit.endDate) ? (
-                        <div className="unit-meta-item">
-                            <span className="unit-meta-label">Timeline</span>
-                            <span className="unit-meta-value">
-                                {[unit.startDate, unit.endDate].filter(Boolean).join(' – ')}
-                            </span>
-                        </div>
-                    ) : null}
-                </div>
-            ) : null}
-
-            {objectives.length > 0 ? (
-                <div className="unit-block">
-                    <h4>Objectives</h4>
-                    <ul className="unit-functions">
-                        {objectives.map((item, index) => (
-                            <li key={index}>
-                                <i className="fas fa-bullseye"></i> {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ) : null}
-
-            {activities.length > 0 ? (
-                <div className="unit-block">
-                    <h4>
-                        {kind === 'project' || kind === 'program'
-                            ? 'What this programme / project is doing'
-                            : 'Core functions'}
-                    </h4>
-                    <ul className="unit-functions">
-                        {activities.map((item, index) => (
-                            <li key={index}>
-                                <i className="fas fa-check"></i> {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ) : null}
-
-            {unit.functions?.length &&
-            unit.keyActivities?.length &&
-            unit.functions !== unit.keyActivities ? (
-                <div className="unit-block">
-                    <h4>Operational responsibilities</h4>
-                    <ul className="unit-functions">
-                        {unit.functions.map((item, index) => (
-                            <li key={index}>
-                                <i className="fas fa-tasks"></i> {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ) : null}
-
-            {unit.outcomes ? (
-                <div className="unit-block unit-outcomes">
-                    <h4>Impact &amp; outcomes</h4>
-                    <p>{unit.outcomes}</p>
-                </div>
-            ) : null}
-
-            {achievements.length > 0 ? (
-                <div className="unit-block">
-                    <h4>Key achievements</h4>
-                    <ul className="unit-functions">
-                        {achievements.map((item, index) => (
-                            <li key={index}>
-                                <i className="fas fa-star"></i> {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ) : null}
-        </div>
-    )
 }
 
 export default function DirectorateDetailPage() {
@@ -337,35 +185,49 @@ export default function DirectorateDetailPage() {
                                 <i className="fas fa-th-large"></i> Units, Programmes &amp; Projects
                             </h2>
                             <p className="units-section-lead">
-                                Select a unit or funded programme below to see what it does, who it
-                                serves, and how it is supported.
+                                Select a unit or funded programme to explore mandate, delivery work,
+                                financing, and impact — not just a short summary.
                             </p>
-                            <div className="units-grid">
+                            <div className="units-grid units-grid--picker">
                                 {units.map((unit) => (
-                                    <div
+                                    <button
+                                        type="button"
                                         key={unit.id}
-                                        className={`unit-card ${activeUnit === unit.id ? 'active' : ''}`}
+                                        className={`unit-card unit-card--rich ${activeUnit === unit.id ? 'active' : ''}`}
                                         onClick={() => setActiveUnit(unit.id)}
-                                        role="button"
-                                        tabIndex={0}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault()
-                                                setActiveUnit(unit.id)
-                                            }
-                                        }}
                                     >
-                                        <i className={`fas fa-${unit.icon || 'folder'}`}></i>
-                                        <span>{unit.name}</span>
-                                        {unit.kind && unit.kind !== 'unit' ? (
-                                            <small className="unit-card-kind">
-                                                {kindLabel(unit.kind)}
-                                            </small>
-                                        ) : null}
-                                    </div>
+                                        <div className="unit-card-top">
+                                            <i className={`fas fa-${unit.icon || 'folder'}`}></i>
+                                            <span
+                                                className={`unit-card-status unit-status-${unit.status || 'ongoing'}`}
+                                            >
+                                                {unit.status === 'completed'
+                                                    ? 'Done'
+                                                    : unit.status === 'planned'
+                                                      ? 'Planned'
+                                                      : 'Active'}
+                                            </span>
+                                        </div>
+                                        <span className="unit-card-name">{unit.name}</span>
+                                        <small className="unit-card-kind">
+                                            {kindLabel(unit.kind)}
+                                        </small>
+                                        {(unit.summary || unit.description) && (
+                                            <p className="unit-card-blurb">
+                                                {(unit.summary || unit.description).slice(0, 90)}
+                                                {(unit.summary || unit.description).length > 90
+                                                    ? '…'
+                                                    : ''}
+                                            </p>
+                                        )}
+                                    </button>
                                 ))}
                             </div>
-                            {active ? <UnitDetailPanel unit={active} /> : null}
+                            {active ? (
+                                <div key={active.id} className="unit-profile-wrap">
+                                    <UnitProgramPanel unit={active} />
+                                </div>
+                            ) : null}
                         </div>
                     </section>
                 ) : null}

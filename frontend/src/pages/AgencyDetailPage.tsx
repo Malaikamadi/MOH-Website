@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
+import UnitProgramPanel from '../components/shared/UnitProgramPanel'
 import { useApi } from '../hooks/useApi'
 import { getAgencyBySlug, getMediaUrl } from '../services/api'
+import type { AgencyUnit } from '../services/api'
 
 export default function AgencyDetailPage() {
     const { slug } = useParams<{ slug: string }>()
@@ -183,47 +185,48 @@ export default function AgencyDetailPage() {
                     <section className="units-section">
                         <div className="container">
                             <h2 className="dir-section-title">
-                                <i className="fas fa-th-large"></i> Units &amp; Divisions
+                                <i className="fas fa-th-large"></i> Units, Programmes &amp; Projects
                             </h2>
-                            <div className="units-grid">
-                                {units.map((unit) => (
-                                    <div
+                            <p className="units-section-lead">
+                                Select a division or funded programme to see mandate, delivery, and
+                                impact in detail.
+                            </p>
+                            <div className="units-grid units-grid--picker">
+                                {units.map((unit: AgencyUnit) => (
+                                    <button
+                                        type="button"
                                         key={unit.id}
-                                        className={`unit-card ${activeUnit === unit.id ? 'active' : ''}`}
+                                        className={`unit-card unit-card--rich ${activeUnit === unit.id ? 'active' : ''}`}
                                         onClick={() => setActiveUnit(unit.id)}
-                                        role="button"
-                                        tabIndex={0}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault()
-                                                setActiveUnit(unit.id)
-                                            }
-                                        }}
                                     >
-                                        <i className={`fas fa-${unit.icon || 'folder'}`}></i>
-                                        <span>{unit.name}</span>
-                                    </div>
+                                        <div className="unit-card-top">
+                                            <i className={`fas fa-${unit.icon || 'folder'}`}></i>
+                                        </div>
+                                        <span className="unit-card-name">{unit.name}</span>
+                                        {(unit.summary || unit.description) && (
+                                            <p className="unit-card-blurb">
+                                                {(unit.summary || unit.description).slice(0, 90)}
+                                                {(unit.summary || unit.description).length > 90
+                                                    ? '…'
+                                                    : ''}
+                                            </p>
+                                        )}
+                                    </button>
                                 ))}
                             </div>
-                            {units.map((unit) => (
+                            {units.find((u) => u.id === activeUnit) || units[0] ? (
                                 <div
-                                    key={unit.id}
-                                    id={unit.id}
-                                    className={`unit-detail ${activeUnit === unit.id ? 'active' : ''}`}
+                                    key={activeUnit || units[0].id}
+                                    className="unit-profile-wrap"
                                 >
-                                    <h3>{unit.name}</h3>
-                                    <p>{unit.description}</p>
-                                    {Array.isArray(unit.functions) && unit.functions.length > 0 ? (
-                                        <ul className="unit-functions">
-                                            {unit.functions.map((func, index) => (
-                                                <li key={index}>
-                                                    <i className="fas fa-check"></i> {func}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : null}
+                                    <UnitProgramPanel
+                                        unit={
+                                            (units.find((u) => u.id === activeUnit) ||
+                                                units[0]) as AgencyUnit
+                                        }
+                                    />
                                 </div>
-                            ))}
+                            ) : null}
                         </div>
                     </section>
                 )}

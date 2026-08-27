@@ -201,6 +201,90 @@ async function seedDirectorates(strapi: Core.Strapi) {
   strapi.log.info('🌱 Directorates seeded.');
 }
 
+/** Expand thin unit blurbs into full programme/project profiles for the public site */
+function enrichUnitProfile(unit: any, directorateName: string) {
+  if (unit?.overview && unit?.kind) return unit;
+
+  const name = String(unit?.name || '');
+  const description = String(unit?.description || '');
+  const functions: string[] = Array.isArray(unit?.functions) ? unit.functions : [];
+  const blob = `${name} ${description}`.toLowerCase();
+  const looksLikeProject =
+    /project|program|programme|campaign|initiative|fund|grant|gavi|global fund|world bank|unicef|who/.test(
+      blob
+    );
+
+  const kind =
+    unit.kind ||
+    (looksLikeProject ? 'program' : /hmis|dhis|epi|immun|malaria|hiv|tb|nutrition|wash/.test(blob)
+      ? 'program'
+      : 'unit');
+
+  return {
+    ...unit,
+    kind,
+    summary: unit.summary || description,
+    overview:
+      unit.overview ||
+      `${description}\n\nUnder ${directorateName}, this ${kind === 'unit' ? 'unit' : 'programme'} delivers concrete work across Sierra Leone’s health system — not only coordination, but day-to-day implementation, partner engagement, and measurable service results. Teams support districts and facilities with standards, tools, supervision, and reporting so investments translate into better care for communities.`,
+    objectives: unit.objectives || functions.slice(0, 4),
+    keyActivities: unit.keyActivities || functions,
+    fundingSource:
+      unit.fundingSource ||
+      (kind !== 'unit'
+        ? 'Government of Sierra Leone with support from development partners'
+        : unit.fundingSource || ''),
+    fundingPartners: unit.fundingPartners || (kind !== 'unit' ? 'WHO, UNICEF, Global Fund, World Bank, and bilateral partners (as applicable)' : ''),
+    fundingAmount: unit.fundingAmount || '',
+    status: unit.status || 'ongoing',
+    startDate: unit.startDate || '',
+    endDate: unit.endDate || '',
+    coverage: unit.coverage || 'National coverage across Sierra Leone’s 16 districts',
+    beneficiaries:
+      unit.beneficiaries ||
+      'District Health Management Teams, public health facilities, community health workers, and the populations they serve',
+    outcomes:
+      unit.outcomes ||
+      (kind !== 'unit'
+        ? 'Stronger service delivery capacity, improved data for decision-making, and better access to essential health services for communities.'
+        : ''),
+    achievements: unit.achievements || [],
+  };
+}
+
+async function enrichDirectorateUnits(strapi: Core.Strapi) {
+  const dirs = await strapi.documents('api::directorate.directorate').findMany({});
+  let updated = 0;
+
+  for (const dir of dirs as any[]) {
+    const units = Array.isArray(dir.units) ? dir.units : [];
+    if (!units.length) continue;
+
+    const needsEnrichment = units.some((u: any) => !u?.overview || !u?.kind);
+    if (!needsEnrichment) continue;
+
+    const enriched = units.map((u: any) => enrichUnitProfile(u, dir.fullName || dir.name || 'the directorate'));
+
+    try {
+      await strapi.documents('api::directorate.directorate').update({
+        documentId: dir.documentId,
+        data: { units: enriched } as any,
+        status: 'published',
+      });
+      updated += 1;
+      strapi.log.info(`  ✅ Enriched units/programmes for: ${dir.name}`);
+    } catch (err: any) {
+      strapi.log.error(`  ❌ Enrich ${dir.name}: ${err.message}`);
+    }
+  }
+
+  if (updated === 0) {
+    strapi.log.info('📋 Directorate units already enriched, skipping.');
+  } else {
+    strapi.log.info(`🌱 Enriched units/programmes for ${updated} directorate(s).`);
+  }
+}
+
 // ─── Seed: Agencies ───────────────────────────────────────────────
 
 async function seedAgencies(strapi: Core.Strapi) {

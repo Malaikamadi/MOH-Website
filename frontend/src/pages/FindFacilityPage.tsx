@@ -1,162 +1,292 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+import 'leaflet.markercluster'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+import Header from '../components/layout/Header'
+import Footer from '../components/layout/Footer'
+import masterFacilities from '../data/masterFacilities.json'
 
-type FacilityType = 'all' | 'hospital' | 'chc' | 'clinic' | 'pharmacy';
+/** MoHS master facility categories */
+export type FacilityType =
+    | 'all'
+    | 'gov-hospital'
+    | 'private-mission'
+    | 'chc'
+    | 'chp'
+    | 'phu'
 
-interface Facility {
-    type: 'hospital' | 'chc' | 'clinic' | 'pharmacy';
-    name: string;
-    address: string;
-    district: string;
-    hours: string;
-    extra: string;
-    extraIcon: string;
-    phone?: string;
-    lat: number;
-    lng: number;
+export interface Facility {
+    id: string
+    code: string
+    name: string
+    type: Exclude<FacilityType, 'all'>
+    district: string
+    districtLabel: string
+    lat: number
+    lng: number
 }
 
-const facilities: Facility[] = [
-    { type: 'hospital', name: 'Connaught Hospital', address: 'Lightfoot Boston St, Freetown', district: 'western-urban', hours: 'Open 24/7', extra: '+232 22 222 222', extraIcon: 'phone', phone: '+23222222222', lat: 8.4657, lng: -13.2317 },
-    { type: 'hospital', name: 'Princess Christian Maternity Hospital', address: 'Fourah Bay Rd, Freetown', district: 'western-urban', hours: 'Open 24/7', extra: 'Maternity', extraIcon: 'baby', lat: 8.4723, lng: -13.2343 },
-    { type: 'hospital', name: "Ola During Children's Hospital", address: 'Freetown', district: 'western-urban', hours: 'Open 24/7', extra: 'Pediatric', extraIcon: 'child', lat: 8.4589, lng: -13.2156 },
-    { type: 'chc', name: 'Ross Road Community Health Centre', address: 'Ross Road, Freetown', district: 'western-urban', hours: '8AM - 5PM', extra: 'Primary Care', extraIcon: 'user-md', lat: 8.4712, lng: -13.2289 },
-    { type: 'chc', name: 'Waterloo CHC', address: 'Waterloo, Western Rural', district: 'western-rural', hours: '8AM - 6PM', extra: 'General', extraIcon: 'notes-medical', lat: 8.4234, lng: -13.1567 },
-    { type: 'hospital', name: 'Bo Government Hospital', address: 'Bo City, Bo District', district: 'bo', hours: 'Open 24/7', extra: '200 Beds', extraIcon: 'bed', lat: 7.9647, lng: -11.7383 },
-    { type: 'hospital', name: 'Kenema Government Hospital', address: 'Kenema City', district: 'kenema', hours: 'Open 24/7', extra: 'Lassa Fever Center', extraIcon: 'virus', lat: 7.8767, lng: -11.1875 },
-    { type: 'clinic', name: 'Lumley Health Clinic', address: 'Lumley, Freetown', district: 'western-urban', hours: '8AM - 4PM', extra: 'Immunization', extraIcon: 'syringe', lat: 8.4823, lng: -13.2245 },
-    { type: 'pharmacy', name: 'Central Pharmacy', address: 'Siaka Stevens St, Freetown', district: 'western-urban', hours: '8AM - 8PM', extra: 'Prescription', extraIcon: 'prescription', lat: 8.4789, lng: -13.2367 },
-    { type: 'hospital', name: 'Holy Spirit Hospital', address: 'Makeni, Bombali', district: 'bombali', hours: 'Open 24/7', extra: 'Emergency', extraIcon: 'heartbeat', lat: 8.8833, lng: -11.9500 },
-    { type: 'chc', name: 'Koidu Community Health Centre', address: 'Koidu Town, Kono', district: 'kono', hours: '7AM - 6PM', extra: 'Community Health', extraIcon: 'users', lat: 8.6500, lng: -10.8500 },
-    { type: 'pharmacy', name: 'Bo Town Pharmacy', address: 'Main Street, Bo City', district: 'bo', hours: '8AM - 9PM', extra: '24hr Delivery', extraIcon: 'prescription-bottle-alt', lat: 7.9623, lng: -11.7356 },
-];
+const facilities = masterFacilities as Facility[]
 
-const districts = [
-    { value: 'all', label: 'All Districts' },
-    { value: 'western-urban', label: 'Western Area Urban' },
-    { value: 'western-rural', label: 'Western Area Rural' },
-    { value: 'bo', label: 'Bo District' },
-    { value: 'bombali', label: 'Bombali District' },
-    { value: 'bonthe', label: 'Bonthe District' },
-    { value: 'kailahun', label: 'Kailahun District' },
-    { value: 'kambia', label: 'Kambia District' },
-    { value: 'kenema', label: 'Kenema District' },
-    { value: 'koinadugu', label: 'Koinadugu District' },
-    { value: 'kono', label: 'Kono District' },
-    { value: 'moyamba', label: 'Moyamba District' },
-    { value: 'port-loko', label: 'Port Loko District' },
-    { value: 'pujehun', label: 'Pujehun District' },
-    { value: 'tonkolili', label: 'Tonkolili District' },
-];
+const typeMeta: Record<
+    Exclude<FacilityType, 'all'>,
+    { label: string; short: string; icon: string; color: string }
+> = {
+    'gov-hospital': {
+        label: 'Gov. Hospitals',
+        short: 'Gov Hospital',
+        icon: 'hospital',
+        color: '#dc2626',
+    },
+    'private-mission': {
+        label: 'Private / Mission / Faith-based',
+        short: 'Private / Mission',
+        icon: 'church',
+        color: '#7c3aed',
+    },
+    chc: {
+        label: 'CHC',
+        short: 'CHC',
+        icon: 'clinic-medical',
+        color: '#16a34a',
+    },
+    chp: {
+        label: 'CHP',
+        short: 'CHP',
+        icon: 'house-medical',
+        color: '#0284c7',
+    },
+    phu: {
+        label: 'PHU',
+        short: 'PHU / MCHP',
+        icon: 'house-user',
+        color: '#ca8a04',
+    },
+}
 
-const typeLabels: Record<string, { label: string; icon: string }> = {
-    hospital: { label: 'Hospital', icon: 'hospital' },
-    chc: { label: 'CHC', icon: 'clinic-medical' },
-    clinic: { label: 'Clinic', icon: 'stethoscope' },
-    pharmacy: { label: 'Pharmacy', icon: 'pills' },
-};
-
-const markerColors: Record<string, string> = {
-    hospital: '#dc2626',
-    chc: '#16a34a',
-    clinic: '#0056A4',
-    pharmacy: '#7c3aed',
-};
+const typeOrder: FacilityType[] = [
+    'all',
+    'gov-hospital',
+    'private-mission',
+    'chc',
+    'chp',
+    'phu',
+]
 
 const faIcons: Record<string, string> = {
-    hospital: '\uf0f8',
+    'gov-hospital': '\uf0f8',
+    'private-mission': '\uf67f',
     chc: '\uf7f2',
-    clinic: '\uf0f1',
-    pharmacy: '\uf484',
-};
+    chp: '\uf7f2',
+    phu: '\uf015',
+}
+
+const districts: { value: string; label: string }[] = (() => {
+    const map = new Map<string, string>()
+    facilities.forEach((f) => {
+        if (f.district && f.district !== 'other') {
+            map.set(f.district, f.districtLabel || f.district)
+        }
+    })
+    return [
+        { value: 'all', label: 'All Districts' },
+        ...Array.from(map.entries())
+            .sort((a, b) => a[1].localeCompare(b[1]))
+            .map(([value, label]) => ({ value, label })),
+    ]
+})()
 
 function createIcon(type: string) {
-    const color = markerColors[type] || '#0056A4';
+    const color = typeMeta[type as keyof typeof typeMeta]?.color || '#0056A4'
     return L.divIcon({
         html: `<div style="
-            width:36px;height:36px;border-radius:50%;
+            width:32px;height:32px;border-radius:50%;
             background:${color};color:#fff;
             display:flex;align-items:center;justify-content:center;
-            font-size:14px;box-shadow:0 3px 10px rgba(0,0,0,0.3);
-            border:3px solid #fff;font-family:'Font Awesome 6 Free';font-weight:900;
+            font-size:13px;box-shadow:0 3px 10px rgba(0,0,0,0.3);
+            border:2px solid #fff;font-family:'Font Awesome 6 Free';font-weight:900;
         ">${faIcons[type] || ''}</div>`,
         className: '',
-        iconSize: [36, 36],
-        iconAnchor: [18, 18],
-        popupAnchor: [0, -20],
-    });
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -18],
+    })
 }
 
 function FlyTo({ center, zoom }: { center: [number, number]; zoom: number }) {
-    const map = useMap();
+    const map = useMap()
     useEffect(() => {
-        map.flyTo(center, zoom, { duration: 0.8 });
-    }, [center, zoom, map]);
-    return null;
+        map.flyTo(center, zoom, { duration: 0.75 })
+    }, [center, zoom, map])
+    return null
 }
 
+function FitBounds({ points }: { points: Facility[] }) {
+    const map = useMap()
+    useEffect(() => {
+        if (points.length === 0) return
+        if (points.length === 1) {
+            map.flyTo([points[0].lat, points[0].lng], 14, { duration: 0.6 })
+            return
+        }
+        const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lng] as [number, number]))
+        map.fitBounds(bounds.pad(0.12), { animate: true, duration: 0.6, maxZoom: 12 })
+    }, [points, map])
+    return null
+}
+
+function ClusteredMarkers({
+    items,
+    onSelect,
+}: {
+    items: Facility[]
+    onSelect: (f: Facility, scroll?: boolean) => void
+}) {
+    const map = useMap()
+
+    useEffect(() => {
+        const cluster = (L as typeof L & {
+            markerClusterGroup: (o?: object) => L.MarkerClusterGroup
+        }).markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 55,
+            spiderfyOnMaxZoom: true,
+            disableClusteringAtZoom: 15,
+        })
+
+        items.forEach((f) => {
+            const marker = L.marker([f.lat, f.lng], { icon: createIcon(f.type) })
+            const meta = typeMeta[f.type]
+            marker.bindPopup(
+                `<div style="min-width:200px">
+                    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;color:${meta.color};margin-bottom:0.25rem">${meta.short}</div>
+                    <strong style="font-size:0.95rem;color:#1e293b">${f.name}</strong>
+                    <p style="margin:0.35rem 0;font-size:0.8rem;color:#64748b">
+                        ${f.districtLabel || f.district}
+                    </p>
+                    <p style="margin:0.2rem 0;font-size:0.75rem;color:#94a3b8">${f.code}</p>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lng}"
+                       target="_blank" rel="noopener noreferrer"
+                       style="display:inline-flex;align-items:center;gap:0.3rem;margin-top:0.45rem;padding:0.35rem 0.7rem;background:#0056A4;color:#fff;border-radius:6px;font-size:0.75rem;font-weight:600;text-decoration:none">
+                        Directions
+                    </a>
+                </div>`
+            )
+            marker.on('click', () => onSelect(f, true))
+            cluster.addLayer(marker)
+        })
+
+        map.addLayer(cluster)
+        return () => {
+            map.removeLayer(cluster)
+        }
+    }, [items, map, onSelect])
+
+    return null
+}
+
+const LIST_PAGE_SIZE = 80
+
 export default function FindFacilityPage() {
-    const [typeFilter, setTypeFilter] = useState<FacilityType>('all');
-    const [districtFilter, setDistrictFilter] = useState('all');
-    const [search, setSearch] = useState('');
-    const [selected, setSelected] = useState<Facility | null>(null);
-    const [mapCenter, setMapCenter] = useState<[number, number]>([8.4657, -13.2317]);
-    const [mapZoom, setMapZoom] = useState(9);
-    const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const [typeFilter, setTypeFilter] = useState<FacilityType>('all')
+    const [districtFilter, setDistrictFilter] = useState('all')
+    const [search, setSearch] = useState('')
+    const [selected, setSelected] = useState<Facility | null>(null)
+    const [mapCenter, setMapCenter] = useState<[number, number]>([8.46, -11.8])
+    const [mapZoom, setMapZoom] = useState(8)
+    const [listLimit, setListLimit] = useState(LIST_PAGE_SIZE)
+    const [flyToken, setFlyToken] = useState(0)
+    const cardRefs = useRef<(HTMLDivElement | null)[]>([])
 
     const filtered = useMemo(() => {
-        return facilities.filter(f => {
-            const matchType = typeFilter === 'all' || f.type === typeFilter;
-            const matchDistrict = districtFilter === 'all' || f.district === districtFilter;
-            const term = search.toLowerCase();
-            const matchSearch = !term || f.name.toLowerCase().includes(term) || f.address.toLowerCase().includes(term);
-            return matchType && matchDistrict && matchSearch;
-        });
-    }, [typeFilter, districtFilter, search]);
+        const term = search.trim().toLowerCase()
+        return facilities.filter((f) => {
+            const matchType = typeFilter === 'all' || f.type === typeFilter
+            const matchDistrict =
+                districtFilter === 'all' || f.district === districtFilter
+            const matchSearch =
+                !term ||
+                f.name.toLowerCase().includes(term) ||
+                f.code.toLowerCase().includes(term) ||
+                f.districtLabel.toLowerCase().includes(term)
+            return matchType && matchDistrict && matchSearch
+        })
+    }, [typeFilter, districtFilter, search])
+
+    const listItems = filtered.slice(0, listLimit)
+
+    const typeCounts = useMemo(() => {
+        const c: Record<string, number> = { all: facilities.length }
+        ;(Object.keys(typeMeta) as Exclude<FacilityType, 'all'>[]).forEach((t) => {
+            c[t] = facilities.filter((f) => f.type === t).length
+        })
+        return c
+    }, [])
 
     function selectFacility(f: Facility, scrollToCard?: boolean) {
-        setSelected(f);
-        setMapCenter([f.lat, f.lng]);
-        setMapZoom(15);
+        setSelected(f)
+        setMapCenter([f.lat, f.lng])
+        setMapZoom(15)
+        setFlyToken((n) => n + 1)
         if (scrollToCard) {
-            const idx = filtered.indexOf(f);
-            if (idx >= 0 && cardRefs.current[idx]) {
-                cardRefs.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const idx = listItems.findIndex((x) => x.id === f.id)
+            if (idx >= 0) {
+                cardRefs.current[idx]?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                })
             }
         }
     }
 
+    const onMarkerSelect = useCallback((f: Facility, scroll?: boolean) => {
+        setSelected(f)
+        setMapCenter([f.lat, f.lng])
+        setMapZoom(15)
+        setFlyToken((n) => n + 1)
+        if (scroll) {
+            // list scroll handled after render via selected id match when card is in page
+        }
+    }, [])
+
+    useEffect(() => {
+        setListLimit(LIST_PAGE_SIZE)
+        setSelected(null)
+    }, [typeFilter, districtFilter, search])
+
     return (
         <>
             <Header />
-            <main>
-                <section className="ff-page-header">
+            <main className="ff-page">
+                <section className="ff-page-header ff-page-header--compact">
                     <div className="container">
                         <div className="ff-header-content">
-                            <h1><i className="fas fa-hospital" style={{ marginRight: '0.5rem', color: '#E5A100' }}></i> Find a Health Facility</h1>
-                            <p>Locate hospitals, clinics, and health centers across Sierra Leone</p>
-                            <div className="ff-breadcrumb">
-                                <a href="/"><i className="fas fa-home"></i> Home</a>
-                                <span>/</span>
-                                <span className="current">Find a Health Facility</span>
-                            </div>
+                            <h1>
+                                <i
+                                    className="fas fa-map-marked-alt"
+                                    style={{ marginRight: '0.5rem', color: '#E5A100' }}
+                                ></i>
+                                Find a Health Facility
+                            </h1>
+                            <p>
+                                Ministry master facility list — {facilities.length.toLocaleString()}{' '}
+                                facilities mapped nationwide
+                            </p>
                         </div>
                     </div>
                 </section>
 
-                <div className="ff-main">
-                    {/* Sidebar */}
-                    <div className="ff-sidebar">
+                <div className="ff-main ff-main--map-priority">
+                    <aside className="ff-sidebar">
                         <div className="ff-search-section">
                             <div className="ff-search-box">
                                 <i className="fas fa-search"></i>
                                 <input
                                     type="text"
-                                    placeholder="Search facilities by name or location..."
+                                    placeholder="Search by name, code, or district…"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
@@ -164,15 +294,34 @@ export default function FindFacilityPage() {
                         </div>
 
                         <div className="ff-filter-section">
-                            <div className="ff-filter-label">Facility Type</div>
-                            <div className="ff-filter-options">
-                                {(['all', 'hospital', 'chc', 'clinic', 'pharmacy'] as FacilityType[]).map(t => (
+                            <div className="ff-filter-label">Facility category</div>
+                            <div className="ff-filter-options ff-filter-options--wrap">
+                                {typeOrder.map((t) => (
                                     <button
                                         key={t}
+                                        type="button"
                                         className={`ff-filter-btn ${typeFilter === t ? 'active' : ''}`}
-                                        onClick={() => { setTypeFilter(t); setSelected(null); }}
+                                        onClick={() => setTypeFilter(t)}
                                     >
-                                        {t === 'all' ? 'All' : <><i className={`fas fa-${typeLabels[t].icon}`}></i> {typeLabels[t].label}s</>}
+                                        {t === 'all' ? (
+                                            <>All ({typeCounts.all})</>
+                                        ) : (
+                                            <>
+                                                <i
+                                                    className={`fas fa-${typeMeta[t].icon}`}
+                                                    style={{
+                                                        color:
+                                                            typeFilter === t
+                                                                ? undefined
+                                                                : typeMeta[t].color,
+                                                    }}
+                                                ></i>{' '}
+                                                {typeMeta[t].label}
+                                                <span className="ff-filter-count">
+                                                    {typeCounts[t]}
+                                                </span>
+                                            </>
+                                        )}
                                     </button>
                                 ))}
                             </div>
@@ -180,117 +329,118 @@ export default function FindFacilityPage() {
                             <select
                                 className="ff-district-select"
                                 value={districtFilter}
-                                onChange={(e) => { setDistrictFilter(e.target.value); setSelected(null); }}
+                                onChange={(e) => setDistrictFilter(e.target.value)}
+                                aria-label="District"
                             >
-                                {districts.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
+                                {districts.map((d) => (
+                                    <option key={d.value} value={d.value}>
+                                        {d.label}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
                         <div className="ff-facilities-list">
-                            <p className="ff-facilities-count">Showing <strong>{filtered.length}</strong> facilities</p>
+                            <p className="ff-facilities-count">
+                                Showing{' '}
+                                <strong>
+                                    {listItems.length.toLocaleString()}
+                                    {filtered.length > listItems.length
+                                        ? ` of ${filtered.length.toLocaleString()}`
+                                        : ''}
+                                </strong>{' '}
+                                facilities
+                            </p>
 
-                            {filtered.map((f, i) => (
+                            {listItems.map((f, i) => (
                                 <div
-                                    key={i}
-                                    ref={el => { cardRefs.current[i] = el; }}
-                                    className={`ff-facility-card ${selected === f ? 'active' : ''}`}
+                                    key={f.id}
+                                    ref={(el) => {
+                                        cardRefs.current[i] = el
+                                    }}
+                                    className={`ff-facility-card ${selected?.id === f.id ? 'active' : ''}`}
                                     onClick={() => selectFacility(f)}
                                 >
                                     <span className={`ff-facility-type ${f.type}`}>
-                                        <i className={`fas fa-${typeLabels[f.type].icon}`}></i> {typeLabels[f.type].label}
+                                        <i className={`fas fa-${typeMeta[f.type].icon}`}></i>{' '}
+                                        {typeMeta[f.type].short}
                                     </span>
                                     <h3 className="ff-facility-name">{f.name}</h3>
-                                    <div className="ff-facility-address"><i className="fas fa-map-marker-alt"></i> {f.address}</div>
-                                    <div className="ff-facility-meta">
-                                        <span><i className="fas fa-clock"></i> {f.hours}</span>
-                                        <span><i className={`fas fa-${f.extraIcon}`}></i> {f.extra}</span>
+                                    <div className="ff-facility-address">
+                                        <i className="fas fa-map-marker-alt"></i>
+                                        {f.districtLabel}
+                                        {f.code ? ` · ${f.code}` : ''}
                                     </div>
                                 </div>
                             ))}
 
-                            {filtered.length === 0 && (
-                                <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
-                                    <i className="fas fa-search" style={{ fontSize: '2rem', marginBottom: '1rem', display: 'block', opacity: 0.4 }}></i>
+                            {filtered.length > listItems.length ? (
+                                <button
+                                    type="button"
+                                    className="ff-load-more"
+                                    onClick={() =>
+                                        setListLimit((n) => n + LIST_PAGE_SIZE)
+                                    }
+                                >
+                                    Load more (
+                                    {(filtered.length - listItems.length).toLocaleString()}{' '}
+                                    remaining)
+                                </button>
+                            ) : null}
+
+                            {filtered.length === 0 ? (
+                                <div className="ff-empty">
+                                    <i className="fas fa-search"></i>
                                     <p>No facilities match your search criteria.</p>
                                 </div>
-                            )}
+                            ) : null}
                         </div>
-                    </div>
+                    </aside>
 
-                    {/* Map */}
                     <div className="ff-map-section">
                         <MapContainer
-                            center={[8.4657, -13.2317]}
-                            zoom={9}
-                            style={{ width: '100%', height: '100%', minHeight: 'calc(100vh - 200px)' }}
-                            zoomControl={false}
+                            center={[8.46, -11.8]}
+                            zoom={8}
+                            className="ff-leaflet-map"
+                            zoomControl
+                            scrollWheelZoom
                         >
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            <FlyTo center={mapCenter} zoom={mapZoom} />
-
-                            {filtered.map((f, i) => (
-                                <Marker
-                                    key={`${f.name}-${i}`}
-                                    position={[f.lat, f.lng]}
-                                    icon={createIcon(f.type)}
-                                    eventHandlers={{
-                                        click: () => selectFacility(f, true),
-                                    }}
-                                >
-                                    <Popup>
-                                        <div style={{ minWidth: 200 }}>
-                                            <strong style={{ fontSize: '0.95rem', color: '#1e293b' }}>{f.name}</strong>
-                                            <p style={{ margin: '0.3rem 0', fontSize: '0.8rem', color: '#64748b' }}>
-                                                <i className="fas fa-map-marker-alt" style={{ color: '#E5A100', marginRight: '0.3rem' }}></i>
-                                                {f.address}
-                                            </p>
-                                            <p style={{ margin: '0.2rem 0', fontSize: '0.8rem', color: '#64748b' }}>
-                                                <i className="fas fa-clock" style={{ marginRight: '0.3rem' }}></i>
-                                                {f.hours}
-                                            </p>
-                                            <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem' }}>
-                                                <a
-                                                    href={`https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lng}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style={{
-                                                        padding: '0.35rem 0.7rem', background: '#0056A4', color: '#fff',
-                                                        borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600,
-                                                        textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-                                                    }}
-                                                >
-                                                    <i className="fas fa-directions"></i> Directions
-                                                </a>
-                                                {f.phone && (
-                                                    <a
-                                                        href={`tel:${f.phone}`}
-                                                        style={{
-                                                            padding: '0.35rem 0.7rem', background: '#16a34a', color: '#fff',
-                                                            borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600,
-                                                            textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-                                                        }}
-                                                    >
-                                                        <i className="fas fa-phone"></i> Call
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </Popup>
-                                </Marker>
-                            ))}
+                            {selected ? (
+                                <FlyTo
+                                    key={`fly-${flyToken}`}
+                                    center={mapCenter}
+                                    zoom={mapZoom}
+                                />
+                            ) : (
+                                <FitBounds
+                                    key={`${typeFilter}-${districtFilter}-${search}`}
+                                    points={filtered}
+                                />
+                            )}
+                            <ClusteredMarkers
+                                items={filtered}
+                                onSelect={onMarkerSelect}
+                            />
                         </MapContainer>
 
-                        {/* Legend */}
                         <div className="ff-map-legend">
-                            <div className="ff-legend-title">Facility Types</div>
+                            <div className="ff-legend-title">Categories</div>
                             <div className="ff-legend-items">
-                                <div className="ff-legend-item"><span className="ff-legend-dot hospital"></span> Hospitals</div>
-                                <div className="ff-legend-item"><span className="ff-legend-dot chc"></span> Community Health Centers</div>
-                                <div className="ff-legend-item"><span className="ff-legend-dot clinic"></span> Clinics</div>
-                                <div className="ff-legend-item"><span className="ff-legend-dot pharmacy"></span> Pharmacies</div>
+                                {(
+                                    Object.keys(typeMeta) as Exclude<FacilityType, 'all'>[]
+                                ).map((t) => (
+                                    <div key={t} className="ff-legend-item">
+                                        <span
+                                            className="ff-legend-dot"
+                                            style={{ background: typeMeta[t].color }}
+                                        ></span>
+                                        {typeMeta[t].label}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -298,5 +448,5 @@ export default function FindFacilityPage() {
             </main>
             <Footer />
         </>
-    );
+    )
 }
