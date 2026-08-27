@@ -109,6 +109,32 @@ export interface Publication {
     directorate: StrapiItem<Directorate> | null;
 }
 
+export interface DirectorateUnit {
+    id: string;
+    name: string;
+    icon: string;
+    /** Short one-liner shown on cards / intro */
+    description: string;
+    /** unit = operational unit; program/project = funded work with fuller profile */
+    kind?: 'unit' | 'program' | 'project';
+    summary?: string;
+    /** Full narrative of what this unit/programme does */
+    overview?: string;
+    objectives?: string[];
+    keyActivities?: string[];
+    functions: string[];
+    fundingSource?: string;
+    fundingPartners?: string;
+    fundingAmount?: string;
+    status?: 'planned' | 'ongoing' | 'completed';
+    startDate?: string;
+    endDate?: string;
+    coverage?: string;
+    beneficiaries?: string;
+    outcomes?: string;
+    achievements?: string[];
+}
+
 export interface Directorate {
     name: string;
     fullName: string;
@@ -124,13 +150,7 @@ export interface Directorate {
     directorCredentials: string;
     directorImage: StrapiMedia | null;
     directorBio: string[];
-    units: {
-        id: string;
-        name: string;
-        icon: string;
-        description: string;
-        functions: string[];
-    }[];
+    units: DirectorateUnit[];
     contactEmail: string;
     contactPhone: string;
     contactLocation: string;

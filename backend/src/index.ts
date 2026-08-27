@@ -7,6 +7,7 @@ export default {
     await setupPublicPermissions(strapi);
     await seedHeroSlides(strapi);
     await seedDirectorates(strapi);
+    await enrichDirectorateUnits(strapi);
     await seedAgencies(strapi);
     await seedJobs(strapi);
     await seedSiteSettings(strapi);
@@ -617,9 +618,7 @@ const AGENCIES_NAV_ITEM = {
 };
 
 async function seedSiteSettings(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::site-setting.site-setting').findFirst({
-    populate: ['mainNavigation'],
-  });
+  const existing = await strapi.documents('api::site-setting.site-setting').findFirst({});
 
   // Existing installs often skip re-seed — patch nav if Agencies is missing
   if (existing) {

@@ -70,7 +70,8 @@
             "type": "json"
         },
         "units": {
-            "type": "json"
+            "type": "json",
+            "required": false
         },
         "contactEmail": {
             "type": "email"
