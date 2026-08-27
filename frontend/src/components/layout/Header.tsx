@@ -10,6 +10,18 @@ const fallbackNav: NavItem[] = [
         { label: 'Leadership', url: '/about#leadership', icon: 'users-cog' },
         { label: 'Mission & Vision', url: '/about#mission', icon: 'bullseye' },
     ]},
+    { label: 'Agencies', url: '/agencies', children: [
+        { label: 'NMSA', url: '/agencies/nmsa', icon: 'building' },
+        { label: 'NPHA', url: '/agencies/npha', icon: 'hospital' },
+        { label: 'NEMS', url: '/agencies/nems', icon: 'ambulance' },
+        { label: 'Health Service Commission', url: '/agencies/hsc', icon: 'clipboard-check' },
+        { label: 'Postgraduate College of Health Facilities', url: '/agencies/pchf', icon: 'graduation-cap' },
+        { label: 'National Health Secretariat', url: '/agencies/nhs', icon: 'landmark' },
+        { label: 'Medical and Dental Council', url: '/agencies/mdc', icon: 'stethoscope' },
+        { label: 'Pharmacy Board', url: '/agencies/pharmacy-board', icon: 'pills' },
+        { label: 'SL Nursing and Midwifery', url: '/agencies/sl-nursing-midwifery', icon: 'user-nurse' },
+        { label: 'Allied Health Professional Councils', url: '/agencies/ahpc', icon: 'users-cog' },
+    ]},
     { label: 'Directorates', url: '/directorates', children: [
         { label: 'DPPI', url: '/directorates/dppi', icon: 'chart-line' },
         { label: 'Reproductive & Child Health', url: '/directorates/rch', icon: 'baby' },
