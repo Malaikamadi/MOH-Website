@@ -7,6 +7,7 @@ export default {
     await setupPublicPermissions(strapi);
     await seedHeroSlides(strapi);
     await seedDirectorates(strapi);
+    await seedAgencies(strapi);
     await seedJobs(strapi);
     await seedSiteSettings(strapi);
     await seedHomepage(strapi);
@@ -27,6 +28,7 @@ async function setupPublicPermissions(strapi: Core.Strapi) {
     { controller: 'api::event.event', actions: ['find', 'findOne'] },
     { controller: 'api::publication.publication', actions: ['find', 'findOne'] },
     { controller: 'api::directorate.directorate', actions: ['find', 'findOne'] },
+    { controller: 'api::agency.agency', actions: ['find', 'findOne'] },
     { controller: 'api::disease-surveillance.disease-surveillance', actions: ['find', 'findOne'] },
     { controller: 'api::job.job', actions: ['find', 'findOne'] },
     { controller: 'api::newsletter-subscriber.newsletter-subscriber', actions: ['create'] },
@@ -198,6 +200,316 @@ async function seedDirectorates(strapi: Core.Strapi) {
   strapi.log.info('🌱 Directorates seeded.');
 }
 
+// ─── Seed: Agencies ───────────────────────────────────────────────
+
+async function seedAgencies(strapi: Core.Strapi) {
+  const existing = await strapi.documents('api::agency.agency' as any).findMany({});
+  if (existing.length > 0) {
+    strapi.log.info(`📋 ${existing.length} agencies exist, skipping.`);
+    return;
+  }
+
+  strapi.log.info('🌱 Seeding agencies...');
+  const agencies = [
+    {
+      name: 'NMSA',
+      fullName: 'National Medical Supplies Agency',
+      slug: 'nmsa',
+      icon: 'building',
+      order: 1,
+      isActive: true,
+      about: 'The National Medical Supplies Agency (NMSA) is responsible for the procurement, warehousing, and distribution of essential medicines, medical supplies, and equipment across Sierra Leone’s public health system.',
+      aboutExtra: 'NMSA works to ensure uninterrupted availability of quality-assured commodities at central and peripheral levels, supporting service delivery in hospitals and primary health units.',
+      mandate: 'Ensure reliable access to safe, effective, and affordable medical commodities for public health facilities nationwide.',
+      statsUnits: 4,
+      statsDistricts: 16,
+      statsStaff: '150+',
+      statsPartners: '20+',
+      headName: 'To be confirmed',
+      headTitle: 'Chief Executive Officer',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'procurement', name: 'Procurement', icon: 'shopping-cart', description: 'Competitive procurement of medicines and medical supplies.', functions: ['Tendering', 'Supplier management', 'Contract award', 'Quality prequalification'] },
+        { id: 'warehouse', name: 'Warehousing', icon: 'warehouse', description: 'Central storage and inventory control.', functions: ['Cold chain', 'Stock management', 'Expiry monitoring', 'Security'] },
+        { id: 'distribution', name: 'Distribution', icon: 'truck', description: 'Last-mile delivery to facilities and districts.', functions: ['Fleet logistics', 'Route planning', 'Facility delivery', 'Returns handling'] },
+        { id: 'qa', name: 'Quality Assurance', icon: 'check-circle', description: 'Ensuring product quality and compliance.', functions: ['Batch inspection', 'Recall procedures', 'Standards compliance', 'Documentation'] },
+      ],
+      contactEmail: 'nmsa@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'NPHA',
+      fullName: 'National Public Health Agency',
+      slug: 'npha',
+      icon: 'hospital',
+      order: 2,
+      isActive: true,
+      about: 'The National Public Health Agency (NPHA) leads national efforts in disease prevention, surveillance, emergency preparedness, and health promotion to protect the population of Sierra Leone.',
+      aboutExtra: 'NPHA coordinates with districts, laboratories, and international partners to detect threats early and respond effectively.',
+      mandate: 'Protect and promote public health through surveillance, preparedness, and evidence-based interventions.',
+      statsUnits: 5,
+      statsDistricts: 16,
+      statsStaff: '200+',
+      statsPartners: '30+',
+      headName: 'To be confirmed',
+      headTitle: 'Director General',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'surveillance', name: 'Surveillance', icon: 'search', description: 'National disease surveillance and early warning.', functions: ['IDSR', 'Outbreak alerts', 'Data analysis', 'Reporting'] },
+        { id: 'emergency', name: 'Emergency Preparedness', icon: 'shield-alt', description: 'Preparedness and response planning.', functions: ['Contingency plans', 'Simulation exercises', 'Coordination', 'Risk communication'] },
+        { id: 'lab', name: 'Laboratory Network', icon: 'flask', description: 'Public health laboratory systems.', functions: ['Diagnostics', 'Sample referral', 'Quality systems', 'Biosafety'] },
+        { id: 'promotion', name: 'Health Promotion', icon: 'bullhorn', description: 'Community health education and behaviour change.', functions: ['Campaigns', 'IEC materials', 'Community engagement', 'Risk messaging'] },
+        { id: 'research', name: 'Applied Research', icon: 'microscope', description: 'Public health research and evidence generation.', functions: ['Studies', 'Guidelines', 'Partner research', 'Publication support'] },
+      ],
+      contactEmail: 'npha@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'NEMS',
+      fullName: 'National Emergency Medical Services',
+      slug: 'nems',
+      icon: 'ambulance',
+      order: 3,
+      isActive: true,
+      about: 'National Emergency Medical Services (NEMS) coordinates emergency medical response, ambulance services, and disaster health management across Sierra Leone.',
+      aboutExtra: 'NEMS operates the national emergency call system and ensures rapid pre-hospital care and inter-facility transfers.',
+      mandate: 'Deliver timely, quality emergency medical care and coordinated ambulance response nationwide.',
+      statsUnits: 4,
+      statsDistricts: 16,
+      statsStaff: '300+',
+      statsPartners: '20+',
+      headName: 'To be confirmed',
+      headTitle: 'Chief Executive',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'ambulance', name: 'Ambulance Service', icon: 'ambulance', description: 'National ambulance fleet operations.', functions: ['Emergency transport', 'Fleet management', 'Paramedic deployment', 'Inter-facility transfers'] },
+        { id: 'call-center', name: 'Emergency Call Center', icon: 'phone-alt', description: 'Toll-free emergency dispatch.', functions: ['Dispatch', 'Triage', 'Tracking', 'Public communication'] },
+        { id: 'disaster', name: 'Disaster Health Management', icon: 'house-damage', description: 'Mass casualty and disaster response.', functions: ['Planning', 'Mass casualty protocols', 'Coordination', 'After-action reviews'] },
+        { id: 'training', name: 'EMT Training', icon: 'graduation-cap', description: 'Emergency care capacity building.', functions: ['Paramedic training', 'First responder courses', 'Protocols', 'Simulations'] },
+      ],
+      contactEmail: 'nems@mohs.gov.sl',
+      contactPhone: '117',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'HSC',
+      fullName: 'Health Service Commission',
+      slug: 'hsc',
+      icon: 'clipboard-check',
+      order: 4,
+      isActive: true,
+      about: 'The Health Service Commission (HSC) oversees recruitment, appointment, and career management processes for health personnel within the public sector framework.',
+      aboutExtra: 'HSC supports transparent, merit-based staffing to strengthen the health workforce.',
+      mandate: 'Ensure fair, transparent recruitment and career administration for the health workforce.',
+      statsUnits: 3,
+      statsDistricts: 16,
+      statsStaff: '80+',
+      statsPartners: '10+',
+      headName: 'To be confirmed',
+      headTitle: 'Commission Chairperson',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'recruitment', name: 'Recruitment', icon: 'user-plus', description: 'Vacancy advertising and selection.', functions: ['Job adverts', 'Shortlisting', 'Interviews', 'Appointments'] },
+        { id: 'careers', name: 'Career Management', icon: 'briefcase', description: 'Promotions and career pathways.', functions: ['Promotions', 'Transfers', 'Performance support', 'Records'] },
+        { id: 'policy', name: 'HR Policy', icon: 'file-alt', description: 'Workforce policy and standards.', functions: ['Guidelines', 'Compliance', 'Appeals support', 'Reporting'] },
+      ],
+      contactEmail: 'hsc@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'PCHF',
+      fullName: 'Postgraduate College of Health Facilities',
+      slug: 'pchf',
+      icon: 'graduation-cap',
+      order: 5,
+      isActive: true,
+      about: 'The Postgraduate College of Health Facilities advances specialist training and continuous professional development for health professionals in Sierra Leone.',
+      aboutExtra: 'The College partners with teaching hospitals and professional bodies to raise clinical standards.',
+      mandate: 'Develop specialist capacity and uphold postgraduate training standards in the health sector.',
+      statsUnits: 3,
+      statsDistricts: 16,
+      statsStaff: '60+',
+      statsPartners: '15+',
+      headName: 'To be confirmed',
+      headTitle: 'College President',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'training', name: 'Specialist Training', icon: 'user-md', description: 'Postgraduate residency and specialty programmes.', functions: ['Curriculum', 'Residencies', 'Examinations', 'Mentorship'] },
+        { id: 'cpd', name: 'Continuing Education', icon: 'book-open', description: 'CPD for practising clinicians.', functions: ['CPD courses', 'Workshops', 'Accreditation support', 'E-learning'] },
+        { id: 'standards', name: 'Academic Standards', icon: 'certificate', description: 'Quality assurance of training.', functions: ['Accreditation', 'Faculty development', 'Assessments', 'Reviews'] },
+      ],
+      contactEmail: 'pchf@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'NHS',
+      fullName: 'National Health Secretariat',
+      slug: 'nhs',
+      icon: 'landmark',
+      order: 6,
+      isActive: true,
+      about: 'The National Health Secretariat provides coordination and secretariat support for national health governance structures and multi-stakeholder platforms.',
+      aboutExtra: 'It facilitates alignment between the Ministry, agencies, and partners on strategic health priorities.',
+      mandate: 'Coordinate national health governance processes and stakeholder engagement.',
+      statsUnits: 2,
+      statsDistricts: 16,
+      statsStaff: '40+',
+      statsPartners: '25+',
+      headName: 'To be confirmed',
+      headTitle: 'Secretary',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'coordination', name: 'Sector Coordination', icon: 'handshake', description: 'Partner and inter-agency coordination.', functions: ['Meetings', 'TWGs', 'Follow-up', 'Reporting'] },
+        { id: 'secretariat', name: 'Secretariat Services', icon: 'folder-open', description: 'Documentation and administrative support.', functions: ['Records', 'Scheduling', 'Correspondence', 'Archives'] },
+      ],
+      contactEmail: 'nhs@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'MDC',
+      fullName: 'Medical and Dental Council',
+      slug: 'mdc',
+      icon: 'stethoscope',
+      order: 7,
+      isActive: true,
+      about: 'The Medical and Dental Council regulates medical and dental practice in Sierra Leone, including registration, licensing, and professional standards.',
+      aboutExtra: 'The Council protects the public by ensuring practitioners meet ethical and professional requirements.',
+      mandate: 'Regulate medical and dental practice to safeguard patient safety and professional integrity.',
+      statsUnits: 3,
+      statsDistricts: 16,
+      statsStaff: '50+',
+      statsPartners: '12+',
+      headName: 'To be confirmed',
+      headTitle: 'Registrar',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'registration', name: 'Registration & Licensing', icon: 'id-card', description: 'Practitioner registration and renewals.', functions: ['New registration', 'License renewal', 'Verification', 'Foreign qualifications'] },
+        { id: 'ethics', name: 'Ethics & Discipline', icon: 'balance-scale', description: 'Professional conduct and complaints.', functions: ['Investigations', 'Hearings', 'Sanctions', 'Guidance'] },
+        { id: 'standards', name: 'Practice Standards', icon: 'clipboard-list', description: 'Clinical and ethical standards.', functions: ['Guidelines', 'CPD requirements', 'Inspections', 'Public notices'] },
+      ],
+      contactEmail: 'mdc@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'Pharmacy Board',
+      fullName: 'Pharmacy Board of Sierra Leone',
+      slug: 'pharmacy-board',
+      icon: 'pills',
+      order: 8,
+      isActive: true,
+      about: 'The Pharmacy Board regulates pharmacy practice, premises, and the supply of medicines to ensure public safety.',
+      aboutExtra: 'It licenses pharmacists and pharmacy outlets and enforces standards for pharmaceutical services.',
+      mandate: 'Regulate pharmacy practice and medicine retail/wholesale to protect the public.',
+      statsUnits: 3,
+      statsDistricts: 16,
+      statsStaff: '45+',
+      statsPartners: '10+',
+      headName: 'To be confirmed',
+      headTitle: 'Registrar',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'licensing', name: 'Licensing', icon: 'file-signature', description: 'Pharmacist and premises licensing.', functions: ['Practitioner licenses', 'Premises permits', 'Renewals', 'Inspections'] },
+        { id: 'inspection', name: 'Inspection & Enforcement', icon: 'search', description: 'Compliance monitoring.', functions: ['Outlet inspections', 'Enforcement', 'Seizures', 'Public alerts'] },
+        { id: 'education', name: 'Professional Standards', icon: 'book', description: 'Pharmacy education and CPD.', functions: ['CPD', 'Ethics', 'Guidelines', 'Stakeholder engagement'] },
+      ],
+      contactEmail: 'pharmacyboard@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'SL Nursing & Midwifery',
+      fullName: 'Sierra Leone Nurses and Midwives Board / Council',
+      slug: 'sl-nursing-midwifery',
+      icon: 'user-nurse',
+      order: 9,
+      isActive: true,
+      about: 'The Sierra Leone nursing and midwifery regulatory body oversees registration, standards, and professional development for nurses and midwives.',
+      aboutExtra: 'It works with training institutions to maintain quality nursing and midwifery education and practice.',
+      mandate: 'Regulate nursing and midwifery education and practice for safe, quality care.',
+      statsUnits: 3,
+      statsDistricts: 16,
+      statsStaff: '55+',
+      statsPartners: '14+',
+      headName: 'To be confirmed',
+      headTitle: 'Registrar',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'registration', name: 'Registration', icon: 'id-badge', description: 'Nurse and midwife registration.', functions: ['Registration', 'Renewals', 'Verification', 'Scope of practice'] },
+        { id: 'education', name: 'Education Standards', icon: 'school', description: 'Training institution standards.', functions: ['Curriculum review', 'Accreditation', 'Examinations', 'Faculty standards'] },
+        { id: 'practice', name: 'Practice & Conduct', icon: 'hand-holding-heart', description: 'Professional practice oversight.', functions: ['Codes of conduct', 'Complaints', 'CPD', 'Public protection'] },
+      ],
+      contactEmail: 'nursingmidwifery@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+    {
+      name: 'AHPC',
+      fullName: 'Allied Health Professional Councils',
+      slug: 'ahpc',
+      icon: 'users-cog',
+      order: 10,
+      isActive: true,
+      about: 'The Allied Health Professional Councils regulate allied health cadres, ensuring standards for registration, training, and ethical practice.',
+      aboutExtra: 'Covered professions may include laboratory scientists, radiographers, physiotherapists, and other allied cadres as defined by national regulation.',
+      mandate: 'Regulate allied health professions to ensure competence, ethics, and public safety.',
+      statsUnits: 3,
+      statsDistricts: 16,
+      statsStaff: '40+',
+      statsPartners: '12+',
+      headName: 'To be confirmed',
+      headTitle: 'Registrar',
+      headCredentials: '',
+      headBio: ['Leadership details will be updated by the Ministry Communications team.'],
+      units: [
+        { id: 'registration', name: 'Multi-cadre Registration', icon: 'users', description: 'Registration across allied health professions.', functions: ['Cadre registers', 'Renewals', 'Verification', 'Foreign qualifications'] },
+        { id: 'standards', name: 'Professional Standards', icon: 'clipboard-check', description: 'Competency and ethical standards.', functions: ['Scopes of practice', 'CPD', 'Codes of ethics', 'Guidance'] },
+        { id: 'education', name: 'Education Liaison', icon: 'university', description: 'Links with training institutions.', functions: ['Curriculum input', 'Accreditation support', 'Exams', 'Workforce planning'] },
+      ],
+      contactEmail: 'ahpc@mohs.gov.sl',
+      contactPhone: '+232 76 460 440',
+      contactLocation: 'Freetown, Sierra Leone',
+      websiteUrl: '',
+    },
+  ];
+
+  for (const agency of agencies) {
+    try {
+      await strapi.documents('api::agency.agency' as any).create({
+        data: agency as any,
+        status: 'published',
+      });
+      strapi.log.info(`  ✅ Agency: ${agency.name}`);
+    } catch (err: any) {
+      strapi.log.error(`  ❌ Agency ${agency.name}: ${err.message}`);
+    }
+  }
+  strapi.log.info('🌱 Agencies seeded.');
+}
+
 // ─── Seed: Jobs ───────────────────────────────────────────────────
 
 async function seedJobs(strapi: Core.Strapi) {
@@ -287,10 +599,55 @@ async function seedJobs(strapi: Core.Strapi) {
 
 // ─── Seed: Site Settings ─────────────────────────────────────────
 
+const AGENCIES_NAV_ITEM = {
+  label: 'Agencies',
+  url: '/agencies',
+  children: [
+    { label: 'NMSA', url: '/agencies/nmsa', icon: 'building' },
+    { label: 'NPHA', url: '/agencies/npha', icon: 'hospital' },
+    { label: 'NEMS', url: '/agencies/nems', icon: 'ambulance' },
+    { label: 'Health Service Commission', url: '/agencies/hsc', icon: 'clipboard-check' },
+    { label: 'Postgraduate College of Health Facilities', url: '/agencies/pchf', icon: 'graduation-cap' },
+    { label: 'National Health Secretariat', url: '/agencies/nhs', icon: 'landmark' },
+    { label: 'Medical and Dental Council', url: '/agencies/mdc', icon: 'stethoscope' },
+    { label: 'Pharmacy Board', url: '/agencies/pharmacy-board', icon: 'pills' },
+    { label: 'SL Nursing and Midwifery', url: '/agencies/sl-nursing-midwifery', icon: 'user-nurse' },
+    { label: 'Allied Health Professional Councils', url: '/agencies/ahpc', icon: 'users-cog' },
+  ],
+};
+
 async function seedSiteSettings(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::site-setting.site-setting').findFirst({});
+  const existing = await strapi.documents('api::site-setting.site-setting').findFirst({
+    populate: ['mainNavigation'],
+  });
+
+  // Existing installs often skip re-seed — patch nav if Agencies is missing
   if (existing) {
-    strapi.log.info('📋 Site settings exist, skipping.');
+    const nav = Array.isArray((existing as any).mainNavigation)
+      ? [...(existing as any).mainNavigation]
+      : [];
+    const hasAgencies = nav.some(
+      (item: { label?: string; url?: string }) =>
+        item?.label === 'Agencies' || item?.url === '/agencies'
+    );
+
+    if (!hasAgencies) {
+      const aboutIdx = nav.findIndex(
+        (item: { label?: string; url?: string }) =>
+          item?.label === 'About MOH' || item?.url === '/about'
+      );
+      const insertAt = aboutIdx >= 0 ? aboutIdx + 1 : Math.min(2, nav.length);
+      nav.splice(insertAt, 0, AGENCIES_NAV_ITEM);
+
+      await strapi.documents('api::site-setting.site-setting').update({
+        documentId: (existing as any).documentId,
+        data: { mainNavigation: nav } as any,
+        status: 'published',
+      });
+      strapi.log.info('✅ Site settings nav updated: added Agencies menu.');
+    } else {
+      strapi.log.info('📋 Site settings exist (Agencies already in nav), skipping.');
+    }
     return;
   }
 
@@ -311,31 +668,38 @@ async function seedSiteSettings(strapi: Core.Strapi) {
       ],
       mainNavigation: [
         { label: 'Home', url: '/', children: [] },
-        { label: 'About MOH', url: '/about', children: [
-          { label: 'Our History', url: '/about', icon: 'landmark' },
-          { label: 'Leadership', url: '/about#leadership', icon: 'users-cog' },
-          { label: 'Mission & Vision', url: '/about#mission', icon: 'bullseye' },
-        ]},
-        { label: 'Directorates', url: '/directorates', children: [
-          { label: 'DPPI', url: '/directorates/dppi', icon: 'chart-line' },
-          { label: 'Reproductive & Child Health', url: '/directorates/rch', icon: 'baby' },
-          { label: 'Primary Health Care', url: '/directorates/phc', icon: 'heartbeat' },
-          { label: 'Disease Prevention & Control', url: '/directorates/dpc', icon: 'virus-slash' },
-          { label: 'Emergency Medical Services', url: '/directorates/nems', icon: 'ambulance' },
-          { label: 'Support Services', url: '/directorates/ss', icon: 'cogs' },
-          { label: 'Nursing & Midwifery', url: '/directorates/nm', icon: 'user-nurse' },
-          { label: 'NCD & Mental Health', url: '/directorates/ncdandmh', icon: 'brain' },
-          { label: 'Pharmaceutical Services', url: '/directorates/ps', icon: 'pills' },
-          { label: 'Human Resource Management', url: '/directorates/hrm', icon: 'users' },
-          { label: 'Training & Research', url: '/directorates/tr', icon: 'book' },
-          { label: 'Environmental Health', url: '/directorates/ehc', icon: 'leaf' },
-          { label: 'Food & Nutrition', url: '/directorates/fn', icon: 'utensils' },
-        ]},
-        { label: 'Media', url: '/media', children: [
-          { label: 'Newsroom', url: '/newsroom', icon: 'rss' },
-          { label: 'Events', url: '/events', icon: 'calendar-alt' },
-          { label: 'Press Releases', url: '/press-releases', icon: 'bullhorn' },
-        ]},
+        {
+          label: 'About MOH', url: '/about', children: [
+            { label: 'Our History', url: '/about', icon: 'landmark' },
+            { label: 'Leadership', url: '/about#leadership', icon: 'users-cog' },
+            { label: 'Mission & Vision', url: '/about#mission', icon: 'bullseye' },
+          ]
+        },
+        AGENCIES_NAV_ITEM,
+        {
+          label: 'Directorates', url: '/directorates', children: [
+            { label: 'DPPI', url: '/directorates/dppi', icon: 'chart-line' },
+            { label: 'Reproductive & Child Health', url: '/directorates/rch', icon: 'baby' },
+            { label: 'Primary Health Care', url: '/directorates/phc', icon: 'heartbeat' },
+            { label: 'Disease Prevention & Control', url: '/directorates/dpc', icon: 'virus-slash' },
+            { label: 'Emergency Medical Services', url: '/directorates/nems', icon: 'ambulance' },
+            { label: 'Support Services', url: '/directorates/ss', icon: 'cogs' },
+            { label: 'Nursing & Midwifery', url: '/directorates/nm', icon: 'user-nurse' },
+            { label: 'NCD & Mental Health', url: '/directorates/ncdandmh', icon: 'brain' },
+            { label: 'Pharmaceutical Services', url: '/directorates/ps', icon: 'pills' },
+            { label: 'Human Resource Management', url: '/directorates/hrm', icon: 'users' },
+            { label: 'Training & Research', url: '/directorates/tr', icon: 'book' },
+            { label: 'Environmental Health', url: '/directorates/ehc', icon: 'leaf' },
+            { label: 'Food & Nutrition', url: '/directorates/fn', icon: 'utensils' },
+          ]
+        },
+        {
+          label: 'Media', url: '/media', children: [
+            { label: 'Newsroom', url: '/newsroom', icon: 'rss' },
+            { label: 'Events', url: '/events', icon: 'calendar-alt' },
+            { label: 'Press Releases', url: '/press-releases', icon: 'bullhorn' },
+          ]
+        },
         { label: 'Contact Us', url: '/contact', children: [] },
         { label: 'Job Portal', url: '/jobs', children: [] },
       ],
@@ -637,6 +1001,13 @@ async function seedCommunicationsRole(strapi: Core.Strapi) {
       'reportButtonText',
       'reportButtonUrl',
       'reportButtonIcon',
+    ],
+    'api::agency.agency': [
+      'name', 'fullName', 'slug', 'icon', 'order', 'isActive',
+      'about', 'aboutExtra', 'mandate',
+      'statsUnits', 'statsDistricts', 'statsStaff', 'statsPartners',
+      'headName', 'headTitle', 'headCredentials', 'headImage', 'headBio',
+      'units', 'contactEmail', 'contactPhone', 'contactLocation', 'websiteUrl',
     ],
   };
 

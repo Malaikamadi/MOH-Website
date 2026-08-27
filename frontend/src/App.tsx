@@ -3,6 +3,8 @@ import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
 import DirectoratePage from './pages/DirectoratePage'
 import DirectorateDetailPage from './pages/DirectorateDetailPage'
+import AgencyPage from './pages/AgencyPage'
+import AgencyDetailPage from './pages/AgencyDetailPage'
 import EmergencyPage from './pages/EmergencyPage'
 import FindFacilityPage from './pages/FindFacilityPage'
 import ContactPage from './pages/ContactPage'
@@ -24,6 +26,8 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/directorates" element={<DirectoratePage />} />
         <Route path="/directorates/:slug" element={<DirectorateDetailPage />} />
+        <Route path="/agencies" element={<AgencyPage />} />
+        <Route path="/agencies/:slug" element={<AgencyDetailPage />} />
         <Route path="/newsroom" element={<NewsroomPage />} />
         <Route path="/newsroom/:slug" element={<NewsArticlePage />} />
         <Route path="/events" element={<EventsPage />} />

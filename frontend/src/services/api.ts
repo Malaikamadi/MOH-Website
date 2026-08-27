@@ -137,6 +137,41 @@ export interface Directorate {
     publications: StrapiItem<Publication>[];
 }
 
+export interface AgencyUnit {
+    id: string;
+    name: string;
+    icon: string;
+    description: string;
+    functions: string[];
+}
+
+/** Shared template for Ministry agencies, boards, councils, and commissions */
+export interface Agency {
+    name: string;
+    fullName: string;
+    slug: string;
+    icon: string;
+    order: number;
+    isActive: boolean;
+    about: string;
+    aboutExtra: string;
+    mandate: string | null;
+    statsUnits: number;
+    statsDistricts: number;
+    statsStaff: string;
+    statsPartners: string;
+    headName: string;
+    headTitle: string;
+    headCredentials: string;
+    headImage: StrapiMedia | null;
+    headBio: string[];
+    units: AgencyUnit[];
+    contactEmail: string;
+    contactPhone: string;
+    contactLocation: string;
+    websiteUrl: string | null;
+}
+
 // ─── Single Type Interfaces ──────────────────────────────────────
 
 export interface LinkItem {
@@ -472,6 +507,27 @@ export async function getDirectorates(): Promise<StrapiResponse<Directorate>> {
  */
 export async function getDirectorateBySlug(slug: string): Promise<StrapiResponse<Directorate>> {
     return fetchAPI<StrapiResponse<Directorate>>('directorates', {
+        'populate': '*',
+        'filters[slug][$eq]': slug,
+    });
+}
+
+/**
+ * Fetch agencies (active preferred via client filter; Strapi returns published)
+ */
+export async function getAgencies(): Promise<StrapiResponse<Agency>> {
+    return fetchAPI<StrapiResponse<Agency>>('agencies', {
+        'populate': '*',
+        'sort': 'order:asc',
+        'filters[isActive][$eq]': 'true',
+    });
+}
+
+/**
+ * Fetch a single agency by slug
+ */
+export async function getAgencyBySlug(slug: string): Promise<StrapiResponse<Agency>> {
+    return fetchAPI<StrapiResponse<Agency>>('agencies', {
         'populate': '*',
         'filters[slug][$eq]': slug,
     });

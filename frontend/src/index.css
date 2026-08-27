@@ -8029,6 +8029,28 @@ button {
     overflow: hidden;
 }
 
+/* Agency pages reuse directorate layout; slight teal accent on badge */
+.agency-page-hero .dir-page-badge {
+    background: rgba(20, 184, 166, 0.18);
+    color: #5eead4;
+}
+
+.agency-mandate {
+    margin-bottom: 1rem;
+    padding: 0.85rem 1rem;
+    background: #f0f9ff;
+    border-left: 3px solid #0369a1;
+    border-radius: 0 0.5rem 0.5rem 0;
+    color: #0f172a;
+    line-height: 1.55;
+}
+
+.contact-section .contact-item a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
 .dir-page-hero::before {
     content: '';
     position: absolute;

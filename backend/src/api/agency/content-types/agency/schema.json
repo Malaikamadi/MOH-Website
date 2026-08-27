@@ -1,0 +1,101 @@
+{
+  "kind": "collectionType",
+  "collectionName": "agencies",
+  "info": {
+    "singularName": "agency",
+    "pluralName": "agencies",
+    "displayName": "Agency",
+    "description": "Ministry agencies, boards, councils, and commissions — shared page template"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "fullName": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "icon": {
+      "type": "string",
+      "default": "building"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "about": {
+      "type": "richtext"
+    },
+    "aboutExtra": {
+      "type": "richtext"
+    },
+    "mandate": {
+      "type": "text"
+    },
+    "statsUnits": {
+      "type": "integer",
+      "default": 0
+    },
+    "statsDistricts": {
+      "type": "integer",
+      "default": 16
+    },
+    "statsStaff": {
+      "type": "string",
+      "default": "0"
+    },
+    "statsPartners": {
+      "type": "string",
+      "default": "0"
+    },
+    "headName": {
+      "type": "string"
+    },
+    "headTitle": {
+      "type": "string",
+      "default": "Chief Executive"
+    },
+    "headCredentials": {
+      "type": "string"
+    },
+    "headImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "headBio": {
+      "type": "json"
+    },
+    "units": {
+      "type": "json"
+    },
+    "contactEmail": {
+      "type": "email"
+    },
+    "contactPhone": {
+      "type": "string"
+    },
+    "contactLocation": {
+      "type": "string"
+    },
+    "websiteUrl": {
+      "type": "string"
+    }
+  }
+}

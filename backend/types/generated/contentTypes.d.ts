@@ -480,6 +480,60 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiAgencyAgency extends Struct.CollectionTypeSchema {
+  collectionName: 'agencies';
+  info: {
+    description: 'Ministry agencies, boards, councils, and commissions \u2014 shared page template';
+    displayName: 'Agency';
+    pluralName: 'agencies';
+    singularName: 'agency';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    about: Schema.Attribute.RichText;
+    aboutExtra: Schema.Attribute.RichText;
+    contactEmail: Schema.Attribute.Email;
+    contactLocation: Schema.Attribute.String;
+    contactPhone: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    headBio: Schema.Attribute.JSON;
+    headCredentials: Schema.Attribute.String;
+    headImage: Schema.Attribute.Media<'images'>;
+    headName: Schema.Attribute.String;
+    headTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Chief Executive'>;
+    icon: Schema.Attribute.String & Schema.Attribute.DefaultTo<'building'>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::agency.agency'
+    > &
+      Schema.Attribute.Private;
+    mandate: Schema.Attribute.Text;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    statsDistricts: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<16>;
+    statsPartners: Schema.Attribute.String & Schema.Attribute.DefaultTo<'0'>;
+    statsStaff: Schema.Attribute.String & Schema.Attribute.DefaultTo<'0'>;
+    statsUnits: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    units: Schema.Attribute.JSON;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    websiteUrl: Schema.Attribute.String;
+  };
+}
+
 export interface ApiAnnualHealthcareReviewAnnualHealthcareReview
   extends Struct.SingleTypeSchema {
   collectionName: 'annual_healthcare_reviews';
@@ -1669,6 +1723,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::about-page.about-page': ApiAboutPageAboutPage;
+      'api::agency.agency': ApiAgencyAgency;
       'api::annual-healthcare-review.annual-healthcare-review': ApiAnnualHealthcareReviewAnnualHealthcareReview;
       'api::directorate.directorate': ApiDirectorateDirectorate;
       'api::disease-surveillance.disease-surveillance': ApiDiseaseSurveillanceDiseaseSurveillance;
