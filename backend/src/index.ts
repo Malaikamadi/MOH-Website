@@ -739,6 +739,17 @@ async function seedJobs(strapi: Core.Strapi) {
 
 // ─── Seed: Site Settings ─────────────────────────────────────────
 
+const REGULATOR_NAV_URLS = new Set([
+  '/agencies/nhs',
+  '/agencies/mdc',
+  '/agencies/pharmacy-board',
+  '/agencies/ahpc',
+  '/regulators/nhs',
+  '/regulators/mdc',
+  '/regulators/pharmacy-board',
+  '/regulators/ahpc',
+]);
+
 const AGENCIES_NAV_ITEM = {
   label: 'Agencies',
   url: '/agencies',
@@ -748,11 +759,18 @@ const AGENCIES_NAV_ITEM = {
     { label: 'NEMS', url: '/agencies/nems', icon: 'ambulance' },
     { label: 'Health Service Commission', url: '/agencies/hsc', icon: 'clipboard-check' },
     { label: 'Postgraduate College of Health Facilities', url: '/agencies/pchf', icon: 'graduation-cap' },
-    { label: 'National Health Secretariat', url: '/agencies/nhs', icon: 'landmark' },
-    { label: 'Medical and Dental Council', url: '/agencies/mdc', icon: 'stethoscope' },
-    { label: 'Pharmacy Board', url: '/agencies/pharmacy-board', icon: 'pills' },
     { label: 'SL Nursing and Midwifery', url: '/agencies/sl-nursing-midwifery', icon: 'user-nurse' },
-    { label: 'Allied Health Professional Councils', url: '/agencies/ahpc', icon: 'users-cog' },
+  ],
+};
+
+const REGULATORS_NAV_ITEM = {
+  label: 'Regulators',
+  url: '/regulators',
+  children: [
+    { label: 'National Health Secretariat', url: '/regulators/nhs', icon: 'landmark' },
+    { label: 'Pharmacy Board', url: '/regulators/pharmacy-board', icon: 'pills' },
+    { label: 'Medical and Dental Council', url: '/regulators/mdc', icon: 'stethoscope' },
+    { label: 'Allied Health Professional Council', url: '/regulators/ahpc', icon: 'users-cog' },
   ],
 };
 
@@ -780,6 +798,36 @@ async function seedSiteSettings(strapi: Core.Strapi) {
       nav.splice(insertAt, 0, AGENCIES_NAV_ITEM);
       navChanged = true;
       strapi.log.info('✅ Site settings nav updated: added Agencies menu.');
+    } else {
+      const agenciesItem = nav.find(
+        (item: { label?: string; url?: string }) =>
+          item?.label === 'Agencies' || item?.url === '/agencies'
+      );
+      if (agenciesItem && Array.isArray(agenciesItem.children)) {
+        const nextChildren = agenciesItem.children.filter(
+          (child: { url?: string }) => !REGULATOR_NAV_URLS.has(child?.url || '')
+        );
+        if (nextChildren.length !== agenciesItem.children.length) {
+          agenciesItem.children = nextChildren;
+          navChanged = true;
+          strapi.log.info('✅ Site settings nav updated: moved regulators out of Agencies.');
+        }
+      }
+    }
+
+    const hasRegulators = nav.some(
+      (item: { label?: string; url?: string }) =>
+        item?.label === 'Regulators' || item?.url === '/regulators'
+    );
+    if (!hasRegulators) {
+      const agenciesIdx = nav.findIndex(
+        (item: { label?: string; url?: string }) =>
+          item?.label === 'Agencies' || item?.url === '/agencies'
+      );
+      const insertAt = agenciesIdx >= 0 ? agenciesIdx + 1 : Math.min(3, nav.length);
+      nav.splice(insertAt, 0, REGULATORS_NAV_ITEM);
+      navChanged = true;
+      strapi.log.info('✅ Site settings nav updated: added Regulators menu.');
     }
 
     const mediaItem = nav.find(
@@ -850,6 +898,7 @@ async function seedSiteSettings(strapi: Core.Strapi) {
           ]
         },
         AGENCIES_NAV_ITEM,
+        REGULATORS_NAV_ITEM,
         {
           label: 'Directorates', url: '/directorates', children: [
             { label: 'DPPI', url: '/directorates/dppi', icon: 'chart-line' },

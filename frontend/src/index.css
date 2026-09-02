@@ -387,7 +387,7 @@ button {
 
 /* Top Bar */
 .header-top-bar {
-  background: linear-gradient(135deg, #054180 0%, #0a5da8 100%);
+  background: linear-gradient(180deg, #1a5a96 0%, #154e82 100%);
   padding: var(--space-3) 0;
   border-bottom: none;
 }
@@ -479,7 +479,7 @@ button {
 
 .header-social-icons a:hover {
   background: var(--color-white);
-  color: #054180;
+  color: #154e82;
   transform: translateY(-2px);
 }
 

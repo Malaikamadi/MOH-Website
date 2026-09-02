@@ -16,11 +16,13 @@ const fallbackNav: NavItem[] = [
         { label: 'NEMS', url: '/agencies/nems', icon: 'ambulance' },
         { label: 'Health Service Commission', url: '/agencies/hsc', icon: 'clipboard-check' },
         { label: 'Postgraduate College of Health Facilities', url: '/agencies/pchf', icon: 'graduation-cap' },
-        { label: 'National Health Secretariat', url: '/agencies/nhs', icon: 'landmark' },
-        { label: 'Medical and Dental Council', url: '/agencies/mdc', icon: 'stethoscope' },
-        { label: 'Pharmacy Board', url: '/agencies/pharmacy-board', icon: 'pills' },
         { label: 'SL Nursing and Midwifery', url: '/agencies/sl-nursing-midwifery', icon: 'user-nurse' },
-        { label: 'Allied Health Professional Councils', url: '/agencies/ahpc', icon: 'users-cog' },
+    ]},
+    { label: 'Regulators', url: '/regulators', children: [
+        { label: 'National Health Secretariat', url: '/regulators/nhs', icon: 'landmark' },
+        { label: 'Pharmacy Board', url: '/regulators/pharmacy-board', icon: 'pills' },
+        { label: 'Medical and Dental Council', url: '/regulators/mdc', icon: 'stethoscope' },
+        { label: 'Allied Health Professional Council', url: '/regulators/ahpc', icon: 'users-cog' },
     ]},
     { label: 'Directorates', url: '/directorates', children: [
         { label: 'DPPI', url: '/directorates/dppi', icon: 'chart-line' },
@@ -47,6 +49,48 @@ const fallbackNav: NavItem[] = [
     { label: 'Contact Us', url: '/contact' },
     { label: 'Job Portal', url: '/jobs' },
 ];
+
+const REGULATOR_NAV_URLS = new Set([
+    '/agencies/nhs',
+    '/agencies/mdc',
+    '/agencies/pharmacy-board',
+    '/agencies/ahpc',
+    '/regulators/nhs',
+    '/regulators/mdc',
+    '/regulators/pharmacy-board',
+    '/regulators/ahpc',
+]);
+
+function withRegulatorsNav(items: NavItem[]): NavItem[] {
+    const regulatorsItem = fallbackNav.find((item) => item.url === '/regulators');
+    const nav = items.map((item) => {
+        if (item.label === 'Agencies' || item.url === '/agencies') {
+            return {
+                ...item,
+                children: (item.children || []).filter(
+                    (child) => !REGULATOR_NAV_URLS.has(child.url)
+                ),
+            };
+        }
+        if ((item.label === 'Regulators' || item.url === '/regulators') && regulatorsItem) {
+            return regulatorsItem;
+        }
+        return item;
+    });
+
+    const hasRegulators = nav.some(
+        (item) => item.label === 'Regulators' || item.url === '/regulators'
+    );
+    if (!hasRegulators && regulatorsItem) {
+        const agenciesIdx = nav.findIndex(
+            (item) => item.label === 'Agencies' || item.url === '/agencies'
+        );
+        const insertAt = agenciesIdx >= 0 ? agenciesIdx + 1 : Math.min(3, nav.length);
+        nav.splice(insertAt, 0, regulatorsItem);
+    }
+
+    return nav;
+}
 
 interface LangOption {
     code: string;
@@ -77,7 +121,7 @@ export default function Header() {
     const { data: settingsRes } = useApi(getSiteSettings);
 
     const s: Partial<SiteSettings> = settingsRes?.data || {};
-    const nav = s.mainNavigation?.length ? s.mainNavigation : fallbackNav;
+    const nav = withRegulatorsNav(s.mainNavigation?.length ? s.mainNavigation : fallbackNav);
     const socialLinks = s.socialLinks || [];
     const logoUrl = s.logo ? getMediaUrl(s.logo) : '/images/logo.png';
 

@@ -1,14 +1,24 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import UnitProgramPanel from '../components/shared/UnitProgramPanel'
 import { useApi } from '../hooks/useApi'
 import { getAgencyBySlug, getMediaUrl } from '../services/api'
 import type { AgencyUnit } from '../services/api'
+import { isRegulatorSlug } from '../data/regulators'
 
 export default function AgencyDetailPage() {
     const { slug } = useParams<{ slug: string }>()
+
+    if (isRegulatorSlug(slug)) {
+        return <Navigate to={`/regulators/${slug}`} replace />
+    }
+
+    return <AgencyDetailContent slug={slug} />
+}
+
+function AgencyDetailContent({ slug }: { slug: string | undefined }) {
     const { data: agencyRes, loading, error } = useApi(
         () => getAgencyBySlug(slug || ''),
         [slug]

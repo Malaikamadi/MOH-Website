@@ -5,6 +5,12 @@ import DirectoratePage from './pages/DirectoratePage'
 import DirectorateDetailPage from './pages/DirectorateDetailPage'
 import AgencyPage from './pages/AgencyPage'
 import AgencyDetailPage from './pages/AgencyDetailPage'
+import RegulatorsPage from './pages/RegulatorsPage'
+import RegulatorDetailPage from './pages/RegulatorDetailPage'
+import NHSPage from './pages/NHSPage'
+import PharmacyBoardPage from './pages/PharmacyBoardPage'
+import MDCPage from './pages/MDCPage'
+import AHPCPage from './pages/AHPCPage'
 import EmergencyPage from './pages/EmergencyPage'
 import FindFacilityPage from './pages/FindFacilityPage'
 import ContactPage from './pages/ContactPage'
@@ -30,6 +36,12 @@ function App() {
         <Route path="/directorates/:slug" element={<DirectorateDetailPage />} />
         <Route path="/agencies" element={<AgencyPage />} />
         <Route path="/agencies/:slug" element={<AgencyDetailPage />} />
+        <Route path="/regulators" element={<RegulatorsPage />} />
+        <Route path="/regulators/nhs" element={<NHSPage />} />
+        <Route path="/regulators/pharmacy-board" element={<PharmacyBoardPage />} />
+        <Route path="/regulators/mdc" element={<MDCPage />} />
+        <Route path="/regulators/ahpc" element={<AHPCPage />} />
+        <Route path="/regulators/:slug" element={<RegulatorDetailPage />} />
         <Route path="/newsroom" element={<NewsroomPage />} />
         <Route path="/newsroom/:slug" element={<NewsArticlePage />} />
         <Route path="/events" element={<EventsPage />} />

@@ -980,7 +980,7 @@ export interface ApiLeadershipMemberLeadershipMember
   extends Struct.CollectionTypeSchema {
   collectionName: 'leadership_members';
   info: {
-    description: 'Ministry leadership: Minister, deputies, CMO, and executive team';
+    description: 'Ministry leadership: Ministers, deputies, CMO, and executive team';
     displayName: 'Leadership Member';
     pluralName: 'leadership-members';
     singularName: 'leadership-member';

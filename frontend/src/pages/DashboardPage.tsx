@@ -150,9 +150,7 @@ export default function DashboardPage() {
                         <nav className="hidash-breadcrumb" aria-label="Breadcrumb">
                             <a href="/">Home</a>
                             <span>/</span>
-                            <a href="/#health-information-hub">Health Information Hub</a>
-                            <span>/</span>
-                            <span>Dashboard</span>
+                            <span>Health Information Hub</span>
                         </nav>
                         <p className="hidash-eyebrow">
                             <i className="fas fa-network-wired"></i> National aggregate view
