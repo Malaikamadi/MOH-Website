@@ -453,8 +453,9 @@ button {
 }
 
 .header-contact-item i {
-  color: #dfb525;
-  font-size: 0.9rem;
+  color: #ffc400;
+  font-size: 1rem;
+  font-weight: 900;
 }
 
 /* Social Icons - Circular Style */
@@ -6738,7 +6739,8 @@ button {
 }
 
 .lang-btn i.fa-globe {
-  color: #dfb525;
+  color: #ffc400;
+  font-weight: 900;
 }
 
 .lang-btn i.fa-chevron-down {
