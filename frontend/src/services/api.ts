@@ -98,6 +98,36 @@ export interface Event {
     featured: boolean;
 }
 
+export interface Video {
+    title: string;
+    slug: string;
+    summary: string;
+    videoUrl: string;
+    videoFile: StrapiMedia | null;
+    coverImage: StrapiMedia | null;
+    publishedDate: string;
+    featured: boolean;
+}
+
+export type UpdateCardType = 'news' | 'videos' | 'events' | 'publications';
+
+export interface LatestUpdateItem {
+    id: string;
+    type: UpdateCardType;
+    title: string;
+    description: string;
+    image: string;
+    fallbackImage: string;
+    date: string;
+    dateRaw: number;
+    link: string;
+    linkText: string;
+    hasPlayButton?: boolean;
+    isPDF?: boolean;
+    dateIcon: string;
+    openInNewTab?: boolean;
+}
+
 export interface Publication {
     title: string;
     description: string;
@@ -392,6 +422,32 @@ export function getMediaFormat(
     return `${API_URL}${formatUrl}`;
 }
 
+/** Best-quality URL for full-width hero / slider backgrounds */
+export function getHeroImageUrl(media: StrapiMedia | null | undefined): string {
+    return getMediaUrl(media) || getMediaFormat(media, 'large');
+}
+
+/** Optional srcSet for responsive hero images from Strapi formats */
+export function getHeroImageSrcSet(
+    media: StrapiMedia | null | undefined
+): string | undefined {
+    if (!media?.formats) return undefined;
+    const parts: string[] = [];
+    const order = ['large', 'medium', 'small'] as const;
+    for (const key of order) {
+        const fmt = media.formats[key];
+        if (fmt?.url) {
+            const url = fmt.url.startsWith('http') ? fmt.url : `${API_URL}${fmt.url}`;
+            parts.push(`${url} ${key === 'large' ? '1200w' : key === 'medium' ? '750w' : '500w'}`);
+        }
+    }
+    const original = getMediaUrl(media);
+    if (original && media.width) {
+        parts.push(`${original} ${media.width}w`);
+    }
+    return parts.length > 0 ? parts.join(', ') : undefined;
+}
+
 /**
  * Generic fetch wrapper for Strapi API
  */
@@ -492,6 +548,28 @@ export async function getEvents(options?: {
     }
 
     return fetchAPI<StrapiResponse<Event>>('events', params);
+}
+
+/**
+ * Fetch videos with optional filters
+ */
+export async function getVideos(options?: {
+    featured?: boolean;
+    limit?: number;
+}): Promise<StrapiResponse<Video>> {
+    const params: Record<string, string> = {
+        'populate': '*',
+        'sort': 'publishedDate:desc',
+    };
+
+    if (options?.featured !== undefined) {
+        params['filters[featured][$eq]'] = String(options.featured);
+    }
+    if (options?.limit) {
+        params['pagination[pageSize]'] = String(options.limit);
+    }
+
+    return fetchAPI<StrapiResponse<Video>>('videos', params);
 }
 
 /**
@@ -679,23 +757,127 @@ export async function subscribeNewsletter(email: string): Promise<StrapiSingleRe
 }
 
 /**
- * Fetch latest updates for homepage (combines news, events, publications)
+ * Fetch latest homepage updates from Communications collections:
+ * News, Videos, Events, and Publications.
+ * Also includes legacy news-articles that used the contentType field.
  */
-export async function getLatestUpdates(options?: {
-    type?: 'news' | 'video' | 'event' | 'publication' | 'all';
-    limit?: number;
-}): Promise<StrapiResponse<NewsArticle>> {
-    const params: Record<string, string> = {
-        'populate': '*',
-        'sort': 'publishedDate:desc',
-        'pagination[pageSize]': String(options?.limit || 6),
-    };
+const UPDATES_FALLBACK_IMAGE =
+    'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop';
 
-    if (options?.type && options.type !== 'all') {
-        params['filters[contentType][$eq]'] = options.type;
+function formatUpdateDate(dateStr?: string | null): { label: string; timestamp: number } {
+    if (!dateStr) return { label: '', timestamp: 0 };
+    const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return { label: '', timestamp: 0 };
+    return {
+        label: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        timestamp: date.getTime(),
+    };
+}
+
+function settledData<T>(result: PromiseSettledResult<StrapiResponse<T>>): StrapiItem<T>[] {
+    if (result.status !== 'fulfilled' || !result.value?.data) return [];
+    return result.value.data;
+}
+
+export async function getLatestUpdates(options?: {
+    limit?: number;
+}): Promise<LatestUpdateItem[]> {
+    const limit = options?.limit || 12;
+
+    const [newsRes, videosRes, eventsRes, publicationsRes] = await Promise.allSettled([
+        getNewsArticles({ limit }),
+        getVideos({ limit }),
+        getEvents({ limit }),
+        getPublications({ limit }),
+    ]);
+
+    const items: LatestUpdateItem[] = [];
+
+    for (const article of settledData(newsRes)) {
+        const contentType = article.contentType || 'news';
+        const type: UpdateCardType =
+            contentType === 'video' ? 'videos'
+                : contentType === 'event' ? 'events'
+                    : contentType === 'publication' ? 'publications'
+                        : 'news';
+        const { label, timestamp } = formatUpdateDate(article.publishedDate);
+        items.push({
+            id: `news-${article.id}`,
+            type,
+            title: article.title,
+            description: article.summary || '',
+            image: getMediaUrl(article.coverImage) || '/images/news-1.jpg',
+            fallbackImage: UPDATES_FALLBACK_IMAGE,
+            date: label,
+            dateRaw: timestamp,
+            link: type === 'videos' && article.videoUrl ? article.videoUrl : `/newsroom/${article.slug}`,
+            linkText: type === 'videos' ? 'Watch Video' : type === 'publications' ? 'Download' : 'Read More',
+            hasPlayButton: type === 'videos',
+            isPDF: type === 'publications',
+            dateIcon: type === 'events' ? 'map-marker-alt' : type === 'publications' ? 'file' : 'clock',
+            openInNewTab: type === 'videos' && Boolean(article.videoUrl),
+        });
     }
 
-    return fetchAPI<StrapiResponse<NewsArticle>>('news-articles', params);
+    for (const video of settledData(videosRes)) {
+        const { label, timestamp } = formatUpdateDate(video.publishedDate);
+        const link = video.videoUrl || getMediaUrl(video.videoFile) || '#';
+        items.push({
+            id: `video-${video.id}`,
+            type: 'videos',
+            title: video.title,
+            description: video.summary || '',
+            image: getMediaUrl(video.coverImage) || '/images/news-1.jpg',
+            fallbackImage: UPDATES_FALLBACK_IMAGE,
+            date: label,
+            dateRaw: timestamp,
+            link,
+            linkText: 'Watch Video',
+            hasPlayButton: true,
+            dateIcon: 'clock',
+            openInNewTab: Boolean(video.videoUrl || video.videoFile),
+        });
+    }
+
+    for (const event of settledData(eventsRes)) {
+        const { label, timestamp } = formatUpdateDate(event.eventStartDate);
+        items.push({
+            id: `event-${event.id}`,
+            type: 'events',
+            title: event.title,
+            description: event.summary || '',
+            image: getMediaUrl(event.coverImage) || '/images/news-1.jpg',
+            fallbackImage: UPDATES_FALLBACK_IMAGE,
+            date: label || event.location || '',
+            dateRaw: timestamp,
+            link: '/events',
+            linkText: 'Read More',
+            dateIcon: 'map-marker-alt',
+        });
+    }
+
+    for (const publication of settledData(publicationsRes)) {
+        const { label, timestamp } = formatUpdateDate(publication.publishDate);
+        const fileUrl = getMediaUrl(publication.file);
+        items.push({
+            id: `publication-${publication.id}`,
+            type: 'publications',
+            title: publication.title,
+            description: publication.description || '',
+            image: getMediaUrl(publication.coverImage) || '/images/news-1.jpg',
+            fallbackImage: UPDATES_FALLBACK_IMAGE,
+            date: label,
+            dateRaw: timestamp,
+            link: fileUrl || '#',
+            linkText: 'Download',
+            isPDF: true,
+            dateIcon: 'file',
+            openInNewTab: Boolean(fileUrl),
+        });
+    }
+
+    items.sort((a, b) => b.dateRaw - a.dateRaw);
+    return items.slice(0, limit);
 }
 
 // ─── Single Type & New Collection API Functions ──────────────────

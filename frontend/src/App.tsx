@@ -12,6 +12,8 @@ import JobPortalPage from './pages/JobPortalPage'
 import NewsroomPage from './pages/NewsroomPage'
 import NewsArticlePage from './pages/NewsArticlePage'
 import EventsPage from './pages/EventsPage'
+import VideosPage from './pages/VideosPage'
+import PublicationsPage from './pages/PublicationsPage'
 import PressReleasesPage from './pages/PressReleasesPage'
 import DashboardPage from './pages/DashboardPage'
 import FloatingButtons from './components/layout/FloatingButtons'
@@ -31,6 +33,8 @@ function App() {
         <Route path="/newsroom" element={<NewsroomPage />} />
         <Route path="/newsroom/:slug" element={<NewsArticlePage />} />
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/videos" element={<VideosPage />} />
+        <Route path="/publications" element={<PublicationsPage />} />
         <Route path="/press-releases" element={<PressReleasesPage />} />
         <Route path="/emergency" element={<EmergencyPage />} />
         <Route path="/find-facility" element={<FindFacilityPage />} />

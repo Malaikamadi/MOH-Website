@@ -5,7 +5,7 @@
         "singularName": "publication",
         "pluralName": "publications",
         "displayName": "Publication",
-        "description": "Documents, reports, and publications uploaded by each directorate"
+        "description": "Documents, reports, and publications managed by Communications for the homepage Latest Updates section"
     },
     "options": {
         "draftAndPublish": true

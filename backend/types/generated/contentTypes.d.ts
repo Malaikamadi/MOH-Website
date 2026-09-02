@@ -678,7 +678,7 @@ export interface ApiDiseaseSurveillanceDiseaseSurveillance
 export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   collectionName: 'events';
   info: {
-    description: 'Ministry events, conferences, and campaigns';
+    description: 'Ministry events, conferences, and campaigns managed by Communications';
     displayName: 'Event';
     pluralName: 'events';
     singularName: 'event';
@@ -770,8 +770,8 @@ export interface ApiHealthInformationHubHealthInformationHub
 export interface ApiHeroSlideHeroSlide extends Struct.CollectionTypeSchema {
   collectionName: 'hero_slides';
   info: {
-    description: 'Homepage hero slider content';
-    displayName: 'Hero Slide';
+    description: 'Homepage hero slider \u2014 latest ministry achievements managed by Communications';
+    displayName: 'Latest Achievement';
     pluralName: 'hero-slides';
     singularName: 'hero-slide';
   };
@@ -1019,8 +1019,8 @@ export interface ApiLeadershipMemberLeadershipMember
 export interface ApiNewsArticleNewsArticle extends Struct.CollectionTypeSchema {
   collectionName: 'news_articles';
   info: {
-    description: 'News, press releases, and public notices managed by Comms department';
-    displayName: 'News Article';
+    description: 'News articles, press releases, and public notices managed by Communications';
+    displayName: 'News';
     pluralName: 'news-articles';
     singularName: 'news-article';
   };
@@ -1111,7 +1111,7 @@ export interface ApiNewsletterSubscriberNewsletterSubscriber
 export interface ApiPublicationPublication extends Struct.CollectionTypeSchema {
   collectionName: 'publications';
   info: {
-    description: 'Documents, reports, and publications uploaded by each directorate';
+    description: 'Documents, reports, and publications managed by Communications for the homepage Latest Updates section';
     displayName: 'Publication';
     pluralName: 'publications';
     singularName: 'publication';
@@ -1208,6 +1208,42 @@ export interface ApiSiteSettingSiteSetting extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiVideoVideo extends Struct.CollectionTypeSchema {
+  collectionName: 'videos';
+  info: {
+    description: 'Video updates managed by Communications for the homepage Latest Updates section';
+    displayName: 'Video';
+    pluralName: 'videos';
+    singularName: 'video';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    coverImage: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::video.video'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    publishedDate: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    summary: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    videoFile: Schema.Attribute.Media<'videos'>;
+    videoUrl: Schema.Attribute.String;
   };
 }
 
@@ -1738,6 +1774,7 @@ declare module '@strapi/strapi' {
       'api::newsletter-subscriber.newsletter-subscriber': ApiNewsletterSubscriberNewsletterSubscriber;
       'api::publication.publication': ApiPublicationPublication;
       'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
+      'api::video.video': ApiVideoVideo;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

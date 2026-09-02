@@ -1,4 +1,6 @@
 import type { Core } from '@strapi/strapi';
+import fs from 'fs';
+import path from 'path';
 
 export default {
   register(/* { strapi }: { strapi: Core.Strapi } */) { },
@@ -26,6 +28,7 @@ async function setupPublicPermissions(strapi: Core.Strapi) {
   const publicPermissions = [
     { controller: 'api::hero-slide.hero-slide', actions: ['find', 'findOne'] },
     { controller: 'api::news-article.news-article', actions: ['find', 'findOne'] },
+    { controller: 'api::video.video', actions: ['find', 'findOne'] },
     { controller: 'api::event.event', actions: ['find', 'findOne'] },
     { controller: 'api::publication.publication', actions: ['find', 'findOne'] },
     { controller: 'api::directorate.directorate', actions: ['find', 'findOne'] },
@@ -80,71 +83,123 @@ async function setupPublicPermissions(strapi: Core.Strapi) {
 
 // ─── Seed: Hero Slides ───────────────────────────────────────────
 
-async function seedHeroSlides(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::hero-slide.hero-slide').findMany({});
-  if (existing.length > 0) {
-    strapi.log.info(`📋 ${existing.length} hero slides exist, skipping.`);
-    return;
-  }
+async function uploadLocalImage(strapi: Core.Strapi, filePath: string, name: string) {
+  const stats = fs.statSync(filePath);
+  const uploaded = await strapi.plugin('upload').service('upload').upload({
+    data: {
+      fileInfo: {
+        name,
+        alternativeText: name,
+        caption: name,
+      },
+    },
+    files: {
+      filepath: filePath,
+      originalFilename: path.basename(filePath),
+      mimetype: 'image/jpeg',
+      size: stats.size,
+    },
+  });
+  return uploaded[0];
+}
 
-  strapi.log.info('🌱 Seeding hero slides...');
-  const slides = [
-    {
-      title: 'Revolutionizing Healthcare',
-      description: 'MoH Unveils State-of-the-Art Health Information System.',
-      badge: 'National Health Information Hub',
-      badgeIcon: 'shield-heart',
-      primaryButtonText: 'View Details',
-      primaryButtonLink: '/services',
-      primaryButtonIcon: 'stethoscope',
-      secondaryButtonText: 'Contact Us',
-      secondaryButtonLink: '/contact',
-      secondaryButtonIcon: 'phone',
-      order: 1,
-      isActive: true,
-    },
-    {
-      title: 'Safe Motherhood for All',
-      description: 'Comprehensive maternal health programs to ensure safe pregnancies, deliveries, and healthy babies across Sierra Leone.',
-      badge: 'Maternal & Child Health',
-      badgeIcon: 'baby',
-      primaryButtonText: 'Maternal Health',
-      primaryButtonLink: '#',
-      primaryButtonIcon: 'heart',
-      secondaryButtonText: 'Learn More',
-      secondaryButtonLink: '/contact',
-      secondaryButtonIcon: 'info-circle',
-      order: 2,
-      isActive: true,
-    },
-    {
-      title: "Protecting Our Children's Future",
-      description: 'Free vaccination programs reaching every child in Sierra Leone. Protecting communities through immunization.',
-      badge: 'National Immunization Program',
-      badgeIcon: 'syringe',
-      primaryButtonText: 'Immunization Info',
-      primaryButtonLink: '#',
-      primaryButtonIcon: 'syringe',
-      secondaryButtonText: 'Find a Clinic',
-      secondaryButtonLink: '/contact',
-      secondaryButtonIcon: 'calendar',
-      order: 3,
-      isActive: true,
-    },
-  ];
+async function attachMissingHeroImages(strapi: Core.Strapi) {
+  const slides = await strapi.documents('api::hero-slide.hero-slide').findMany({
+    populate: ['image'],
+  });
 
-  for (const slide of slides) {
+  const imagesDir = path.resolve(process.cwd(), '../frontend/public/images');
+
+  for (let i = 0; i < slides.length; i++) {
+    const slide = slides[i] as any;
+    if (slide.image) continue;
+
+    const filePath = path.join(imagesDir, `slide-${(i % 3) + 1}.jpg`);
+    if (!fs.existsSync(filePath)) {
+      strapi.log.warn(`  ⚠️ Hero image missing on disk: ${filePath}`);
+      continue;
+    }
+
     try {
-      await strapi.documents('api::hero-slide.hero-slide').create({
-        data: slide as any,
+      const file = await uploadLocalImage(strapi, filePath, `${slide.title} hero image`);
+      await strapi.documents('api::hero-slide.hero-slide').update({
+        documentId: slide.documentId,
+        data: { image: file.id } as any,
         status: 'published',
       });
-      strapi.log.info(`  ✅ Slide: ${slide.title}`);
+      strapi.log.info(`  ✅ Attached image to slide: ${slide.title}`);
     } catch (err: any) {
-      strapi.log.error(`  ❌ Slide ${slide.title}: ${err.message}`);
+      strapi.log.error(`  ❌ Failed to attach image for ${slide.title}: ${err.message}`);
     }
   }
-  strapi.log.info('🌱 Hero slides seeded.');
+}
+
+async function seedHeroSlides(strapi: Core.Strapi) {
+  const existing = await strapi.documents('api::hero-slide.hero-slide').findMany({});
+  if (existing.length === 0) {
+    strapi.log.info('🌱 Seeding hero slides...');
+    const slides = [
+      {
+        title: 'Revolutionizing Healthcare',
+        description: 'MoH Unveils State-of-the-Art Health Information System.',
+        badge: 'National Health Information Hub',
+        badgeIcon: 'shield-heart',
+        primaryButtonText: 'View Details',
+        primaryButtonLink: '/services',
+        primaryButtonIcon: 'stethoscope',
+        secondaryButtonText: 'Contact Us',
+        secondaryButtonLink: '/contact',
+        secondaryButtonIcon: 'phone',
+        order: 1,
+        isActive: true,
+      },
+      {
+        title: 'Safe Motherhood for All',
+        description: 'Comprehensive maternal health programs to ensure safe pregnancies, deliveries, and healthy babies across Sierra Leone.',
+        badge: 'Maternal & Child Health',
+        badgeIcon: 'baby',
+        primaryButtonText: 'Maternal Health',
+        primaryButtonLink: '#',
+        primaryButtonIcon: 'heart',
+        secondaryButtonText: 'Learn More',
+        secondaryButtonLink: '/contact',
+        secondaryButtonIcon: 'info-circle',
+        order: 2,
+        isActive: true,
+      },
+      {
+        title: "Protecting Our Children's Future",
+        description: 'Free vaccination programs reaching every child in Sierra Leone. Protecting communities through immunization.',
+        badge: 'National Immunization Program',
+        badgeIcon: 'syringe',
+        primaryButtonText: 'Immunization Info',
+        primaryButtonLink: '#',
+        primaryButtonIcon: 'syringe',
+        secondaryButtonText: 'Find a Clinic',
+        secondaryButtonLink: '/contact',
+        secondaryButtonIcon: 'calendar',
+        order: 3,
+        isActive: true,
+      },
+    ];
+
+    for (const slide of slides) {
+      try {
+        await strapi.documents('api::hero-slide.hero-slide').create({
+          data: slide as any,
+          status: 'published',
+        });
+        strapi.log.info(`  ✅ Slide: ${slide.title}`);
+      } catch (err: any) {
+        strapi.log.error(`  ❌ Slide ${slide.title}: ${err.message}`);
+      }
+    }
+    strapi.log.info('🌱 Hero slides seeded.');
+  } else {
+    strapi.log.info(`📋 ${existing.length} hero slides exist, skipping create.`);
+  }
+
+  await attachMissingHeroImages(strapi);
 }
 
 // ─── Seed: Directorates ──────────────────────────────────────────
@@ -709,6 +764,8 @@ async function seedSiteSettings(strapi: Core.Strapi) {
     const nav = Array.isArray((existing as any).mainNavigation)
       ? [...(existing as any).mainNavigation]
       : [];
+    let navChanged = false;
+
     const hasAgencies = nav.some(
       (item: { label?: string; url?: string }) =>
         item?.label === 'Agencies' || item?.url === '/agencies'
@@ -721,15 +778,49 @@ async function seedSiteSettings(strapi: Core.Strapi) {
       );
       const insertAt = aboutIdx >= 0 ? aboutIdx + 1 : Math.min(2, nav.length);
       nav.splice(insertAt, 0, AGENCIES_NAV_ITEM);
+      navChanged = true;
+      strapi.log.info('✅ Site settings nav updated: added Agencies menu.');
+    }
 
+    const mediaItem = nav.find(
+      (item: { label?: string; url?: string }) =>
+        item?.label === 'Media' || item?.url === '/media'
+    );
+    if (mediaItem) {
+      const children = Array.isArray(mediaItem.children) ? [...mediaItem.children] : [];
+      const extras: Array<{ label: string; url: string; icon: string; afterUrl: string }> = [
+        { label: 'Videos', url: '/videos', icon: 'video', afterUrl: '/newsroom' },
+        { label: 'Publications', url: '/publications', icon: 'file-alt', afterUrl: '/events' },
+      ];
+      for (const extra of extras) {
+        const exists = children.some(
+          (child: { url?: string; label?: string }) =>
+            child?.url === extra.url || child?.label === extra.label
+        );
+        if (!exists) {
+          const afterIdx = children.findIndex(
+            (child: { url?: string }) => child?.url === extra.afterUrl
+          );
+          children.splice(afterIdx >= 0 ? afterIdx + 1 : children.length, 0, {
+            label: extra.label,
+            url: extra.url,
+            icon: extra.icon,
+          });
+          navChanged = true;
+        }
+      }
+      mediaItem.children = children;
+    }
+
+    if (navChanged) {
       await strapi.documents('api::site-setting.site-setting').update({
         documentId: (existing as any).documentId,
         data: { mainNavigation: nav } as any,
         status: 'published',
       });
-      strapi.log.info('✅ Site settings nav updated: added Agencies menu.');
+      strapi.log.info('✅ Site settings nav updated with Communications media links.');
     } else {
-      strapi.log.info('📋 Site settings exist (Agencies already in nav), skipping.');
+      strapi.log.info('📋 Site settings exist (nav already current), skipping.');
     }
     return;
   }
@@ -779,7 +870,9 @@ async function seedSiteSettings(strapi: Core.Strapi) {
         {
           label: 'Media', url: '/media', children: [
             { label: 'Newsroom', url: '/newsroom', icon: 'rss' },
+            { label: 'Videos', url: '/videos', icon: 'video' },
             { label: 'Events', url: '/events', icon: 'calendar-alt' },
+            { label: 'Publications', url: '/publications', icon: 'file-alt' },
             { label: 'Press Releases', url: '/press-releases', icon: 'bullhorn' },
           ]
         },
@@ -1049,7 +1142,7 @@ async function seedCommunicationsRole(strapi: Core.Strapi) {
     const newRole = await adminRoleService.create({
       name: 'Communications',
       code: 'strapi-communications',
-      description: 'Media content management: news articles, events, and publications. For the Communications department.',
+      description: 'Communications content: News, Videos, Events, Publications, and homepage Latest Achievements.',
     });
     roleId = newRole.id;
   }
@@ -1059,38 +1152,21 @@ async function seedCommunicationsRole(strapi: Core.Strapi) {
       'title', 'slug', 'summary', 'content', 'coverImage', 'gallery',
       'category', 'contentType', 'tags', 'author', 'publishedDate', 'featured', 'videoUrl',
     ],
-    'api::job.job': [
-      'title', 'slug', 'description', 'summary', 'sector', 'location', 'jobType',
-      'experienceLevel', 'icon', 'tags', 'deadline', 'featured', 'applyLink', 'directorate',
+    'api::video.video': [
+      'title', 'slug', 'summary', 'videoUrl', 'videoFile', 'coverImage', 'publishedDate', 'featured',
     ],
     'api::event.event': [
       'title', 'slug', 'description', 'summary', 'location',
       'eventStartDate', 'eventEndDate', 'coverImage', 'registrationLink', 'organizer', 'featured',
     ],
     'api::publication.publication': [
-      'title', 'description', 'category', 'file', 'coverImage',
-      'publishDate', 'year', 'directorate',
+      'title', 'description', 'category', 'file', 'coverImage', 'publishDate', 'year', 'directorate',
     ],
-    'api::annual-healthcare-review.annual-healthcare-review': [
-      'isVisible',
-      'badgeLabel',
-      'badgeIcon',
-      'heading',
-      'bodyParagraph1',
-      'bodyParagraph2',
-      'highlights',
-      'youtubeUrl',
-      'videoCaption',
-      'reportButtonText',
-      'reportButtonUrl',
-      'reportButtonIcon',
-    ],
-    'api::agency.agency': [
-      'name', 'fullName', 'slug', 'icon', 'order', 'isActive',
-      'about', 'aboutExtra', 'mandate',
-      'statsUnits', 'statsDistricts', 'statsStaff', 'statsPartners',
-      'headName', 'headTitle', 'headCredentials', 'headImage', 'headBio',
-      'units', 'contactEmail', 'contactPhone', 'contactLocation', 'websiteUrl',
+    'api::hero-slide.hero-slide': [
+      'title', 'description', 'image', 'badge', 'badgeIcon',
+      'primaryButtonText', 'primaryButtonLink', 'primaryButtonIcon',
+      'secondaryButtonText', 'secondaryButtonLink', 'secondaryButtonIcon',
+      'order', 'isActive',
     ],
   };
 
@@ -1109,20 +1185,6 @@ async function seedCommunicationsRole(strapi: Core.Strapi) {
     }
   }
 
-  // Read-only access to directorates (needed for Publication relation dropdown)
-  const directorateFields = [
-    'name', 'fullName', 'slug', 'icon', 'about', 'aboutExtra',
-    'statsUnits', 'statsDistricts', 'statsStaff', 'statsPartners',
-    'directorName', 'directorCredentials', 'directorImage', 'directorBio',
-    'units', 'contactEmail', 'contactPhone', 'contactLocation', 'publications',
-  ];
-  permissions.push({
-    action: 'plugin::content-manager.explorer.read',
-    subject: 'api::directorate.directorate',
-    properties: { fields: directorateFields, locales: [] },
-    conditions: [],
-  });
-
   // Upload / media library permissions
   permissions.push(
     { action: 'plugin::upload.read', subject: null, properties: {}, conditions: [] },
@@ -1133,7 +1195,7 @@ async function seedCommunicationsRole(strapi: Core.Strapi) {
   );
 
   // Content-manager configuration permissions (required to view collection types)
-  for (const uid of [...Object.keys(contentTypeFields), 'api::directorate.directorate']) {
+  for (const uid of Object.keys(contentTypeFields)) {
     permissions.push({
       action: 'plugin::content-manager.collection-types.configure-view',
       subject: uid,

@@ -1,11 +1,11 @@
 {
     "kind": "collectionType",
-    "collectionName": "events",
+    "collectionName": "videos",
     "info": {
-        "singularName": "event",
-        "pluralName": "events",
-        "displayName": "Event",
-        "description": "Ministry events, conferences, and campaigns managed by Communications"
+        "singularName": "video",
+        "pluralName": "videos",
+        "displayName": "Video",
+        "description": "Video updates managed by Communications for the homepage Latest Updates section"
     },
     "options": {
         "draftAndPublish": true
@@ -21,22 +21,20 @@
             "targetField": "title",
             "required": true
         },
-        "description": {
-            "type": "richtext"
-        },
         "summary": {
             "type": "text",
-            "maxLength": 300
+            "maxLength": 500
         },
-        "location": {
+        "videoUrl": {
             "type": "string"
         },
-        "eventStartDate": {
-            "type": "datetime",
-            "required": true
-        },
-        "eventEndDate": {
-            "type": "datetime"
+        "videoFile": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "videos"
+            ]
         },
         "coverImage": {
             "type": "media",
@@ -46,11 +44,8 @@
                 "images"
             ]
         },
-        "registrationLink": {
-            "type": "string"
-        },
-        "organizer": {
-            "type": "string"
+        "publishedDate": {
+            "type": "datetime"
         },
         "featured": {
             "type": "boolean",

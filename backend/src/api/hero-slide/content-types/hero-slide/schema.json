@@ -4,8 +4,8 @@
     "info": {
         "singularName": "hero-slide",
         "pluralName": "hero-slides",
-        "displayName": "Hero Slide",
-        "description": "Homepage hero slider content"
+        "displayName": "Latest Achievement",
+        "description": "Homepage hero slider — latest ministry achievements managed by Communications"
     },
     "options": {
         "draftAndPublish": true

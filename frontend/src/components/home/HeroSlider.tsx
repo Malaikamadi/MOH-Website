@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { getNewsArticles, getHomepage, getMediaUrl } from '../../services/api';
+import { getHeroSlides, getNewsArticles, getHomepage, getHeroImageUrl, getHeroImageSrcSet } from '../../services/api';
 import type { NewsArticle } from '../../services/api';
 
 const categoryToIcon: Record<string, string> = {
@@ -16,7 +16,7 @@ const categoryToIcon: Record<string, string> = {
 const fallbackSlides = [
     {
         id: 1,
-        image: '/images/hub2.png',
+        image: '/images/slide-1.jpg',
         badge: { icon: 'shield-heart', text: 'National Health Information Hub' },
         title: 'Revolutionizing Healthcare',
         description: 'MoH Unveils State-of-the-Art Health Information System.',
@@ -25,7 +25,7 @@ const fallbackSlides = [
     },
     {
         id: 2,
-        image: '/images/slide-3.jpg',
+        image: '/images/slide-2.jpg',
         badge: { icon: 'baby', text: 'Maternal & Child Health' },
         title: 'Safe Motherhood for All',
         description: 'Comprehensive maternal health programs to ensure safe pregnancies, deliveries, and healthy babies across Sierra Leone.',
@@ -34,7 +34,7 @@ const fallbackSlides = [
     },
     {
         id: 3,
-        image: '/images/hub.png',
+        image: '/images/slide-3.jpg',
         badge: { icon: 'syringe', text: 'National Immunization Program' },
         title: "Protecting Our Children's Future",
         description: 'Free vaccination programs reaching every child in Sierra Leone. Protecting communities through immunization.',
@@ -46,6 +46,7 @@ const fallbackSlides = [
 interface SlideData {
     id: number;
     image: string;
+    srcSet?: string;
     badge: { icon: string; text: string };
     title: string;
     description: string;
@@ -55,16 +56,46 @@ interface SlideData {
 
 export default function HeroSlider() {
     const [currentSlide, setCurrentSlide] = useState(0);
-    const { data: newsData, loading } = useApi(() => getNewsArticles({ featured: true, limit: 5 }));
+    const { data: heroData, loading: heroLoading } = useApi(getHeroSlides);
+    const { data: newsData, loading: newsLoading } = useApi(() => getNewsArticles({ featured: true, limit: 5 }));
     const { data: homepageRes } = useApi(getHomepage);
     const statsBar = homepageRes?.data?.statsBar;
+    const hasHero = Boolean(heroData?.data?.length);
+    const hasNews = Boolean(newsData?.data?.length);
+    const loading = (heroLoading || newsLoading) && !hasHero && !hasNews;
 
     const slides: SlideData[] = (() => {
+        const achievements = heroData?.data;
+        if (achievements && achievements.length > 0) {
+            return achievements.map((item, index) => ({
+                id: item.id,
+                image: getHeroImageUrl(item.image) || `/images/slide-${(index % 3) + 1}.jpg`,
+                srcSet: getHeroImageSrcSet(item.image),
+                badge: {
+                    icon: item.badgeIcon || 'trophy',
+                    text: item.badge || 'Latest Achievement',
+                },
+                title: item.title,
+                description: item.description || '',
+                primaryBtn: {
+                    text: item.primaryButtonText || 'View Details',
+                    link: item.primaryButtonLink || '/',
+                    icon: item.primaryButtonIcon || 'arrow-right',
+                },
+                secondaryBtn: {
+                    text: item.secondaryButtonText || 'Learn More',
+                    link: item.secondaryButtonLink || '/about',
+                    icon: item.secondaryButtonIcon || 'info-circle',
+                },
+            }));
+        }
+
         const items = newsData?.data;
         if (items && items.length > 0) {
-            return items.map((item: { id: number } & NewsArticle) => ({
+            return items.map((item: { id: number } & NewsArticle, index: number) => ({
                 id: item.id,
-                image: getMediaUrl(item.coverImage) || '/images/hub2.png',
+                image: getHeroImageUrl(item.coverImage) || `/images/slide-${(index % 3) + 1}.jpg`,
+                srcSet: getHeroImageSrcSet(item.coverImage),
                 badge: {
                     icon: categoryToIcon[item.category] || 'rss',
                     text: item.category || 'Latest News',
@@ -87,6 +118,8 @@ export default function HeroSlider() {
     })();
 
     useEffect(() => {
+        if (slides.length === 0) return;
+        setCurrentSlide((prev) => prev % slides.length);
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
         }, 6000);
@@ -110,7 +143,7 @@ export default function HeroSlider() {
             <section className="hero-slider" id="heroSlider">
                 <div className="slides-container">
                     <div className="slide active">
-                        <img src="/images/hub2.png" alt="Loading" className="slide-bg" />
+                        <img src="/images/slide-1.jpg" alt="Loading" className="slide-bg" decoding="async" fetchPriority="high" />
                         <div className="slide-overlay"></div>
                     </div>
                 </div>
@@ -137,7 +170,21 @@ export default function HeroSlider() {
                         className={`slide ${index === currentSlide ? 'active' : ''}`}
                         data-slide={slide.id}
                     >
-                        <img src={slide.image} alt={slide.title} className="slide-bg" />
+                        <img
+                            src={slide.image}
+                            srcSet={slide.srcSet}
+                            sizes="100vw"
+                            alt={slide.title}
+                            className="slide-bg"
+                            loading={index === 0 ? 'eager' : 'lazy'}
+                            decoding="async"
+                            fetchPriority={index === currentSlide ? 'high' : 'low'}
+                            onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = `/images/slide-${(index % 3) + 1}.jpg`;
+                                e.currentTarget.removeAttribute('srcset');
+                            }}
+                        />
                         <div className="slide-overlay"></div>
                         <div className="container">
                             <div className="hero-content">

@@ -39,7 +39,9 @@ const fallbackNav: NavItem[] = [
     ]},
     { label: 'Media', url: '/media', children: [
         { label: 'Newsroom', url: '/newsroom', icon: 'rss' },
+        { label: 'Videos', url: '/videos', icon: 'video' },
         { label: 'Events', url: '/events', icon: 'calendar-alt' },
+        { label: 'Publications', url: '/publications', icon: 'file-alt' },
         { label: 'Press Releases', url: '/press-releases', icon: 'bullhorn' },
     ]},
     { label: 'Contact Us', url: '/contact' },

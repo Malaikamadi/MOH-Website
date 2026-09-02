@@ -4,8 +4,8 @@
     "info": {
         "singularName": "news-article",
         "pluralName": "news-articles",
-        "displayName": "News Article",
-        "description": "News, press releases, and public notices managed by Comms department"
+        "displayName": "News",
+        "description": "News articles, press releases, and public notices managed by Communications"
     },
     "options": {
         "draftAndPublish": true

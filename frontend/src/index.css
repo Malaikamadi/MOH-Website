@@ -966,6 +966,8 @@ button {
   position: relative;
   width: 100%;
   height: 85vh;
+  z-index: 1;
+  isolation: isolate;
 }
 
 .slide {
@@ -991,7 +993,11 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: contrast(1.06) saturate(1.12);
+  object-position: center;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .slide-overlay {
@@ -1000,10 +1006,10 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(5, 20, 45, 0.65) 0%, rgba(15, 30, 55, 0.5) 50%, rgba(10, 25, 50, 0.6) 100%);
+  background: linear-gradient(135deg, rgba(5, 20, 45, 0.42) 0%, rgba(15, 30, 55, 0.28) 50%, rgba(10, 25, 50, 0.38) 100%);
 }
 
-/* Geometric Network Background Pattern - Sharper Colors */
+/* Geometric Network Background Pattern - behind slide photos */
 .hero-slider::before {
   content: '';
   position: absolute;
@@ -1012,15 +1018,15 @@ button {
   width: 100%;
   height: 100%;
   background-image:
-    radial-gradient(circle at 20% 80%, rgba(0, 200, 255, 0.25) 0%, transparent 45%),
-    radial-gradient(circle at 80% 20%, rgba(0, 230, 150, 0.2) 0%, transparent 45%),
-    radial-gradient(circle at 40% 40%, rgba(80, 150, 255, 0.18) 0%, transparent 35%),
-    radial-gradient(circle at 90% 70%, rgba(255, 200, 50, 0.18) 0%, transparent 35%);
-  z-index: 1;
+    radial-gradient(circle at 20% 80%, rgba(0, 200, 255, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(0, 230, 150, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 40% 40%, rgba(80, 150, 255, 0.08) 0%, transparent 35%),
+    radial-gradient(circle at 90% 70%, rgba(255, 200, 50, 0.08) 0%, transparent 35%);
+  z-index: 0;
   pointer-events: none;
 }
 
-/* Tech Grid Pattern Overlay */
+/* Tech Grid Pattern Overlay - above photos, subtle */
 .hero-slider::after {
   content: '';
   position: absolute;
@@ -1029,10 +1035,10 @@ button {
   width: 100%;
   height: 100%;
   background-image:
-    linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-    linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+    linear-gradient(90deg, rgba(34, 211, 238, 0.02) 1px, transparent 1px),
+    linear-gradient(rgba(34, 211, 238, 0.02) 1px, transparent 1px);
   background-size: 60px 60px;
-  z-index: 2;
+  z-index: 0;
   pointer-events: none;
   animation: gridPulse 8s ease-in-out infinite;
 }
@@ -10650,6 +10656,12 @@ button {
   transform: scale(1.06);
 }
 
+.nr-card:hover .play-overlay {
+  background: #dfb525;
+  color: white;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
 .nr-card-badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
@@ -11207,6 +11219,10 @@ button {
   color: var(--color-gray-500);
   font-size: 0.8rem;
   margin-bottom: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .pr-card-date i {

@@ -1,62 +1,62 @@
 import { useState, useMemo } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { getLatestUpdates, getMediaUrl } from '../../services/api';
-import type { NewsArticle } from '../../services/api';
+import { getLatestUpdates } from '../../services/api';
+import type { UpdateCardType } from '../../services/api';
 
-type UpdateType = 'all' | 'news' | 'videos' | 'events' | 'publications';
+type TabType = 'all' | UpdateCardType;
 
 /** Set VITE_UPDATES_DEMO_FALLBACK=true in .env only for local UI demos without Strapi. */
 const DEMO_FALLBACK =
     import.meta.env.VITE_UPDATES_DEMO_FALLBACK === 'true'
         ? [
               {
+                  id: 'demo-1',
                   type: 'news' as const,
                   image: '/images/news-1.jpg',
                   fallbackImage:
                       'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop',
                   date: 'Demo',
+                  dateRaw: 0,
                   title: 'Demo: Minister Launches New Healthcare Initiative',
                   description:
-                      'Enable Strapi news-articles or turn off VITE_UPDATES_DEMO_FALLBACK.',
+                      'Enable Strapi news, videos, events, or publications or turn off VITE_UPDATES_DEMO_FALLBACK.',
                   link: '#',
                   linkText: 'Read More',
+                  dateIcon: 'clock',
               },
           ]
         : [];
 
-function transformApiData(item: NewsArticle & { id: number }) {
-    const contentType = item.contentType || 'news';
-    const imageUrl = getMediaUrl(item.coverImage);
-    const dateStr = item.publishedDate
-        ? new Date(item.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-        : '';
+const TYPE_LABEL: Record<UpdateCardType, string> = {
+    news: 'News',
+    videos: 'Video',
+    events: 'Event',
+    publications: 'Publication',
+};
 
-    return {
-        type: contentType === 'video' ? 'videos' : contentType === 'event' ? 'events' : contentType === 'publication' ? 'publications' : 'news',
-        image: imageUrl || '/images/news-1.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=250&fit=crop',
-        date: dateStr,
-        title: item.title,
-        description: item.summary || '',
-        link: `/newsroom/${item.slug}`,
-        linkText: contentType === 'video' ? 'Watch Video' : contentType === 'publication' ? 'Download' : 'Read More',
-        hasPlayButton: contentType === 'video',
-        isPDF: contentType === 'publication',
-        dateIcon: contentType === 'event' ? 'map-marker-alt' : contentType === 'publication' ? 'file' : 'clock',
-    };
-}
+const TYPE_ICON: Record<UpdateCardType, string> = {
+    news: 'newspaper',
+    videos: 'video',
+    events: 'calendar-alt',
+    publications: 'file-alt',
+};
+
+const VIEW_ALL: Record<TabType, { href: string; label: string }> = {
+    all: { href: '/newsroom', label: 'View All Updates' },
+    news: { href: '/newsroom', label: 'View All News' },
+    videos: { href: '/videos', label: 'View All Videos' },
+    events: { href: '/events', label: 'View All Events' },
+    publications: { href: '/publications', label: 'View All Publications' },
+};
 
 export default function UpdatesSection() {
-    const [activeTab, setActiveTab] = useState<UpdateType>('all');
+    const [activeTab, setActiveTab] = useState<TabType>('all');
     const { data: apiData, loading, error, refetch } = useApi(() =>
         getLatestUpdates({ limit: 12 })
     );
 
-    /** Real data from Strapi `news-articles` (contentType: news | video | event | publication). */
     const updates = useMemo(() => {
-        if (apiData?.data && apiData.data.length > 0) {
-            return apiData.data.map(transformApiData);
-        }
+        if (apiData && apiData.length > 0) return apiData;
         if (DEMO_FALLBACK.length > 0) return DEMO_FALLBACK;
         return [];
     }, [apiData]);
@@ -146,9 +146,10 @@ export default function UpdatesSection() {
                     ) : filteredUpdates.length === 0 ? (
                         <div className="updates-state updates-state--empty">
                             <p>
-                                <strong>No updates published yet.</strong> Add and publish entries
-                                in Strapi → <strong>News Articles</strong> (set content type:
-                                News, Video, Event, or Publication).
+                                <strong>No updates published yet.</strong> In Strapi, the
+                                Communications team can add and publish{' '}
+                                <strong>News</strong>, <strong>Videos</strong>,{' '}
+                                <strong>Events</strong>, and <strong>Publications</strong>.
                             </p>
                             <a href="/newsroom" className="btn btn-outline">
                                 Go to Newsroom
@@ -158,12 +159,12 @@ export default function UpdatesSection() {
 
                     {!loading && !error && filteredUpdates.length > 0 ? (
                     <div className="updates-grid">
-                        {filteredUpdates.map((update, index) => (
-                            <div key={index} className="update-card" data-type={update.type}>
+                        {filteredUpdates.map((update) => (
+                            <div key={update.id} className="update-card" data-type={update.type}>
                                 <div className={`update-type-badge ${update.type}`}>
-                                    <i className={`fas fa-${update.type === 'news' ? 'newspaper' : update.type === 'videos' ? 'video' : update.type === 'events' ? 'calendar-alt' : 'file-alt'}`}></i>
+                                    <i className={`fas fa-${TYPE_ICON[update.type]}`}></i>
                                     {' '}
-                                    {update.type.charAt(0).toUpperCase() + update.type.slice(1, -1)}
+                                    {TYPE_LABEL[update.type]}
                                 </div>
                                 <div className="update-image">
                                     <img
@@ -188,7 +189,13 @@ export default function UpdatesSection() {
                                     </span>
                                     <h4>{update.title}</h4>
                                     <p>{update.description}</p>
-                                    <a href={update.link} className="update-link">
+                                    <a
+                                        href={update.link}
+                                        className="update-link"
+                                        {...('openInNewTab' in update && update.openInNewTab
+                                            ? { target: '_blank', rel: 'noopener noreferrer' }
+                                            : {})}
+                                    >
                                         {update.linkText} <i className={`fas fa-${update.linkText.includes('Download') ? 'download' : 'arrow-right'}`}></i>
                                     </a>
                                 </div>
@@ -199,8 +206,8 @@ export default function UpdatesSection() {
 
                     {!loading && !error && filteredUpdates.length > 0 ? (
                     <div className="updates-view-all">
-                        <a href="/newsroom" className="btn btn-outline">
-                            View All Updates <i className="fas fa-arrow-right"></i>
+                        <a href={VIEW_ALL[activeTab].href} className="btn btn-outline">
+                            {VIEW_ALL[activeTab].label} <i className="fas fa-arrow-right"></i>
                         </a>
                     </div>
                     ) : null}
